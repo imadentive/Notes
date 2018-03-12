@@ -7,7 +7,7 @@ function read(url){
         })
     })
 }
-// 如果then中返回了一个promise 会将promise的结果继续传给第二then中
+// 如果then中返回了一个promise会将promise的结果继续传给第二then中
 // read('1.txt').then(data=>{
 //    return read(data); // 如果返回了一个普通，会将这个值作为下一次then的成功会回调
 // }).then(data=>{
