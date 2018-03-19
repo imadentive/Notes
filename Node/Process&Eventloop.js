@@ -64,6 +64,7 @@ setImmediate(function(){
 });
 
 // i/o文件操作 宏任务
+// i/o操作阶段完成后 会走check阶段，所以setImmediate会优先于timeout
 let fs = require('fs');
 fs.readFile('./1.log',function(){
     console.log('fs');
@@ -74,7 +75,7 @@ fs.readFile('./1.log',function(){
         console.log('setImmediate')
     })
 });
-// i/o操作阶段完成后 会走check阶段，所以setImmediate会优先于timeout
+
 // nextTick 会比 then快
 Promise.resolve().then(function(){
     console.log('then')
