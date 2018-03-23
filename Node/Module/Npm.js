@@ -46,3 +46,18 @@
 // 切换源 taobao cnpm 
 // npm install nrm -g
 // nrm use taobao
+
+
+// 全局安装 发布包(必须要有package.json)
+// 通过命令行发布包
+// npm adduser 如果有账号相当于是登录 没有就是注册 
+// 账号只能再官方登录
+// npm publish
+
+// 全局安装
+// npm link 可以把当前文件夹链接到全局目录下
+// 好处就是边开发边测试
+// 配置package.json 下的bin参数
+
+
+// npm install / npm add
