@@ -109,3 +109,19 @@ fs.open(path.join(__dirname,'2.txt'),'w',function(err,fd){
 fs.copyFile(path.join(__dirname,'1.txt'),path.join(__dirname,'2.txt'),function(){
     console.log("拷贝成功");
 });
+
+// gulp监控文件有没有改动
+// current是当前状态 prev是上一次的状态
+fs.watchFile('./1.txt',function(current,prev){
+    if(Date.parse(current.ctime)==0){ 
+        console.log('删除')
+    }else if(Date.parse(prev.ctime) === 0){
+        console.log('创建')
+    }else{
+        console.log('修改');
+    }
+});
+
+fs.rename('b','bbbbb')
+
+fs.truncate('1.txt',5); //截断
