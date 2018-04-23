@@ -6,6 +6,7 @@ import (
 )
 
 func grade(score int) string {
+	// go中的switch会自带break，如果不想要的话需要加fallthrough
 	g := ""
 	switch {
 	case score < 0 || score > 100:
@@ -19,6 +20,9 @@ func grade(score int) string {
 		g = "B"
 	case score <= 100:
 		g = "A"
+	default:
+		panic(fmt.Sprintf(
+			"Wrong Score: %d", score))
 	}
 	return g
 }
