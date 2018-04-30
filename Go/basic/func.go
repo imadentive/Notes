@@ -24,12 +24,15 @@ func eval(a, b int, op string) (int, error) {
 	}
 }
 
+// 返回值取名是爲了在調用時給調用者作提示用，對於調用者來說沒有區別
 func div(a, b int) (q, r int) {
 	return a / b, a % b
 }
 
 func apply(op func(int, int) int, a, b int) int {
+	// 獲取函數指針
 	p := reflect.ValueOf(op).Pointer()
+	// 獲取函數名
 	opName := runtime.FuncForPC(p).Name()
 	fmt.Printf("Calling function %s with args "+
 		"(%d, %d)\n", opName, a, b)
@@ -59,6 +62,7 @@ func main() {
 	q, r := div(13, 3)
 	fmt.Printf("13 div 3 is %d mod %d\n", q, r)
 
+	// main.main.func1
 	fmt.Println("pow(3, 4) is:", apply(
 		func(a int, b int) int {
 			return int(math.Pow(
