@@ -9,6 +9,7 @@ func updateSlice(s []int) {
 	s[0] = 100
 }
 
+// cap會以2的階乘來擴充
 func printSlice(s []int) {
 	fmt.Printf("%v, len=%d, cap=%d\n",
 		s, len(s), cap(s))
@@ -16,7 +17,7 @@ func printSlice(s []int) {
 
 func sliceOps() {
 	fmt.Println("Creating slice")
-	var s []int // Zero value for slice is nil
+	var s []int // Zero value for slice is nil, s == nil
 
 	for i := 0; i < 100; i++ {
 		printSlice(s)
@@ -95,7 +96,7 @@ func main() {
 	fmt.Printf("s2=%v, len(s2)=%d, cap(s2)=%d\n",
 		s2, len(s2), cap(s2))
 
-	// append在超過原本的數組長度之後slice就不會在view 原本數組了，背後會創建一個新數組去view
+	// append在超過原本的數組長度之後slice就不會再view原本數組了，背後會創建一個新數組去view
 	s3 := append(s2, 10)
 	s4 := append(s3, 11)
 	s5 := append(s4, 12)
