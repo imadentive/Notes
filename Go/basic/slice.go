@@ -39,6 +39,7 @@ func sliceOps() {
 	printSlice(s2)
 
 	fmt.Println("Deleting elements from slice")
+	// ...類似spread的操作，因爲第二個參數接收的是一個可變參數
 	s2 = append(s2[:3], s2[4:]...)
 	printSlice(s2)
 
