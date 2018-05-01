@@ -31,8 +31,8 @@ func variableZeroValue() {
 func variableInitialValue() {
 	var a, b int = 3, 4
 	// 這裏不需要加string的，go語言會自動推斷類型
-	var s string = "abc"
-	fmt.Println(a, b, s)
+	// var s string = "abc"
+	fmt.Println(a, b)
 }
 
 func variableTypeDeduction() {
