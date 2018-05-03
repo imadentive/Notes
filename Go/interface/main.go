@@ -10,10 +10,12 @@ import (
 	"../interface/real"
 )
 
+// Retriever 定義Retriever接口
 type Retriever interface {
 	Get(url string) string
 }
 
+// Poster 定義Poster接口
 type Poster interface {
 	Post(url string,
 		form map[string]string) string
@@ -33,6 +35,8 @@ func post(poster Poster) {
 		})
 }
 
+// RetrieverPoster 定義RetrieverPoster接口
+// 接口組合
 type RetrieverPoster interface {
 	Retriever
 	Poster
