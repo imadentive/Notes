@@ -6,6 +6,7 @@ import (
 	".."
 )
 
+// go中通過這種叫做組合的方法來擴展原有的對象
 type myTreeNode struct {
 	node *tree.Node
 }
