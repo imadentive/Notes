@@ -17,6 +17,7 @@ type Node struct {
 }
 
 // Print 输出
+// 如果不使用到receiver可以直接只寫類型，etc. func(Node) Print() {...}
 func (node Node) Print() {
 	fmt.Print(node.Value, " ")
 }
