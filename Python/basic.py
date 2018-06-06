@@ -6,6 +6,7 @@ hex(10) # 转16进制
 
 bool('') # 空字符串，空列表，空字典，0，None等返回False
 
+r'c:\n123' # 会输出原始字符转，不会解释转义字符
 aa = 'test'
 aa = u'test'  # 轉爲unicode類型
 
