@@ -1,3 +1,11 @@
+2/2 # 结果为float型
+2//2 # 结果为int型
+bin(10) # 将数字转2进制
+oct(10) # 转8进制
+hex(10) # 转16进制
+
+bool('') # 空字符串，空列表，空字典，0，None等返回False
+
 aa = 'test'
 aa = u'test'  # 轉爲unicode類型
 
