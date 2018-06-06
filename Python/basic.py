@@ -18,6 +18,10 @@ aa = u'test'  # 轉爲unicode類型
 {1,2,3} & {2,3} # 取交集
 {1,2,3} | {2,3,4} # 取并集
 
+# is比较两个变量内存地址是否相同
+# isinstance(a, int)判断变量类型
+# isinstance可以多个类型筛选 e.g. isinstance(a, (int, str, float))
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
