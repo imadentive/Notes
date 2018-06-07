@@ -14,7 +14,13 @@ import "fmt"
 type Node struct {
 	Value       int
 	Left, Right *Node
+	// 直接放类型的话默认field name就会是类型命
+	// contactInfo
 }
+
+// type contactInfo struct {
+// 	name string
+// }
 
 // Print 输出
 // 如果不使用到receiver可以直接只寫類型，etc. func(Node) Print() {...}
