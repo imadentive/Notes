@@ -22,6 +22,10 @@ aa = u'test'  # 轉爲unicode類型
 # isinstance(a, int)判断变量类型
 # isinstance可以多个类型筛选 e.g. isinstance(a, (int, str, float))
 
+# for..else 如果有break则else不会触发
+
+# a[0:10:2]去a的0到9下表, 步数为2
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
