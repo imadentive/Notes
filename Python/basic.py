@@ -32,6 +32,8 @@ aa = u'test'  # 轉爲unicode類型
 # from import的方式可以使用相对导入，e.g. from .m3 import m, 这里.代表当前路径，..代表上一级路径，每加一个点多一层。
 # 注意入口文件不可以使用相对导入，如果想要做到的话就需要用python -m来实现
 
+# sys.setrecursionlimit(1000)设定递归的最多次数
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
