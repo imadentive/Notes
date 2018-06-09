@@ -28,6 +28,8 @@ aa = u'test'  # 轉爲unicode類型
 
 # 模块定义时, 可以通过__all__ = ['a', 'c'] 来指定只导出a变量和c变量
 # dir()获取模块内置变量名，不传参默认为当前模块，对于入口文件__package__为None，__name__为__main__，__file__只是根据调用时路径决定
+# python -m 可以将执行文件当成模块然运行，e.g python -m severn.c15，此时__package__会变成seven，但是__name__还是__main__
+# from import的方式可以使用相对导入，e.g. from .m3 import m, 这里.代表当前路径，..代表上一级路径，每加一个点多一层。注意入口文件不可以使用相对导入
 
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
