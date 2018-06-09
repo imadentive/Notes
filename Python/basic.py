@@ -38,6 +38,8 @@ aa = u'test'  # 轉爲unicode類型
 # 可变参数 e.g. def demo(*param), demo(1,2,3,4) 或者 a = (1,2,3,4) demo(*a)
 # 关键字可变参数 e.g. def demo(**param), demo(a='123', b='566') 或者 a = {'a':'32', 'b':'dd'} demo(**a)
 
+# global c; c = 2 可以将局部变量变成全局变量
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
