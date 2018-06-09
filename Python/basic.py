@@ -36,7 +36,7 @@ aa = u'test'  # 轉爲unicode類型
 
 # 关键字参数 e.g. def add(x, y),  add(y=3, x=4)
 # 可变参数 e.g. def demo(*param), demo(1,2,3,4) 或者 a = (1,2,3,4) demo(*a)
-# 关键字可变参数 e.g. def demo(**param), demo(a='123', b='566')
+# 关键字可变参数 e.g. def demo(**param), demo(a='123', b='566') 或者 a = {'a':'32', 'b':'dd'} demo(**a)
 
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
