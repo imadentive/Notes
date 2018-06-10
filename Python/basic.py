@@ -40,6 +40,27 @@ aa = u'test'  # 轉爲unicode類型
 
 # global c; c = 2 可以将局部变量变成全局变量
 
+# 变量可以通过__dict__来获取它的属性和方法
+# 在python中，使用对象来访问类变量会自动fallback回类中去寻找
+# 实例方法中调用类变量可以通过Student.count或者self.__class__.count
+
+# 通过装饰器@classmethod来定义类方法 e.g.
+# @classmethod
+# def test(cls):
+# python中是可以用对象来调用类方法的，但是不建议使用
+
+# 通过装饰器@staticmethod来定义类方法
+# 不需要像类方法或者实例方法一样默认传入一个像self或者cls的参数
+
+# 变量或方法前面加__就会变为私有的
+# 但如果结尾使用__的话python就不会当为私有的
+# 类中定义私有变量之后其实变量名会变成类似_Student__score
+# 所以在外部也还是可以根据这个规范来读写私有变量的
+
+# python中的类是可以多继承的
+# 子类中调用父类构造方法可以使用super(Student, self).init(name, age)
+# 子类中调用父类的实例方法也可以使用super的方式来调用
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
