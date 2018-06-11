@@ -108,12 +108,19 @@ a(20, 40)
 
 import re
 # from re import search as ss  導入模塊的某個方法並取別名
-re.search("a.c", "123abcyul")
+re.search("a.c", "123abcyul") # 返回第一个匹配的对象
 r = re.match("(a.c)", "123abcyul") # match會從頭開始匹配,只要前面不匹配就會返回空
 r.groups() # 返回匹配的內容, 是一個元組
 r.group(0) # 返回原字符串
 r.group(1) # 返回第一個匹配
+r.group(0,1,2) # 一次返回多个匹配
 # re.findall('正则表达式', 字符串)  查找匹配到的正则字符串，返回列表
+# re.findall('正则表达式', 字符串, re.I | re.S)  re.I代表忽略大小写, re.S代表.可以代表包括\n在内的所有字符，默认是不包括\n的
+# re.sub('正则表达式', 替换的字串, 原字串, 0)  0代表匹配所有
+# 替换的字串也可以改为一个函数 e.g.
+# def covert(value): 返回值将作为替换的字串
+#     return "!!" + value.group()  value是一个对象
+# re.sub('正则表达式', convert, 原字串, 0) 
 
 # 裝飾器
 def use_logging(func):
