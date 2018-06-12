@@ -64,6 +64,18 @@ aa = u'test'  # 轉爲unicode類型
 # json.loads(json_str) json反序列化
 # json.dumps(dict) json序列化
 
+# 创建一个枚举类, python中的枚举其实就是一个类
+# class VIP(Enum):
+#     YELLOW = 1
+#     BLUE = 2
+# 使用时print(VIP.YELLOW)或者print(VIP['YELLOW']), 返回的是VIP.YELLOW，背后类型是一个枚举类型
+# 获取值则使用VIP.YELLOW.value
+# 获取枚举名称则使用VIP.YELLOW.name，背后是一个string
+# 枚举类与一般类的区别就是里面的类变量是不可变的，并且能防重复值问题
+# for v in VIP 枚举是可以遍历的，返回的是每一个枚举类型
+# 枚举类型不支持大小的比较操作
+# 如果存在两个值相等的枚举名称，那么后面那个其实可以看成是前面一个枚举类型的别名
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
