@@ -61,6 +61,9 @@ aa = u'test'  # 轉爲unicode類型
 # 子类中调用父类构造方法可以使用super(Student, self).init(name, age)
 # 子类中调用父类的实例方法也可以使用super的方式来调用
 
+# json.loads(json_str) json反序列化
+# json.dumps(dict) json序列化
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
