@@ -39,6 +39,7 @@ aa = u'test'  # 轉爲unicode類型
 # 关键字可变参数 e.g. def demo(**param), demo(a='123', b='566') 或者 a = {'a':'32', 'b':'dd'} demo(**a)
 
 # global c; c = 2 可以将局部变量变成全局变量
+# nonlocal c 将变量声明为非本地变量
 
 # 变量可以通过__dict__来获取它的属性和方法
 # 在python中，使用对象来访问类变量会自动fallback回类中去寻找
@@ -80,6 +81,9 @@ aa = u'test'  # 轉爲unicode類型
 # 如果要强制枚举值为整型，可以继承IntEnum
 # 如果希望不会出现重复的枚举值，可以使用@unique装饰器
 
+# 通过__closure__可以获取闭包的环境变量, e.g.
+# f.__closure__[0].cell_contents
+
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
@@ -106,8 +110,22 @@ aa = [1, 2, 3]
 ( item + 2 for item in aa ) # 返回一個生成器，可以通過next調用
 
 # lambda定義匿名函數
+# lambda只能放表达式，不能放代码块
 a = lambda x, y: x + y
 a(20, 40)
+
+# python中的三元表达式, e.g.
+# a = x if x > y else y
+
+# map用法 map(func, list)或者map(lambda, list)
+# map可以用于多组list, map(lambda x, y: x + y, list_x, list_y)
+# map背后其实是一个类，所以返回的是一个map对象
+
+# reduce用法 reduce(lambda x, y: x + y, list, 10) 最后一个参数为初始值
+# reduce背后是一个函数
+
+# filter用法 reduce(lambda x: x > 10, list)
+# filter背后其实是一个类，所以返回的是一个filter对象
 
 # Regex
 # {N}                  匹配前面出现的正则表达式N次    [0-9]{3}
