@@ -104,7 +104,10 @@ next(o) # 報錯
 
 # 列表解析
 aa = [1, 2, 3]
-[ item + 2 for item in aa ] # [3, 4, 5]
+[ item + 2 for item in aa if item < 3 ] # [3, 4]
+aa = {1, 2, 3}
+{ item + 2 for item in aa if item < 3 } # 大括號返回的是set
+# 元組和字典也都可以解析
 
 # 生成器表達式
 ( item + 2 for item in aa ) # 返回一個生成器，可以通過next調用
@@ -171,3 +174,13 @@ def foo():
     print("i am foo")
 
 foo()
+
+# 使用字典實現switch
+day = 6
+switcher = {
+    0: 'Sunday',
+    1: 'Monday',
+    2: 'Tuesday'
+}
+day_name = switcher.get(day, 'none') # 第二個參數爲默認值
+# 字典中的value也可以是函數
