@@ -87,6 +87,28 @@ aa = u'test'  # 轉爲unicode類型
 # 將列表轉換位迭代器
 iter([1, 2, 3]) # 此時該對象就可以通過next方法調用
 
+# 在一个类中实现了__iter__和__next__，这个类就会变成一个迭代器
+class BookCollection:
+    def __init__(self):
+        self.data = [1,2,3]
+        self.cur = 0
+        pass
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.cur > len(self.data):
+            raise StopIteration() # 内置的迭代错误异常
+        r = self.data[self.cur]
+        self.cur += 1
+        return r
+# 迭代器遍历一次之后就不能再遍历了，如果想要在遍历的话除了重新生成一个对象
+# 还可以使用copy方法
+books = BookCollection()
+import copy
+books_copy = copy.copy(books) # 深拷贝请使用deepcopy
+
 # 生成器
 def odd():
     print('step 1')
@@ -102,15 +124,20 @@ next(o) # 3
 next(o) # 5
 next(o) # 報錯
 
+# 生成器表達式
+( item + 2 for item in aa ) # 返回一個生成器，可以通過next調用
+
+# 一个对象是否为True是根据__bool__与__len__返回值决定的，默认不定义这两个方法对象返回True
+# 两个方法都定义时，只会调用__bool__方法来判断，__len__不会被调用
+# 对象调用len背后就是调用__len__,默认不定义的话调用len会报错
+
 # 列表解析
 aa = [1, 2, 3]
 [ item + 2 for item in aa if item < 3 ] # [3, 4]
 aa = {1, 2, 3}
 { item + 2 for item in aa if item < 3 } # 大括號返回的是set
-# 元組和字典也都可以解析
-
-# 生成器表達式
-( item + 2 for item in aa ) # 返回一個生成器，可以通過next調用
+# 字典也可以解析
+b = [key for key, value in student_dict.items()]
 
 # lambda定義匿名函數
 # lambda只能放表达式，不能放代码块
@@ -163,7 +190,11 @@ r.group(0,1,2) # 一次返回多个匹配
 # re.sub('正则表达式', convert, 原字串, 0) 
 
 # 裝飾器
+# 加了装饰器之后，函数名会变成wrapper
+# 解决的方法是
+# from functools import wraps
 def use_logging(func):
+    # @wraps(func)
     def wrapper(*args, **kwargs):
         print("%s is running" % func.__name__)
         return func(*args)
