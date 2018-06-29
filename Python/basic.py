@@ -25,6 +25,9 @@ aa = u'test'  # 轉爲unicode類型
 # for..else 如果有break则else不会触发
 
 # a[0:10:2]去a的0到9下表, 步数为2
+# 不該變原有列表的情況下反序
+l = [1,2,3]
+l2 = l[::-1]
 
 # 使用range賦值
 a, b, c, d = range(4)
