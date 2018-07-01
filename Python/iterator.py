@@ -138,3 +138,9 @@ def my_islice(iterable, start, end, step=1):
 
 
 # for語句中迭代多個可迭代對象
+# list(chain(*[['ooo', 123], ['ccc'], ['aaa', 'bbb']]))
+from itertools import chain
+arr1 = [80, 81, 100]
+arr2 = [77, 99, 88]
+arr3 = [88, 91, 93]
+[x for x in chain(arr1, arr2, arr3) if x > 90]

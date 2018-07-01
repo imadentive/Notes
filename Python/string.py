@@ -12,9 +12,14 @@ def my_split(s, seps):
 from functools import reduce
 my_split2 = lambda s, seps: reduce(lambda l, sep: sum(map(lambda ss: ss.split(sep), l), []), seps, [s])
 
-# 3 這裏注意處理單個分隔符還是直接使用string自帶的split比較快
+# 3
+from itertools import chain
+reduce(lambda it_s, sep: chain(*map(lambda ss: ss.split(sep), it_s)), ':|\t', [s])
+
+# 4 這裏注意處理單個分隔符還是直接使用string自帶的split比較快
 import re
 re.split('[:,|\t]+', "123|123,456")
+
 
 
 
