@@ -36,3 +36,194 @@ top_stats = snapshot.statistics('lineno')
 
 
 # 如何讓對象支持上下文管理
+# 下面是一個telnet登錄的例子
+from sys import stdin, stdout
+import getpass
+import telnetlib
+from collections import deque
+
+class TelnetClient:
+    def __init__(self, host, port=23):
+        self.host = host
+        self.port = port 
+
+    def __enter__(self):
+        self.tn = telnetlib.Telnet(self.host, self.port)
+        self.history = deque([])
+        return self
+
+    # 異常類型，異常值，異常調用棧
+    # 上下文中有異常也會調用該方法並傳入對應參數
+    # 如果沒有異常則全爲None
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        print('IN __exit__', exc_type, exc_value, exc_tb)
+
+        self.tn.close()
+        self.tn = None
+
+        with open('history.txt', 'a') as f:
+            f.writelines(self.history)
+
+        # 如果返回給一個真值，則異常觸發時不會拋到上一層
+        return True
+
+    def login(self):
+        # user
+        self.tn.read_until(b"login: ")
+        user = input("Enter your remote account: ")
+        self.tn.write(user.encode('utf8') + b"\n")
+
+        # password
+        self.tn.read_until(b"Password: ")
+        password = getpass.getpass()
+        self.tn.write(password.encode('utf8') + b"\n")
+        out = self.tn.read_until(b'$ ')
+        stdout.write(out.decode('utf8'))
+
+    def interact(self):
+        while True:
+            cmd = stdin.readline()
+            if not cmd:
+                break
+
+            self.history.append(cmd)
+            self.tn.write(cmd.encode('utf8'))
+            out = self.tn.read_until(b'$ ').decode('utf8')
+
+            stdout.write(out[len(cmd)+1:])
+            stdout.flush()
+
+# with背後其實就是調用一個__enter__方法返回一個對象作爲as後面的變量
+# 所以實現__enter__即可支持對象的上下文管理
+# 離開上下文的時候就會調用__exit__方法
+with TelnetClient('192.168.0.105') as client:
+    raise Exception('TEST')
+    client.login()
+    client.interact()
+
+print('END')
+
+
+
+# 創建可管理的對象屬性
+# 加了property後就可以像調用屬性一樣調用get,set等方法
+import math
+
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    def get_radius(self):
+        return round(self.radius, 1)
+
+    def set_radius(self, radius):
+        if not isinstance(radius, (int, float)):
+            raise TypeError('wronge type')
+        self.radius = radius
+
+    
+    @property
+    def S(self):
+        return self.radius ** 2 * math.pi
+
+    @S.setter
+    def S(self, s):
+        self.radius = math.sqrt(s / math.pi)
+
+    # property裏面可以一次放入get，set，del，doc方法
+    R = property(get_radius, set_radius)
+
+c = Circle(5.712)
+
+c.S = 99.88
+print(c.S)
+print(c.R)
+
+
+
+# 讓類支持比較操作
+# 實現__lt__和__eq__等方法即可支持比較
+# 假設實現了__lt__方法，但是調用時使用>, python依舊會調用__lt__，但是會將兩個對象調轉
+from functools import total_ordering
+
+from abc import ABCMeta, abstractclassmethod
+
+# 使用total_ordering只需要實現lt和eq即可，背後會自動幫忙去處理其他情況(例如小於等於，大於等於等)
+# 背後其實就是幫我們實現了那些le,gt等方法，裏面就用我們自己寫的lt和eq去組合判斷
+# 這裏通過一個公共抽象基類來實現不同類間的比較
+@total_ordering
+class Shape(metaclass=ABCMeta):
+    # 這裏通過裝飾器定義了一個抽象方法，那麼繼承這個類的所有類都必須實現這個方法
+    @abstractclassmethod
+    def area(self):
+        pass
+
+    def __lt__(self, obj):
+        print('__lt__', self, obj)
+        return self.area() < obj.area()
+
+    def __eq__(self, obj):
+        return self.area() == obj.area()
+
+class Rect(Shape):
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+
+    def area(self):
+        return self.w * self.h
+
+    def __str__(self):
+        return 'Rect:(%s, %s)' % (self.w, self.h)
+
+import math
+class Circle(Shape):
+    def __init__(self, r):
+        self.r = r
+
+    def area(self):
+        return self.r ** 2 * math.pi
+
+
+rect1 = Rect(6, 9) # 54
+rect2 = Rect(7, 8) # 56
+c = Circle(8)
+
+print(rect1 < c)
+print(c > rect2)
+
+
+
+# 使用描述符對實例屬性做類型檢查
+# 只要一個類包含了set，get，delete其中之一就可以稱之爲一個描述符
+class Attr:
+    def __init__(self, key, type_):
+        self.key = key
+        self.type_ = type_
+
+    def __set__(self, instance, value):
+        print('in __set__')
+        if not isinstance(value, self.type_):
+            raise TypeError('must be %s' % self.type_)
+        instance.__dict__[self.key] = value
+
+    def __get__(self, instance, cls):
+        print('in __get__', instance, cls)
+        return instance.__dict__[self.key]
+
+    def __delete__(self, instance):
+        print('in __del__', instance)
+        del instance.__dict__[self.key]
+
+class Person:
+    # 定義好類屬性，當對象調用這些屬性時就會被對應的描述符捕獲
+    name = Attr('name', str)
+    age = Attr('age', int)
+
+p = Person()
+p.name = 'liushuo'
+p.age = '32'
+
+
+
+
