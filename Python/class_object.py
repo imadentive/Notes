@@ -228,6 +228,9 @@ del p.age
 
 
 # 環狀數據結構中管理內存
+# 下面這個例子中如果不使用弱引用，就會出現循環引用的情況
+# __del__只有在引用計數爲0時才會被調用
+# 使用弱引用就不會增加引用計數
 import weakref
 class Node:
     def __init__(self, data):
@@ -237,6 +240,8 @@ class Node:
 
     def add_right(self, node):
         self.right = node
+        # 這裏如果使用node._left()就會獲取到原來self的應用
+        # 如果引用計數爲0時，那麼node._left()就返回None
         node._left = weakref.ref(self)
 
     @property
