@@ -276,6 +276,9 @@ input('wait...')
 
 
 # 通過實例方法名字的字符串調用方法
+# 下面的例子中，每個類都有自己都方法來獲取面積
+# 我們通過元編程來實現一個方法，他會根據不同的類對象來調用對應的方法獲取面積
+# getattr(s, 'find', None) 用來獲取對象的實例方法，第三個參數代表找不到時返回的默認值
 from lib1 import Circle
 from lib2 import Triangle
 from lib3 import Rectangle
@@ -284,6 +287,7 @@ from operator import methodcaller
 def get_area(shape, method_name = ['area', 'get_area', 'getArea']):
     for name in method_name:
         if hasattr(shape, name):
+            # methodcaller是先傳入方法與參數，再將返回的methodcaller對象調用執行的對象
             return methodcaller(name)(shape)
         # f = getattr(shape, name, None)
         # if f:
