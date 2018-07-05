@@ -1,3 +1,7 @@
+# 調用Thread方法
+# t = Thread(target=method_name, args=()) 這裏即便沒有參數也要傳入一個空元組
+# t.join(3) 會阻賽住當前線程等待子線程結束，傳入的參數代表最大等待時間，可以不傳入
+
 import requests
 import base64
 from io import StringIO
@@ -47,6 +51,9 @@ def download_and_save(page_number, xml_path):
     # CPU
     csv_to_xml(csv_file, 'data%s.xml' % page_number)
 
+# 也可以通過創建一個繼承Thread的類來實現
+# 必須要實現一個run方法
+# 當對象調用start時會去調用這個run方法
 from threading import Thread
 class MyThread(Thread):
     def __init__(self, page_number, xml_path):
