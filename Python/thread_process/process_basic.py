@@ -1,3 +1,5 @@
+# 處理cpu密集型任務就需要使用多進程
+
 from threading import Thread
 from multiprocessing import Process
 from queue import Queue as Thread_Queue 
