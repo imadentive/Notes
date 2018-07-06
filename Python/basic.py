@@ -221,3 +221,17 @@ switcher = {
 }
 day_name = switcher.get(day, 'none') # 第二個參數爲默認值
 # 字典中的value也可以是函數
+
+# 函數annotation
+# 這個只是幫助使用者了解的，並不會真正做校驗
+def f(a: int, b: int) -> int:
+    pass
+f.__annotations__
+
+# 通過__defaults__可以查看默認參數值
+# 但是從這裏也可以看出默認參數不要去傳可變對象
+# 否則一旦在函數內部修改了之後，在下一次調用時，默認參數就會被改變了
+def f(a, b=1, c=[]):
+    pass
+
+f.__defaults__

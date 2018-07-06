@@ -1,8 +1,24 @@
 # 處理cpu密集型任務就需要使用多進程
+# Process生成對象，調用start和join都跟thread類似
+# 進程與線程區別在於，對於地址空間，進程會fork出一個新的地址空間
+# 每個進程都有自己獨立的地址空間
 
 from threading import Thread
 from multiprocessing import Process
 from queue import Queue as Thread_Queue 
+# 進程的queue與線程的queue不同之處在與
+# 線程的queue是在地址空間內的，因爲同一個進程下的線程公用一個地址空間
+# 但是進程的queue是存在於操作系統的pipe中，不屬於某個進程的地址空間
+# Pipe的使用
+# from multiprocessing import Pipe
+# c1, c2 = Pipe()
+# def f(c):
+#     data = c.recv()
+#     c.send(data * 2)
+# Process(target=f, args=(c2,)).start()
+# c1.send(100)
+# c1.recv()
+
 from multiprocessing import Queue as Process_Queue
 
 def is_armstrong(n):
