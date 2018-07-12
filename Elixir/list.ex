@@ -3,7 +3,7 @@
 [99, 97, 116] # 'cat'
 [99, 97, 116, 0] # [99, 97, 116, 0] '0' is nonprintable
 
-# 
+# 这里我们想使用head，当时
 defmodule WeatherHistory do
   def for_location([], _target_loc), do: []
   def for_location([ head = [_, target_loc, _, _ ] | tail], target_loc) do
