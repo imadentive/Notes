@@ -220,6 +220,11 @@ from collections.abc import Sized
 
 
 
+# 最新的Python中类和实例的属性查找方法使用的是一种叫做C3的算法
+# 背后的原理比较复杂，可以通过__mro__获取查找链
+
+
+
 # 使用描述符對實例屬性做類型檢查
 # 只要一個類包含了set，get，delete其中之一就可以稱之爲一個描述符
 class Attr:
