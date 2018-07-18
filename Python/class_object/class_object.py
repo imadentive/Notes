@@ -167,6 +167,7 @@ from abc import ABCMeta, abstractclassmethod
 # 使用total_ordering只需要實現lt和eq即可，背後會自動幫忙去處理其他情況(例如小於等於，大於等於等)
 # 背後其實就是幫我們實現了那些le,gt等方法，裏面就用我們自己寫的lt和eq去組合判斷
 # 這裏通過一個公共抽象基類來實現不同類間的比較
+# 抽象基类是不可以实例化的
 @total_ordering
 class Shape(metaclass=ABCMeta):
     # 這裏通過裝飾器定義了一個抽象方法，那麼繼承這個類的所有類都必須實現這個方法
@@ -207,6 +208,15 @@ c = Circle(8)
 
 print(rect1 < c)
 print(c > rect2)
+
+
+
+# 抽象基类中有一些预设的类型
+from collections.abc import Sized
+# 像Sized类即便我们实现的类没有继承它，但是只要实现了__len__类
+# isinstance都会返回True，因为Size类背后实现了一个__subclasshook__方法
+# 调用isinstance方法时就会调用该方法，只要类中有实现__len__就会返回True
+# 除此之外isinstance还可以通过继承链去判断真假
 
 
 
