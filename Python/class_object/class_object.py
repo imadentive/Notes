@@ -31,6 +31,7 @@ class A:
 # 如何爲創建大量實例節省內存
 # 對象中有一個__dict__屬性，用來支持對象的動態屬性設置
 # 這個__dict__在一開始是沒有的，只有當我們開始復制對象屬性時才會產生
+# 这里注意内建对象是不存在这个属性的，像list等
 # p1.x = 100 等於 p1.__dict__['x'] = 100
 # p1.__dict__.pop(x) 刪除屬性
 # 這個字典就會佔用比較多的內存
@@ -118,6 +119,19 @@ with TelnetClient('192.168.0.105') as client:
     client.interact()
 
 print('END')
+
+# python中可以使用contextlib模块来简化上下文管理
+import contextlib
+# yield之前的代码就等同于__enter__里面的逻辑
+# yield之后的代码就等同于__exit__里面的逻辑
+@contextlib.contextmanager
+def file_open(file_name):
+    print("file open")
+    yield {}
+    print("file end")
+
+with file_open("bobby.txt") as f_opened:
+    print("file processing")
 
 
 
@@ -333,3 +347,13 @@ shape_list = [shape1, shape2, shape3]
 # 获得面积列表
 area_list = list(map(get_area, shape_list))
 print(area_list)
+
+
+
+# python中的mixin特点
+# python中尽量少使用多继承用mixin来替代
+# 类似于ruby中的module
+# mixin其实背后也是一个类
+# 1. 功能单一
+# 2. 不和基类关联，可以和任意基类组合， 基类可以不和mixin关联就能初始化成功
+# 3. 在mixin中不要使用super这种用法

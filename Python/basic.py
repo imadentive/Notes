@@ -56,7 +56,7 @@ a, b, c, d = range(4)
 # def test(cls):
 # python中是可以用对象来调用类方法的，但是不建议使用
 
-# 通过装饰器@staticmethod来定义类方法
+# 通过装饰器@staticmethod来定义静态方法
 # 不需要像类方法或者实例方法一样默认传入一个像self或者cls的参数
 
 # 变量或方法前面加__就会变为私有的
@@ -66,7 +66,9 @@ a, b, c, d = range(4)
 
 # python中的类是可以多继承的
 # 子类中调用父类构造方法可以使用super(Student, self).init(name, age)
+# python3中如果只有一个父类可以直接使用super().init(name, age)
 # 子类中调用父类的实例方法也可以使用super的方式来调用
+# super背后的调用顺序也是根据mro来执行
 
 # json.loads(json_str) json反序列化
 # json.dumps(dict) json序列化
