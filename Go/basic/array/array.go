@@ -3,6 +3,7 @@ package main
 import "fmt"
 
 // go語言是值傳遞，除非是指針，否則不會改變傳入參數本身
+// 这里如果是arr []int代表的是切片，只有定义了长度才代表是数组
 func printArray(arr [5]int) {
 	arr[0] = 100
 	for i, v := range arr {
