@@ -5,9 +5,6 @@ package tree
 // main包包含执行入口
 // 为struct定义的方法必须在同一个包内，可以是不同文件
 
-// go中可以使用go get來獲取第三方庫
-// 牆內環境可以使用gopm get	-g
-
 import "fmt"
 
 // Node 定义node

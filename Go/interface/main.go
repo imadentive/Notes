@@ -52,10 +52,11 @@ func session(s RetrieverPoster) string {
 func main() {
 	var r Retriever
 
-	// 接口变量自带指针
-	// 接口变量同样采用值传递，几乎不需要使用接口的指针
-	// 指针接收者实现只能以指针方式使用；值接受者都可
-	// interface{} 可以代表任何类型
+	// 接口变量里面会存放着实现者的类型和值(或者也可以是实现者的指针)
+	// 接口变量同样采用值传递，几乎不需要使用接口的指针(因为内部已经有一个实现者的指针)
+	// 接口中的方法如果是使用指针接收者实现只能以指针方式使用,例如下面传给r的就必须传递一个地址
+	// 但是如果接口中的方法是值接受者则传给r既可传地址又可传值
+	// 如果把类型设置为interface{} 则可以代表任何类型
 
 	mockRetriever := mock.Retriever{
 		Contents: "this is a fake imooc.com"}
