@@ -9,6 +9,8 @@ import (
 	"./fib"
 )
 
+// 为fib实现一个reader接口
+// go中只要是一个类型就可以实现接口，不管后面是结构体还是函数
 type intGen func() int
 
 func (g intGen) Read(

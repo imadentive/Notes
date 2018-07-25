@@ -19,6 +19,7 @@ func adder2(base int) iAdder {
 }
 
 func main() {
+	// adder2是正统的函数式变成方式，即不会有自由变量(状态), 例如adder中的sum
 	// a := adder() is trivial and also works.
 	a := adder2(0)
 	for i := 0; i < 10; i++ {
