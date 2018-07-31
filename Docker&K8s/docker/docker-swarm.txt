@@ -18,5 +18,12 @@ docker node ls // 查看swarm中的node
 docker service ls // 查看swarm中的service
 docker service create --replicas 3 -p 80:80 --name nginx nginx:1.13.7-alpine
 docker service ps nginx
-docker service logs nginx
+docker service logs -f nginx // -f会持续输出新的日志
 docker service rm nginx
+
+// 在Swarm集群中也可以使用compose文件(docker-compose.yml)来配置、启动多个服务
+docker stack deploy -c docker-compose.yml wordpress
+docker stack ls
+// 该命令不会移除服务所使用的数据卷
+// 如果你想移除数据卷请使用docker volume rm
+docker stack down wordpress
