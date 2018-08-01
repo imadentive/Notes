@@ -6,6 +6,10 @@ On your Mac, you can remap the CAPS LOCK key under the Keyboard preference pane,
 under System Preferences. Just press the Modifier Keys button and change the action
 for CAPS LOCK to “Control.”
 
+tput colors need to be 256
+If you’re using iTerm2 you can find this by editing the default profile and
+changing the terminal mode to xterm-256color
+
 tmux new -s basic // create a session named basic
 tmux new -s second_session -d // create a session but not attach
 tmux ls // list all sessions
