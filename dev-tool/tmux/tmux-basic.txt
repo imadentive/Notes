@@ -2,7 +2,38 @@ Install Tmux
   1. install homebrew
   2. brew install tmux
 
-// create a session named basic
-tmux new -s basic
+tmux new -s basic // create a session named basic
+tmux new -s second_session -d // create a session but not attach
+tmux ls // list all sessions
+tmux attach -t basic // specify a session to attach
+tmux kill-session -t basic // kill session
+tmux new -s windows -n shell // create a session with a named window
 
-ctr-b t // show clock on screen
+PREFIX t // show clock on screen
+PREFIX d // detach session
+PREFIX c // create a window
+PREFIX , // rename a window
+PREFIX n // move to next window
+PREFIX p // move to previous window
+PREFIX 數字 // move window by number(經過配置，我們會讓index從1開始)
+PREFIX w // show a visual menu for your windows
+PREFIX f // find window by you input
+PREFIX & // close window
+PREFIX % // divide window vertically
+PREFIX " // divide window horizontally
+PREFIX o // cycle through the panes
+PREFIX 方向鍵 // 上下左右移動pane
+PREFIX SPACE // resize panes using default layout template
+PREFIX x // close pane
+PREFIX ? // show predefined tmux keybindings and the associated commands these trigger
+
+PREFIX : // enter tmux command mode
+
+command mode:
+  // 這裏如果聲明了command，在cmd運行結束時會自動關閉window
+  new-window -n console "top" // create a named window with command
+  source-file ~/.tmux.conf // reload tmux config
+
+
+
+
