@@ -2,6 +2,10 @@ Install Tmux
   1. install homebrew
   2. brew install tmux
 
+On your Mac, you can remap the CAPS LOCK key under the Keyboard preference pane,
+under System Preferences. Just press the Modifier Keys button and change the action
+for CAPS LOCK to “Control.”
+
 tmux new -s basic // create a session named basic
 tmux new -s second_session -d // create a session but not attach
 tmux ls // list all sessions
@@ -13,16 +17,16 @@ PREFIX t // show clock on screen
 PREFIX d // detach session
 PREFIX c // create a window
 PREFIX , // rename a window
-PREFIX n // move to next window
-PREFIX p // move to previous window
+PREFIX CTRL - l // move to next window
+PREFIX CTRL - h // move to previous window
 PREFIX 數字 // move window by number(經過配置，我們會讓index從1開始)
 PREFIX w // show a visual menu for your windows
 PREFIX f // find window by you input
 PREFIX & // close window
-PREFIX % // divide window vertically
-PREFIX " // divide window horizontally
+PREFIX | // divide window vertically
+PREFIX - // divide window horizontally
 PREFIX o // cycle through the panes
-PREFIX 方向鍵 // 上下左右移動pane
+PREFIX h|j|k|l // 上下左右移動pane
 PREFIX SPACE // resize panes using default layout template
 PREFIX x // close pane
 PREFIX ? // show predefined tmux keybindings and the associated commands these trigger
