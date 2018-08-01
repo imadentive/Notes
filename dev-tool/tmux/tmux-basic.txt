@@ -1,0 +1,8 @@
+Install Tmux
+  1. install homebrew
+  2. brew install tmux
+
+// create a session named basic
+tmux new -s basic
+
+ctr-b t // show clock on screen
