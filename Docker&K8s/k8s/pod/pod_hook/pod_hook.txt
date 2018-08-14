@@ -14,6 +14,12 @@ kubernetes提供了兩種hook，由kubelet發起
       會繼續發送SIGKILL的系統信號強行kill掉進程。
     2 使用PreStop，它執行在發送終止信號之前
 
+    kubectl delete命令支持--grace-period=<seconds>選項用於覆蓋默認值，如果爲0代表強制刪除pod
+    k8s版本1.5之後如果設爲0還要多加一個--force選項
+    強制刪除一個pod是從集羣狀態還有etcd裏立刻刪除這個pod，當pod被強制刪除時，apiserver不會
+    等待來自pod所在節點上的kubelet的確認信息，就会立即将该pod从API server中移除，这时就可以创建跟原pod同名的pod了。
+    这时，在节点上的pod会被立即设置为terminating状态，不过在被强制删除之前依然有一小段优雅删除周期。
+
 如果上面兩個hook失敗，會殺死容器。所以hook應該盡可能輕量。
 除非一些特殊合理的情況，例如在停止容器之前預先保存狀態。
 
