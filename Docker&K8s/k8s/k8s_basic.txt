@@ -1,0 +1,10 @@
+# Ref Doc
+https://docs.qq.com/doc/Bj82nN2bCtZL1Gutkw3gkXhO19IoYd3JQwgr3
+
+# Setup kubernetes
+kubeadm token list // 獲取集羣的token
+kubectl get cs // get component status
+kubectl get csr // 獲取證書情況
+
+# common cmd
+kubectl exec // 訪問pod下的某個container
