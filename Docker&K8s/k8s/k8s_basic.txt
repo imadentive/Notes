@@ -8,3 +8,9 @@ kubectl get csr // 獲取證書情況
 
 # common cmd
 kubectl exec // 訪問pod下的某個container
+kubectl edit // 修改資源對象配置
+
+# cmd options
+--show-labels // 顯示資源的label
+-o yaml // 以yaml的方式顯示資源配置
+-o wide // 顯示node信息
