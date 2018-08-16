@@ -21,13 +21,19 @@ spec:
       containers:
       - name: nginx
         image: nginx
+        # 通過resource來設定容器可以請求和限制的資源
+        # 除了cpu之外還可以使用memory等
         resources:
           requests:
             cpu: 100m
+          limit:
+            cpu: 200m
         ports:
         - containerPort: 80
 
 ---
+# 除了使用kubectl autoscale命令来创建外，
+# 我们依然可以通过创建YAML文件的形式来创建HPA资源对象
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
