@@ -13,6 +13,7 @@ type atomicInt struct {
 
 func (a *atomicInt) increment() {
 	fmt.Println("safe increment")
+	// 通过一个函数体来限制lock的范围
 	func() {
 		a.lock.Lock()
 		defer a.lock.Unlock()
