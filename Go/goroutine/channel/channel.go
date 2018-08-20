@@ -6,6 +6,7 @@ import (
 )
 
 func worker(id int, c chan int) {
+	// 这里通过range c,当channel关闭后(即调用close)自动结束循环
 	for n := range c {
 		fmt.Printf("Worker %d received %c\n",
 			id, n)
@@ -36,6 +37,9 @@ func chanDemo() {
 }
 
 func bufferedChannel() {
+	// 默认channel数据发了就要有人接收
+	// 通过设置一个buffer，可以让channel先放buffer size大小的数据再收
+	// 避免需要不停切换，提升性能
 	c := make(chan int, 3)
 	go worker(0, c)
 	c <- 'a'
@@ -52,6 +56,7 @@ func channelClose() {
 	c <- 'b'
 	c <- 'c'
 	c <- 'd'
+	// 关闭channel
 	close(c)
 	time.Sleep(time.Millisecond)
 }
