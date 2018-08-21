@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	_ "net/http/pprof"
+	_ "net/http/pprof" // 加下划线用于load一些帮助程序，但是不会直接引用pprof
 	"os"
 
 	"imooc.com/ccmouse/learngo/lang/errhandling/filelistingserver/filelisting"
