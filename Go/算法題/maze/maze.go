@@ -12,6 +12,8 @@ func readMaze(filename string) [][]int {
 	}
 
 	var row, col int
+	// 读取第一行并写入row和col
+	// Fscanf使用space来分割数值
 	fmt.Fscanf(file, "%d %d", &row, &col)
 
 	maze := make([][]int, row)
@@ -94,7 +96,7 @@ func walk(maze [][]int,
 }
 
 func main() {
-	maze := readMaze("lang/maze/maze.in")
+	maze := readMaze("./maze.in")
 
 	steps := walk(maze, point{0, 0},
 		point{len(maze) - 1, len(maze[0]) - 1})
