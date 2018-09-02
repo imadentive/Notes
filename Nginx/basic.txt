@@ -1,0 +1,111 @@
+Nginx优点
+1. 采用IO多路复用, epoll模型
+2. 轻量, 功能模块少, 代码模块化
+3. CPU亲和，把cpu核心与Nginx工作进程进行绑定，把每个worker进程
+    固定在一个cpu上执行，减少切换cpu的cache miss，获得更好的性能。
+4. sendfile，在文件传输中从文件到socket不会再经过user space，只经过kernel space
+
+rpm -ql nginx // 查看nginx相关的安装配置目录
+nginx -V // 查看nginx编译时用到的参数
+nginx -t -c /etc/nginx/nginx.conf // -t 用来检测conf文件语法 -c 用来指定conf文件路径
+nginx -s reload -c /etc/nginx/nginx.conf // 重载nginx配置
+
+基本模块
+1. sub_status Nginx的客户端状态
+    context: server, location
+     、、location /mystatus {
+        stub_status;
+    }
+    此时访问/mystatus路径即可看到客户端状态
+
+2. random_index 目录中选择一个随机主页
+    context: location
+    location / {
+        root /opt/app/code;
+        random_index on // 默认为off
+    }
+    此时访问就会随机选择code目录下的某个文件展示(注意不会选择到隐藏文件)
+    
+3. sub_module HTTP内容替换
+    sub_filter string replacement
+    context: http, server, location
+
+    sub_filter_last_modified on | off // 默认off
+    context: http, server, location
+
+    sub_filter_once on | off // 默认on,如果开启只会替换第一个匹配的
+    context: http, server, location
+
+    location / {
+        root /opt/app/code;
+        index index.html index.htm;
+        sub_filter '<a>imooc' '<a>IMOOC';
+        sub_filter_once off;
+    }
+
+4 limit_conn_module 连接频率限制
+    limit_conn_zone key zone=name:size;
+    context: http
+
+    limit_conn zone_name number;
+    context: server, location
+
+    // 这里使用$binary_remote_addr是为了节省空间大小
+    limit_conn_zone $binary_remote_addr zone=conn_zone:1m;
+
+    // 超过1个连接数(不论是不是同一个IP)之后的请求就会返回非200状态
+    limit_conn conn_zone 1;
+
+5 limit_req_module 请求频率限制
+    limit_req_zone key zone=name:size rate=rate;
+    context: http
+
+    limit_req zone=name [burst=number] [nodelay];
+    context: http, server, location
+
+    limit_req_zone $binary_remote_addr zone=req_zone:1m rate=1r/s;
+
+    // burst=3表示在超过速率限制后的3个请求会被放到下一秒延迟执行
+    // nodelay则指剩余的会直接返回503状态
+    limit_req zone=req_zone burst=3 nodelay; 
+
+6 http_access_module 基于IP的访问控制
+    allow address | CIDR | unix: | all;
+    context: http, server, location, limit_except
+
+    deny address | CIDR | unix: | all;
+    context: http, server, location, limit_except
+
+    location ~ ^/admin.html { // ~ 代表使用regex模式匹配
+        root /opt/app/code;
+        deny 222.138.189.17;
+        allow all;
+        index index.html index.htm;
+    }
+
+    access module检测的是remote_addr, 如果在应用于nginx之间还经过了
+    一些lb或者nginx, 到达nginx的remote_addr就会变成中间代理的ip
+    解决的方法是
+        1. 使用x_forwarded_for, 这样到达nginx就会包含所有中间经过的IP
+        2. 结合geo模块
+        3. 通过HTTP自定义变量传递
+
+7 http_auth_basic_module 基于用户的信任登录
+    auth_basic string | off; // 默认off，string会作为前端显示的登录提示
+    context: http, server, location, limit_except
+
+    auth_basic_user_file file; // 通过文件来验证
+    context: http, server, location, limit_except
+    // 文件格式
+    # comment
+    name1:password1
+    name2:password2;comment
+    可以使用htpasswd来生成，同时还有加密密码的功能
+    htpasswd -c ./auth_conf desmond
+
+    location ~ ^/admin.html { // ~ 代表使用regex模式匹配
+        root /opt/app/code;
+        auth_basic "Auth access test! Input your password!";
+        auth_basic_user_file /etc/nginx/auth_conf;
+        index index.html index.htm;
+    }
