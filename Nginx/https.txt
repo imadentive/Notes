@@ -1,0 +1,6 @@
+生成密钥和CA证书
+    1. 安装openssl
+    2. 通过nginx -v确保nginx下有编译http_ssl_module
+    3. 生成key密钥
+    4. 生成证书签名请求文件(csr文件)
+    5. 生成证书签名文件(CA文件)
