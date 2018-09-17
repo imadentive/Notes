@@ -124,3 +124,41 @@ context: http
         auth_basic_user_file /etc/nginx/auth_conf;
         index index.html index.htm;
     }
+
+8 try_files 按顺序检查文件是否存在
+    location / {
+      try_files $uri @java_page;
+    }
+
+    location @java_page {
+      proxy_pass http://127.0.0.1:9090;
+    }
+
+
+常见问题
+  1. 相同server_name多个虚拟主机(server)优先级访问
+      会使用优先读取的配置(不同文件按文件名顺序)
+  2. location匹配
+      = 和 ^~ 的优先级最高,匹配到就不会往后了
+      正则匹配(~或者~*, 两者区别是~区分大小写)优先级会低一些,即便匹配到也会往后去找
+  3. root与alias区别
+      root  
+        location /request_path/image {
+          root /local_path/image;
+        }
+        请求http://www.imooc.com/request_path/image/cat.png
+        背后其实查找的是/local_path/image/request_path/image/cat.png
+      alias 
+        location /request_path/image {
+          alias /local_path/image;
+        }
+        请求http://www.imooc.com/request_path/image/cat.png
+        背后其实查找的是/local_path/image/cat.png
+  4. 获取用户真实的IP信息
+      在第一层的代理中set x_real_ip=$remote_addr
+      那么在之后的代理中就可以通过$x_real_ip获取到真实IP
+  5. 常见的错误代码
+      413 请求的大小太大
+        需要设置client_max_body_size来解决
+      502 后端服务无响应
+      504 后端服务执行超时
