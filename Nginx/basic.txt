@@ -162,3 +162,7 @@ context: http
         需要设置client_max_body_size来解决
       502 后端服务无响应
       504 后端服务执行超时
+
+nginx平滑升级
+    可以利用单签版本的编译参数重新编译新的版本的nginx
+    如果想使用老版本,可以通过nginx.old来调用
