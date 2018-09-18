@@ -1,0 +1,5 @@
+GOROOT: SDK安装的目录
+GOPATH: go源代码存放的目录
+GOBIN: 将来编译的可执行程序存放的目录,GOBIN目录,必须放在GOPATH目录里面
+
+go env // 查看go配置的环境变量
