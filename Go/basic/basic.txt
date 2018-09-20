@@ -3,6 +3,10 @@ GOPATH: go源代码存放的目录
 GOBIN: 将来编译的可执行程序存放的目录,GOBIN目录,必须放在GOPATH目录里面
 
 go env // 查看go配置的环境变量
+go install main.go // 将包编译并放到GOPATH下的bin(命令文件)或者pkg目录(非命令文件)
+go run main.go // 将包编译并运行,但是会将编译后的文件放到临时目录而不是GOBIN下
+go build // 编译检查当前目录下的go文件,如果不是命令文件(main.go)，那么执行完后不会产生文件,如果是命令文件,则在目录下产生一个编译好的二进制文件
+go fmt // 格式化当前目录下的go文件
 
 unsafe.Sizeof(int(0)) // 查看数据类型占用的内存大小
 
@@ -49,3 +53,31 @@ const(
 fmt.Scanf(格式化字符串, 地址列表) // 如果接收的不是字符串类型(%c),会忽略空格和TAB,但是不会忽略回车
 fmt.Scanln(地址列表) // 如果接收的不是字符串类型(%c),会忽略空格和TAB,但是不会忽略回车
 fmt.Scan(地址列表) // 如果接收的不是字符串类型(%c),会忽略空格,TAB,回车
+
+接收命令行参数(main函数不接收任何参数)
+    1. os.Args获取,获得的是一个数组,弊端就是无论传入是什么类型,最终获取到的都是字符串类型
+    2. flag.StringVar IntVar ...
+        var name string
+        flag.StringVar(&name, name: "name", value: "默认的名称", usage: "请传递用户的姓名")
+        flag.Parse() // 将编好的参数注册到命令行
+
+        main.exe -name=lnj
+    3. flag.String
+        *name := flag.String(name: "name", value: "默认的名称", usage: "请传递用户的姓名")
+        flag.Parse()
+
+        main.exe -name=lnj
+
+不同类型的常量可以进行运算
+不同类型的变量不可以直接进行运算,要先转换类型
+字符串可以用+拼接,但是不能与其他类型拼接,要先做类型转换
+go中的++ --只能写在后面,不能写在前面
+go中没有非零即真的概念,逻辑运算符或算数运算符两边的值都必须为布尔类型
+go中多了一个位运算符&^, a &^ b,如果b的当前二进制位为1,那么就清零,否则就保留a的二进制位的数据
+
+
+
+
+
+
+
