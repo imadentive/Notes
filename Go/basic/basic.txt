@@ -391,6 +391,7 @@ Go方法与函数的区别在于方法是一种特殊的函数,它是和属性�
 type 接口的名称 interface {
     函数的声明
 }
+
 接口可以嵌套,但是也是不能嵌套自己
 type aer interface {
     start()
@@ -405,6 +406,22 @@ var b ber = Phone{"aaa"}
 var a aer
 a = b 
 a.start()
+
+go中的空接口,相当于其他语言的Object类型,可以充当任何类型
+var value interface{}
+value = 1
+value = 3.14
+...
+
+空接口应用场景
+    可以让数组和字典保存不同类型的数据
+
+如果利用接口类型接受变量,那么接口类型的变量只能调用接口中定义的方法,不能调用数据类型中特有的方法和数据
+
+
+
+
+
 
 
 
