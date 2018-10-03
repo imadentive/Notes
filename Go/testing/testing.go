@@ -32,3 +32,34 @@
 // 3
 // true
 // go test时，Example方法也会被加入test case中
+
+// 在Test方法第一行加上t.SkipNow()就可以暂时先pass当前测试用例
+// 但是注意一定只能放在第一行
+
+// 通过t.Run可以用来执行subtests,做到控制test的输出以及test的顺序
+// func TestPrint(t *testing.T) {
+// 	   t.Run("a1", func(t *testing.T) {fmt.Println("a1")})
+// 	   t.Run("a2", func(t *testing.T) {fmt.Println("a2")})
+// 	   t.Run("a3", func(t *testing.T) {fmt.Println("a3")})
+// }
+
+// 使用TestMain作为初始化test,并且使用m.Run()来调用其他tests可以完成一些初始化操作的testing
+// 如果使用了TestMain但是没有调用m.Run则除了TestMain之外的其他tests都不会执行
+// func TestMain(m *testing.M) {
+// 	fmt.Println("test main first")
+// 	m.Run()
+// }
+
+// benchmark測試時需要注意被测函数要求总能在一个时间达到running time的稳态
+// 一下例子由于无法达到稳态所以benchmark永远都不会结束
+// func testAaa(n int) int {
+// 	for n > 0 {
+// 		n--
+// 	}
+// 	return n
+// }
+// func BenchmarkTestAaa(b *testing.B) {
+// 	for n := 0; n < b.N; n++ {
+// 		aaa(n)
+// 	}
+// }
