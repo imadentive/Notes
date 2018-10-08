@@ -1,0 +1,16 @@
+异常处理
+    生成异常信息
+        1. fmt.Errorf("error msg")
+        2. errors.New("error msg")
+    终止程序
+        1. 系统自动终止
+        2. panic("err msg") // 手动终止
+    可以配合defer和recover来捕获异常,但是必须在panic抛出异常之前定义
+    defer无论在函数正常或是异常都会执行
+    recover可以捕获panic异常
+        defer func() {
+            if err: = recover(); err != nil {
+                fmt.Println(err)
+            }
+        }()
+    同一个函数如果有多个终止异常,只有第一个会被捕获
