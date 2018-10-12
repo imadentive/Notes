@@ -81,8 +81,27 @@ go func() {
     var myCh3 chan<- int = make(chan<- int, 5)
     myCh3 = myCh2 // 报错
 
+select类似于switch,主要用于处理异步IO操作,用于消费多个管道中的数据或超时处理(配合定时器)
+如果有多个case都可以运行，select会随机选出一个执行，其他不会执行
+如果没有可运行的case语句，且有default语句，那么就会执行default的动作
+如果没有可运行的case语句，且没有default语句，select将阻塞，直到某个case通信可以运行
 
+定时器
+type Timer struct {
+    c <-chan Time
+    ...
+}
+// 让系统在3秒之后往Timer结构体的C属性中写入当前时间
+// 让程序阻塞3秒,3秒之后再执行
+timer := time.NewTimer(time.Second * 3) // 返回的是结构体
+fmt.Println(<-timer.C)
+timer := timeAfter(time.Second * 3) // 返回的是可读的管道
+fmt.Println(<-timer)
+以上都是一次性的定时器,也就是只会执行一次
 
-
-
+周期性定时器
+ticker := time.NewTicker(time.Second * 2)
+for {
+    fmt.Println(<-ticker.C)
+}
 
