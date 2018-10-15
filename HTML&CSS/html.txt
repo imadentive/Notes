@@ -22,3 +22,34 @@
 一般用于:
     1. 网站尾部的相关信息
     2. 图文混排
+
+video标签的属性
+    src: 告诉video标签需要播放的视频地址
+    autoplay: 告诉video标签是否需要自动播放视频
+    controls: 告诉video标签是否需要显示控制条
+    poster: 告诉video标签视频没有播放之前显示的占位图片
+    loop: 告诉video标签循环播放视频. 一般用于做广告视频
+    preload: 告诉video标签预加载视频, 但是需要注意preload和autoplay相冲, 如果设置了autoplay属性, 那么preload属性就会失效
+    muted:告诉video标签视频静音
+    width/height: 和img标签中的一模一样
+
+    video标签的第二种格式
+    <video>
+        <source src="" type=""></source>
+        <source src="" type=""></source>
+        <source src="" type=""></source>
+    </video>
+    由于视频数据非常非常的重要, 所以五大浏览器厂商都不愿意支持别人的视频格式, 
+    所以导致了没有一种视频格式是所有浏览器都支持的这个时候W3C为了解决这个问题, 
+    所以推出了第二个video标签的格式
+    video标签的第二种格式存在的意义就是为了解决浏览器适配问题
+    video元素支持三种视频格式, 我们可以把这三种格式都通过source标签指定给video标签,
+    那么以后当浏览器播放视频时它就会从这三种中选择一种自己支持的格式来播放
+
+audio标签类似video也有两种格式
+
+marquee 跑马灯效果
+    direction: 设置滚动方向 left/right/up/down
+    scrollamount: 设置滚动速度, 值越大就越快
+    loop: 设置滚动次数, 默认是-1, 也就是无限滚动
+    behavior: 设置滚动类型 slide滚动到边界就停止, alternate滚动到边界就弹回
