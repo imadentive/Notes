@@ -21,10 +21,75 @@
     text-decoration: underline | line-through | overline | none(多用于去掉超链接的下划线);
     text-align: left | right | center;
     text-indent: 2em | 10px; 缩进两个文字的宽度或10个像素,建议使用em
-    
 
+CSS选择器 
+    id选择器
+    类选择器
+    后代选择器(包括嵌套的)
+      标签1 标签2 {
 
+      }  
+    子元素选择器(>之间不能有空格)
+      标签1>标签2 {
 
+      }
+    交集选择器
+      找出两个选择器相交的
+      选择器1选择器2 {
+
+      }
+    并集选择器
+      选择器1,选择器2 {
+
+      }
+    兄弟选择器
+      1. 相邻兄弟选择器 CSS2
+           意思是给紧跟在选择器1之后的选择器2赋予css属性
+           选择器1+选择器2 {
+
+           }
+      2. 通用兄弟选择器 CSS3
+           意思是给在选择器1之后的所有选择器2赋予css属性(不需紧跟在后)
+           选择器1～选择器2 {
+
+           }
+    序选择器
+        1 标签:first-child 所有同级别中的第一个,不区分类型,取出来的标签可能不满足指定的标签就不会赋值
+        2 标签:first-of-type 所有同级别同类型中的第一个
+        3 标签:last-child 类似first-child,只是取最后一个
+        4 标签:last-of-type 类似last-of-type,只是取最后一个
+        5 标签:nth-child(3) 类似first-child,只是取指定的次序 
+            nth-child(odd) 代表所有奇数
+            nth-child(even) 代表所有偶数
+            nth-child(2n+0) 按个数下标带入公式计算,如果返回的数字是个数范围内的,则套用到对应的标签上
+        6 标签:nth-of-type(3) 类似first-of-type,只是取指定的次序
+        7 标签:nth-last-child(2) 类似first-child,只是取指定的倒的次序
+        8 标签:nth-last-of-type(2) 类似first-of-type,只是取指定的倒的次序
+            同样可以使用odd,even
+        9 标签:only-child 选出同级中唯一的元素(必须只有自己一个元素)
+        10 标签:only-of-type 选出同级中唯一的元素(但是不是一定非要只有自己一个元素,如果出现其他类型也可以)
+    属性选择器
+        标签[attribute]
+        标签[attribute=value] 
+            是否以value的取值开头
+            [attribute|=value] CSS2 
+            [attribute^=value] CSS3
+            CSS2中的只能找到value开头,并且value是被-和其他内容隔开的
+            CSS3中的只要是以value开头的都可以找到,无论有没有被-隔开
+
+            是否以value的取值结尾
+            [attribute$=value] CSS3
+
+            属性的取值是否包含某个特定的值
+            [attribute~=value] CSS2
+            [attribute*=value] CSS3
+            CSS2中的只能找到独立的单词,也就是包含value并且value是被空格隔开的
+            CSS3中的只要包含value就可以找到
+    通配符选择器
+        给所有标签赋值,会遍历所有标签,所以当页面标签比较多时,性能就会比较差,所以一般不会使用
+        * {
+
+        }
 
 
 
