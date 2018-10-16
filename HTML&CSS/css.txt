@@ -1,0 +1,32 @@
+文字相关属性
+    font-style: 文字样式
+        normal
+        italic
+    font-weight:
+        bold 加粗
+        bolder 比加粗还要粗 
+        lighter 细线,默认就是细线
+        100-900之间整百的数
+    font-size: 10px 文字大小属性
+    font-family: '字体1', '字体2' 文字字体属性,可设置多个用做备选方案
+        但凡是中文字体,里面都包含了英文
+        但凡是英文字体,里面都没有包含中文
+        即中文字体可以处理英文,但英文字体不能处理中文
+        所以如果想给界面中的英文单独设置字体,那么英文的字体必须写在中文的前面
+    font 属性简写,可以一次设置上面的属性
+        style,weight可以省略,并且style和weight的位置可以交换
+        font italic bold 10px '楷体';
+
+文本装饰属性
+    text-decoration: underline | line-through | overline | none(多用于去掉超链接的下划线);
+    text-align: left | right | center;
+    text-indent: 2em | 10px; 缩进两个文字的宽度或10个像素,建议使用em
+    
+
+
+
+
+
+
+
+
