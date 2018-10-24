@@ -144,10 +144,27 @@ div和span区别
     span buis stong em ins del
 行内块级元素(display: inline-block)
     为了能让元素既能够不独占一行,又可以设置宽度和高度
+
+背景   
+    background-repeat用来控制background-image的显示
+        repeat | no-repeat | repeat-x | repeat-y
+    同一个标签可以同时设置背景颜色和背景图片,如果颜色和图片同时存在,那么图片会覆盖颜色
+    background-position用来设置背景图片定位
+        background-position: 水平方向(left | center | right) 垂直方向(top | center | bottom)
+        background-position: 100px 200px (利用像素)
+    背景关联
+        默认情况下背景图片会随着滚动条的滚动而滚动,如果不想让背景图片随着滚动条滚动,就可以修改关联方式(fixed)
+        background-attachment: scroll(default) | fixed
+
+    背景属性缩写(任何一个属性都可以被省略)
+    background: 背景颜色 背景图片 平铺方式 关联方式 定位方式;
     
-background-repeat用来控制background-image的显示
-    repeat | no-repeat | repeat-x | repeat-y
-同一个标签可以同时设置背景颜色和背景图片,如果颜色和图片同时存在,那么图片会覆盖颜色
-background-position用来设置背景图片定位
-    background-position: 水平方向(left | center | right) 垂直方向(top | center | bottom)
-    background-position: 100px 200px (利用像素)
+css精灵图
+    是一种图像合成技术
+    可以减少请求的次数以及降低服务器处理压力
+    需要配合背景图片和背景定位来使用
+    
+
+
+
+
