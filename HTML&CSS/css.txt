@@ -362,14 +362,19 @@ box
 
 开发中通常在css中会先做以下几个步骤
     1. 清空默认边距
-    2. 清空默认样式
+    2. 设置html标签和body标签的宽度和高度
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+    3. 清空默认样式
             a {
                 text-decoration: none;
             }
             ul, ol {
                 list-style: none;
             }
-    3. body设置整个界面文字信息
+    4. body设置整个界面文字信息
             文字大小font-size 文字字体font-family 文字颜色color
 
 a标签伪类选择器
