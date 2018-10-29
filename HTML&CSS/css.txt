@@ -482,6 +482,8 @@ a标签伪类选择器
         }
         ...
     }
+    如果动画中有和默认样式中同名的属性,会覆盖掉默认样式中的同名属性
+    编写动画时,固定不变的值要写在前面,需要变化的值写在后面,否则效果会出问题
 
     告诉系统延迟多少秒之后才开始动画
     animation-delay: 2s;
@@ -512,12 +514,42 @@ a标签伪类选择器
 3D转换模块
     transform-style: flat(默认,2D)|preserve-3d;
 
+背景尺寸属性
+    background-size 专门用于设置背景图片大小
+        background-size: 宽度px 高度px;
+        background-size: 50% 50%;
+        background-size: auto 100px; 宽度等比拉伸
+        background-size: 100px auto; 高度等比拉伸
+        background-size: cover; 等比拉伸到宽高都填满元素
+        background-size: contain; 等比拉伸到宽或高其中之一填满元素
+    background-origin 告诉系统背景图片从什么区域开始显示
+        padding-box(默认) 背景图片从padding区域开始显示
+        border-box 背景图片从border区域开始显示
+        content-box 背景图片从content区域开始显示
+    background-clip 专门用于指定从哪个区域开始绘制背景的,默认从border开始
+        padding-box 背景从padding区域开始显示
+        border-box(默认) 背景从border区域开始显示
+        content-box 背景从content区域开始显示
 
+多重背景图片
+    多张背景图片之间用逗号隔开即可
+    先添加的背景图片会盖住后添加的
+    background: url("1.png") no-repeat left top, url("2.png") no-repeat right top
+    建议编写时拆开编写e.g.
+    background-image: ...
+    background-repeat: ...
+    background-position: ...
 
-
-
-
-
-
-
+CSS书写格式
+    1. 行内样式
+    2. 内嵌样式
+    3. 外链样式(开发中推荐使用这种)
+    4. 导入样式
+        <style>
+            @import "test.css";
+        </style>
+    外链样式和导入样式区别:
+        @import是CSS2.1推出的,所以可能有兼容性问题
+        外链样式在显示界面时会先加载CSS样式,在加载结构,所以用户看到界面时一定已经设置了样式
+        导入样式在显示界面的时候,会先加载结构,再加载样式,所以用户看到界面时不一定已经设置了样式
 
