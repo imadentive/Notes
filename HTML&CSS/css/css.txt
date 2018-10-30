@@ -568,3 +568,7 @@ CSS Hack
     +background: pink;    +就是让该属性在IE7及以下的浏览器下有效
     *background: blue;    *就是让该属性在IE7及以下的浏览器下有效
     _background: skyblue; _就是让该属性在IE6及以下的浏览器下有效
+
+
+
+
