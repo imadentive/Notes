@@ -185,6 +185,33 @@ box
             上       右下左边和上边一样
 
         不想设置任何边框属性就用none
+
+        border-radius: 左上角 右上角 右下角 左下角
+            会以水平方向和垂直方向相交的地方作为圆心, 开始画圆
+            如果省略了一个参数, 那么就等于对角
+            如果只传递了一个参数, 那么四个角一样
+        border-top-left-radius: 设置左上角
+        border-top-right-radius: 设置右上角
+        border-bottom-left-radius: 设置左下角
+        border-bottom-right-radius: 设置右下角
+
+        如果在开发中想画圆,那么只需要设置圆角等于宽度的一半即可
+
+        如果想画椭圆,那么只需要设置圆角宽高一半即可
+
+        如果想画椭圆,那么只需要设置左上角和右上角宽度为宽度的一半,并且将height设置为一半
+        div{
+            width: 400px;
+            height: 200px;
+            border: 1px solid #000;
+            margin: 100px auto;
+            border-top-left-radius: 200px;
+            border-top-right-radius: 200px;
+        }
+
+        简化写法
+            border-radius: 200px / 100px;
+            前面代表水平方向,后面代表垂直方向
     边距
         在默认布局的垂直方向上,默认情况下外边距是不会叠加的,会出现合并现象,谁的外边距比较大就听谁的
 
@@ -536,6 +563,58 @@ a标签伪类选择器
         border-box(默认) 背景从border区域开始显示
         content-box 背景从content区域开始显示
 
+    文字背景剪裁e.g.
+        <div>NBA</div>
+        div {
+            width: 400px;
+            height: 600px;
+            border: 1px solid #000;
+            margin: 100px auto;
+
+            font-size: 150px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 600px;
+
+            background: url("images/KB.jpg") no-repeat;
+            -webkit-background-clip: text;
+            /*设置文本的填充颜色为透明的颜色*/
+            -webkit-text-fill-color: transparent;
+        }
+
+    ktv文字效果
+        <div>我要学习, 不要打扰</div>
+        div{
+            width: 800px;
+            height: 78px;
+            line-height: 78px;
+            border: 1px solid #000;
+            margin: 100px auto;
+            font-size: 90px;
+            font-weight: bold;
+            /*0.设置背景颜色为红色*/
+            background-color: red;
+            /*1.设置背景图片*/
+            background-image: url("images/text_bg.jpg");
+            /*2.让背景图片不平铺*/
+            background-repeat: no-repeat;
+            /*3.设置背景图片的位置*/
+            background-position: -800px 0;
+            /*4.设置文本的填充颜色为透明色*/
+            -webkit-text-fill-color: transparent;
+            /*5.设置背景的绘制区域为文字的区域*/
+            -webkit-background-clip: text;
+            animation: loop 10s linear 0s infinite normal;
+        }
+        @keyframes loop {
+            0%{
+                background-position: -800px 0;
+            }
+            100%{
+                background-position: 0px 0;
+            }
+        }
+
 多重背景图片
     多张背景图片之间用逗号隔开即可
     先添加的背景图片会盖住后添加的
@@ -569,6 +648,28 @@ CSS Hack
     *background: blue;    *就是让该属性在IE7及以下的浏览器下有效
     _background: skyblue; _就是让该属性在IE6及以下的浏览器下有效
 
+vertical-align 设置元素垂直方向对齐方式
+    baseline(default) 让图片和当前行文字中x的底部对齐(参照vertical-align.jpg)
+    top 设置图片和所在盒模型的顶部对齐, 不包括边框
+    bottom 设置图片和所在盒模型的底部对齐, 不包括边框
+    text-top 文字最高的位置对齐
+    text-bottom 文字最低的位置对齐
+    middle 盒模型的中间
+
+如果按钮采用一个图片作为背景,当图片是固定大小时,那么当我们将按钮变宽之后,图片会变形
+在开发中如果按钮的宽度是不确定的, 那么就可以使用三个标签嵌套的形式来实现
+    1 最外层的标签的背景是1px的背景的图片, 然后让它平铺
+    2 第二层标签的背景是左边的图片, 然后不平铺
+    3 第三层的标签背景是右边的图片, 然后也不平铺
+在前端开发中这种布局方式, 我们称之为`滑动门`
+要想实现`滑动门`除了可以利用三个标签以外, 还可以利用两个标签
+只不过两个标签的扩展性没有三个标签的好, 两个标签的宽度扩展到一定程度的时候(超出一张图片的宽度), 会有问题
+滑动门中注意文字内容必须放到最里面的一个标签中
+
+添加私有前缀之后,那么这个当前的属性,就只针对某一种浏览器有效
+    1 -moz代表firefox浏览器私有属性
+    2 -ms代表ie浏览器私有属性
+    3 -webkit代表safari、chrome私有属性
 
 
 
