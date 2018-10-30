@@ -209,9 +209,35 @@ box
             border-top-right-radius: 200px;
         }
 
+        绘制空心圆
+            <div></div>
+            div{
+                width: 400px;
+                height: 400px;
+                border: 100px solid #000;
+                margin: 100px auto;
+                box-sizing: border-box;
+                /*
+                特点:
+                border-radius的大小如果小于border的大小, 那么内边框是直角
+                border-radius的大小如果大于border的大小, 那么内边框是圆角
+                */
+                border-radius: 20 0px;
+            }
+
         简化写法
             border-radius: 200px / 100px;
             前面代表水平方向,后面代表垂直方向
+
+        边框图片
+            border-image-source	用在边框的图片的路径
+            border-image-slice	图片边框向内偏移  
+                border-image-slice: 70 70 70 70; 上 右 下 左
+                border-image-slice的取值不需要添加单位
+                切割之后, 默认会让四个角显示切割的图片, 中间会拉伸
+            border-image-width	图片边框的宽度
+            border-image-outset	边框图像区域超出边框的量
+            border-image-repeat	图像边框是否应平铺(repeated)、铺满(rounded)或拉伸(stretched,默认)
     边距
         在默认布局的垂直方向上,默认情况下外边距是不会叠加的,会出现合并现象,谁的外边距比较大就听谁的
 
@@ -369,6 +395,9 @@ box
             如何让绝对定位的元素水平居中
                 只需要设置绝对定位元素的left:50%;
                 然后再设置绝对定位元素的margin-left: -元素宽度的一半px;
+                还可以使用(开发中推荐使用这种,因为上一种必须知道宽度)
+                    left: 50%;
+                    transform: translateX(-50%);
         3 固定定位
             固定定位的元素是脱离标准流的
             所以是不区分块级/行内/行内块级元素的,所有元素都可以设置宽高
@@ -670,6 +699,121 @@ vertical-align 设置元素垂直方向对齐方式
     1 -moz代表firefox浏览器私有属性
     2 -ms代表ie浏览器私有属性
     3 -webkit代表safari、chrome私有属性
+
+线性渐变
+    1. 默认情况下, 线性渐变是从上至下的渐变的
+    2. 可以通过在所有颜色的最前面添加to XXX的方式, 来指定往哪个方向渐变,可以指定多个方向
+        background: linear-gradient(to top,red, green)
+        background: linear-gradient(to top right,red, green)
+    3. 还可以通过在所有颜色的最前面添加一个度数的方式, 来指定往哪个方向渐变
+        background: linear-gradient(45deg, red, green)
+
+    可以在每一个颜色后面添加一个单位
+    如果是第一个颜色: 那么代表着指定单位的区域不渐变
+    如果是第二个颜色: 那么代表从第一个颜色指定的位置开始渐变, 渐变到第二个颜色指定的位置, 后面剩余的全部纯色
+    background: linear-gradient(to right, red 100px, green 200px, deepskyblue 300px)
+
+径向渐变
+    1.默认情况下径向渐变会从盒子的中心点开始向四周扩散
+        background: radial-gradient(red, green);
+    2.我们可以通过在所有颜色前面加上at方向
+        background: radial-gradient(at left top,red, green)
+    3.除了可以通过关键字指定方向以外, 还可以直接指定像素
+        background: radial-gradient(at 100px 100px,red, green)
+    4.我们可以通过在所有颜色前面加上像素来指定扩散的范围
+        background: radial-gradient(100px at left bottom,red, green)
+
+伸缩布局
+    1 如何使用伸缩布局?
+        只需要给元素修改 display: flex;
+    2 给谁添加了display: flex;谁就是伸缩容器
+    3 伸缩容器中的盒子, 我们称之为伸缩项
+
+    只要将一个元素变为了伸缩的容器, 那么里面的伸缩项自动就会水平排版
+    默认会按照主轴从左向右的方向排版
+    flex-direction:属性就是专门用于设置主轴的方向的
+    默认取值是row(从左至右)
+    row-reverse(从右至左)
+    默认情况下主轴是在水平方向的, 但是只要设置了flex-direction: column;
+    就会将主轴修改为垂直方向
+    只要主轴变为了垂直方向, 那么侧轴就会自动变为水平方向
+    主轴和侧轴永远都是十字交叉的
+    column(从上至下)
+    column-reverse(从下至上)
+
+    justify-content: flex-start 默认,设置伸缩容器中的伸缩项,和伸缩容器主轴的起点对齐
+    justify-content: flex-end 设置伸缩容器中的伸缩项,和伸缩容器主轴的终点对齐
+    justify-content: center 设置伸缩容器中的伸缩项居中
+    justify-content: space-between
+        两端对齐, 第一个伸缩项会和主轴的起点对齐
+        最后一个伸缩项会和主轴的终点对齐,其它项目平分多余的间隙
+        间隙的计算公式: (伸缩容器宽度 - 所有伸缩项的宽度) / (伸缩项 - 1);
+    justify-content: space-around
+        环绕对齐, 给所有伸缩项的两遍都添加间隙
+        间隙的计算公式: (伸缩容器宽度 - 所有伸缩项的宽度) / (伸缩项 * 2);
+
+    侧轴的默认对齐方式: 和侧轴的起点对齐
+    align-items: flex-start
+    align-items: flex-end
+    align-items: center
+    align-items: baseline 按照所有伸缩项内容的基线对齐
+    align-items: stretch 让所有伸缩项的高度都变成父元素的高度
+    注意侧轴没有主轴的两端对齐和环绕对齐
+    
+    如果只想修改某几个伸缩项,可以对需要修改的伸缩项进行一下的单独设置
+    align-self: flex-end;
+
+    无论主轴变为从上至下, 还是从下至上
+    侧轴永远都会和主轴十字交叉, 但是侧轴的起点永远都在左边
+
+    伸缩布局换行
+        伸缩容器宽度小于所有伸缩项宽度时, 系统会自动等比缩放伸缩项
+        如果不想让系统自动等比缩放伸缩项, 那么可以设置一个属性
+        flex-wrap: wrap; 默认为nowrap
+        flex-wrap: wrap-reverse 将最前面一行显示到最后一行, 其它行依次往上显示
+    
+    伸缩布局换行的对齐方式
+        align-content: flex-start|flex-end|center|space-between|space-around|stretch
+        拉伸对齐就是行的默认对齐方式
+        计算公式: (伸缩容器的高度 / 行数)
+
+    伸缩项排序
+        在伸缩布局中,可以利用order属性来给伸缩项进行排序
+        默认情况下order的取值是0,那么order会按照取值的大小来排序
+        值小的排在前面,值大的排在后面
+
+    伸缩项的放大比例
+        如果想让伸缩项按照一定的比例分配伸缩容器的宽度, 那么就可以通过flex-grow属性来设置
+        flex-grow: 1; 那么就代表着所有伸缩项占用一份宽度
+        计算公式:
+            首先:会计算多余的宽度: 伸缩容器的宽度 - 所有伸缩项的宽度 = 多余宽度
+            多余的宽度 = 800 - 600 = 200
+            其次:会计算每份分配多大的宽度: 多余宽度 / flex-grow 值的总和
+
+    伸缩项的缩小比例
+        如果伸缩容器的宽度小于伸缩项的宽度,我们可以通过flex-shrink来设置每个伸缩项的缩小比例
+        计算公式:
+        首先:会计算溢出的宽度: 伸缩容器的宽度 - 所有伸缩项的宽度 = 多余宽度
+        多余的宽度 = 400 - 600 = -200
+
+        其次: 会计算权重
+        用当前元素flex-shrink:设置的值 * 各个元素的宽度
+
+        最后: 计算收缩的空间
+        算溢出的宽度 * 当前元素flex-shrink:设置的值 * 当前元素的宽度 / 总权重
+        -200 * 1 * 200 / 1200 = -26;  --> 200 - 26
+
+    伸缩项宽度设置
+        在伸缩布局中,如果同时通过width和flex-basis给伸缩项设置宽度,那么会听flex-basis, width会失效
+        如果flex-basis是auto,那么就会听width属性
+
+    伸缩项属性的连写
+        flex: flex-grow flex-shrink flex-basis;
+              放大比例    缩小比例     宽度
+        放大比例: 默认值是0, 默认不会放大
+        缩小比例: 默认值是1, 等比缩小
+
+
 
 
 
