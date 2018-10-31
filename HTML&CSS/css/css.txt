@@ -163,6 +163,48 @@ css精灵图
     是一种图像合成技术
     可以减少请求的次数以及降低服务器处理压力
     需要配合背景图片和背景定位来使用
+    体积相对较大,传输速度较慢
+    图片变大失真
+
+字体图标
+    可以做出和图片一样的效果
+    本质是文字,可以很随意改变颜色,大小等等
+    本身体积更小,传输速度更快
+    几乎支持所有浏览器
+    移动端设备必备
+
+    字体图标使用步骤
+        1 设计师设计svg格式图标
+        2 上传生成字体包 http://www.iconfont.cn/icons/upload或者fontawesome
+        3 下载兼容字体包
+        4 使用字体包
+            unicode形式
+                1 声明字体
+                    font-family: '字体名称, 可以自定义';
+                    src: url('被拷贝进来文件的路径');
+
+                    @font-face {
+                        font-family: 'iconfont';
+                        src: url('fonts/iconfont.eot');
+                        src: url('fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+                        url('fonts/iconfont.woff') format('woff'),
+                        url('fonts/iconfont.ttf') format('truetype'),
+                        url('fonts/iconfont.svg#iconfont') format('svg');
+                    }
+
+                2 定义使用的样式
+                    .iconfont {
+                        font-family:"iconfont" !important;
+                        font-size:16px;font-style:normal;
+                        -webkit-font-smoothing: antialiased;
+                        -webkit-text-stroke-width: 0.2px;
+                        -moz-osx-font-smoothing: grayscale;
+                    }
+                3 应用于页面
+                    <i class="iconfont">&#xe601;</i>
+            font-class形式
+                <link rel="stylesheet" href="fonts/iconfont.css">
+                <i class="iconfont icon-gouwuchekong"></i>
 
 box
     边框
@@ -813,7 +855,84 @@ vertical-align 设置元素垂直方向对齐方式
         放大比例: 默认值是0, 默认不会放大
         缩小比例: 默认值是1, 等比缩小
 
+BFC 块级格式化上下文
+它是一个独立的与外界隔离的渲染区域,它规定了内部的盒子如何布局
+符合BFC的规范:
+    display为inline-block, block, flex, table-cell, table-caption等
+    float属性不为none
+    position为absolute或fixed
+    overflow不为visible
+具备生产BFC元素的特点:
+    有宽度高度,有外边距margin,有内边距padding,有边框border
+BFC布局规则:
+    1. 内部盒子会在垂直方向一个接一个地排列
+    2. 盒子垂直方向的距离由margin决定,属于同一个BFC的两个相邻盒子的margin会发生重叠
+    3. BFC区域不会和float区域重叠
+    4. 计算BFC的高度时,自然也会检测浮动或者定位的盒子高度
+BFC应用场景: 
+    清除浮动
+    清除margin层叠
 
+编写网站步骤
+    1. 新建站点文件夹
+        1.1 文件夹名称不能是中文
+        1.2 里面至少应该包含css/js/images三个子文件夹
+        1.3 里面至少应该包含index.html文件
+    2. 设置favorites icon网页图标
+        显示在网页选项卡和收藏夹中的图标, 我们称之为favicon
+        2.1 生成网页图标
+            搜索ico图标生成--上传图标--下载生成好的图标
+        2.2 放到站点目录根目录下
+        2.3 在head标签中间添加
+            <link rel="shortcut icon" href="favicon.ico"  type="image/x-icon"/>
+    3. 网站优化三大标签
+        3.1 网页title标题
+            - title是网页中第一重要的标签，是搜索引擎了解网页的入口，和对网页主题归属的最佳判断点
+            - 标题长度: Google 35个中文, baidu 28个中文
+            - 格式: 网站名（产品名）- 网站的介绍
+                <title>淘宝网 - 淘！我喜欢</title>
+                <title>京东(JD.COM)-正品低价、品质保障、配送及时、轻松购物！</title>
+            - 特点: 越先出现的词语, 权重越高
 
+        3.2 Keywords 关键字
+                Keywords是页面关键词，是搜索引擎重点关注点之一。
+                - Keywords应该限制在6～8个关键词左右，电商类网站可以多几个。
 
+                <meta name="keyword" content="淘宝,掏宝,网上购物,C2C,在线交易,交易市场,网上交易,交易市场,网上买,网上卖,购物网站,团购,网上贸易,安全购物,电子商务,放心买,供应,买卖信息,网店,一口价,拍卖,网上开店,网络购物,打折,免费开店,网购,频道,店铺" />
+
+                <meta name="Keywords" content="网上购物,网上商城,手机,笔记本,电脑,MP3,CD,VCD,DV,相机,数码,配件,手表,存储卡,京东" />
+
+        3.3 Description网站说明
+                对于关键词的作用明显降低,但由于很多搜索引擎,仍然大量采用网页的MATA标签中描述部分作为搜索结果的“内容摘要”.就是简要说明我们网站的主要做什么的
+
+                - 补充在title和keywords中未能充分表述的说明.
+                - 字符数含空格在内不要超过120个汉字
+                - 描述中出现关键词,与正文内容相关,这部分内容是给人看的,所以要写的很详细，让人感兴趣， 吸引用户点击
+
+                <meta name="description" content="淘宝网 - 亚洲较大的网上交易平台，提供各类服饰、美容、家居、数码、话费/点卡充值… 数亿优质商品，同时提供担保交易(先收货后付款)等安全交易保障服务，并由商家提供退货承诺、破损补寄等消费者保障服务，让你安心享受网上购物乐趣！" />
+                <meta name="description" content="京东JD.COM-专业的综合网上购物商城,销售家电、数码通讯、电脑、家居百货、服装服饰、母婴、图书、食品等数万个品牌优质商品.便捷、诚信的服务，为您提供愉悦的网上购物体验!" />
+    4. 导入CSS Rest类库,将所有的浏览器的自带样式重置掉,保持各浏览器渲染的一致性
+        4.1 reset.css
+            无论是否有用,一律清零
+
+        4.2 normalize.css(推荐)
+            - 保护有用的浏览器默认样式而不是完全去掉它们
+            - 一般化的样式：为大部分HTML元素提供
+            - 修复浏览器自身的bug并保证各浏览器的一致性
+            - 优化CSS可用性：用一些小技巧
+            - 解释代码：用注释和详细的文档来
+            - https://github.com/necolas/normalize.css/
+    5. 值得思考的问题,优雅降级和渐进增强
+        5.1 渐进增强
+            针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验
+
+        5.2 优雅降级
+            一开始就构建完整的功能，然后再针对低版本浏览器进行兼容
+
+        5.3 个人建议:
+            - 现在微软都抛弃了ie浏览器转而支持edge了，所以我们很多情况下没有必要再时刻想着低版本浏览器了，而是一开始就构建完整的效果，根据实际情况，修补低版本浏览器问题
+            - 修补时现在最常见的做法就是为低版本浏览器单独制作一个跳转页面
+            www.zhihu.com
+            www.jd.com
+            www.taobao.com
 
