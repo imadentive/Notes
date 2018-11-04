@@ -936,3 +936,6 @@ BFC应用场景:
             www.jd.com
             www.taobao.com
 
+CSS校验与压缩
+    css validation service的网站可用于验证css是否满足指定版本
+    oschina提供了压缩格式化css

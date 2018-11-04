@@ -1,0 +1,293 @@
+如果将JS代码写到了一对head标签中的一对script标签中
+那么JS代码必须写到window.onload = function(){}的大括号中
+因为浏览器渲染界面的时候, 会从上至下的执行代码(加载元素), 如果直接在一对head标签中的一对script标签中书写JS代码, 
+如果做了DOM操作, 那么可能拿不到需要操作的元素
+window.onload = function (){}这句代码的含义就是等到界面上所有DOM元素加载完毕之后再执行里面的JS代码
+如果将JS代码放到了body标签的最后, 那么就不用添加window.onload = function(){}这句代码了, 因为执行到JS的时候, 上面的所有DOM元素都已经加载完毕了
+使用外联方式也遵循以上规则
+
+效果: 弹出一个窗口, 让用户输入内容
+var res = prompt("我是一个弹窗");
+
+和alert一样, 会弹出一个窗口, 但是比alert多了一个按钮
+var res = confirm("我是一个弹窗");
+
+在网页中输出内容
+document.write("我是被输出的内容");
+
+在控制台中输出
+console.log("普通的打印");
+console.warn("警告的打印");
+console.error("错误的打印");
+
+如何获取Number类型的取值范围
+console.log(Number.MAX_VALUE); 最大值
+console.log(Number.MIN_VALUE); 最小值
+console.log(Number.MAX_VALUE + Number.MAX_VALUE); Infinity 无穷大
+console.log(Number.MIN_VALUE + Number.MIN_VALUE); -Infinity 无穷小
+
+Null和Undefined这两个都代表数据是空的,undefined值实际上是由null值衍生出来的,所以如果比较undefined和null的值(==)是否相等,会返回true
+
+==   判断左右两侧的值是否相等,会自动将字符串转换为Number类型后再判断值是否相等
+===  判断左右两侧的数据类型是否相等
+
+将其它基本数据类型转换为字符串类型
+    1. toString
+        对于Number类型和Boolean类型来说, 直接利用变量调用toString()方法即可
+        toString()方法会将调用者转换为字符串, 并且会将转换后的结果返回给我们
+        并且不会修改调用者原有的值
+
+        对于null和undefined来说, 不能通过调用toString()方法来转换
+
+        toString()方法是可以接收参数的, 参数代表告诉解析引擎, 需要将Number类型转换为多少进制
+        toString(2) 代表需要将调用者转换为2进制
+        toString(8) 代表需要将调用者转换为8进制
+        toString(16) 代表需要将调用者转换为16进制
+    2. String(data)函数
+        可以将Number/Boolean/null/undefined转换为字符串
+    3. 利用算数运算符的加法运算来转换Number/Boolean/null/undefined为字符串
+        格式: 需要转换的数据 + "";
+        因为任何类型和字符串相加, 都会先转换为字符串之后再相加
+
+将其它基本数据类型转换为Number类型
+    1. Number()函数
+        1.对于字符串: 如果字符串中都是数字, 那么就正常转换
+                    如果字符串中不仅仅有数字, 那么转换为NaN
+                    如果字符串中没有内容"" "   ", 那么就转换为0
+        2.对于布尔类型: true转换为1, false转换为0
+        3.对于null: 转换为0
+        4.对于undefined: 转换为NaN
+
+        总结:
+            空字符串/false/null  --> 0
+            不仅仅包含数字的字符串和undefined --> 转换为NaN
+            其它的正常转换
+    
+    2. 利用算数运算符来转换
+        在需要转换的类型前面加上+加号或者-减号即可
+        var str1 = "123";
+        var res1 = +str1;
+        注意点: +加号不会改变数据的正负性
+                -减号会改变数据的正负性
+    
+    3. parseInt()/parseFloat()函数
+        parseInt/parseFloat , 会从左至右的提取, 一旦被中断后续的就提取不到了
+        对于parseFloat来说, 只能提取一个点, 第二个点会被中断
+
+将其它基本数据类型转换为Boolean类型
+    Boolean()函数
+        1. 对于字符串而言: 只要不是空字符串(没有任何内容), 都会转换为false
+                         只要字符串中有内容(包含空格/Table), 都会转换为true
+
+        2. 对于Number类型而言: 只要不是0都会转换为true, 只有0会转换为false
+
+        3. 对于null和undefined而言, 都会转换为false
+
+        4. 对于NaN也会转换为false
+
+        总结: "" / 0 / null / undefined / NaN  --> false
+
+算数运算符
+    任何值和NaN运算, 得到的结果都是NaN
+    任何值和字符串进行加法运算, 都会先转换为字符串之后再运算
+    其它运算符, 如果参与运算的不是Number类型, 会先转换为Number类型后再运算
+    只有加法才会转换为字符串, - * / %都会转换为Number
+    对于取模运算m%n, m小于n, 结果就是m; 如果m等于0, 结果就是0, 如果n等于0, 结果就是NaN
+
+isNaN(data)函数的作用, 就是判断传入的值, 是否是NaN, 如果是就返回true, 如果不是就返回false
+
+逻辑运算符
+    对于非Boolean类型的数据, 会先转换为Boolean类型之后再判断
+    判断之后的返回值, 逻辑与和逻辑或都有自己的规则
+    对于逻辑&&来说
+        条件A && 添加B;
+        如果条件A不成立, 那么就返回条件A
+        如果条件A成立, 不管条件B是否成立, 都会返回条件B
+    对于逻辑||来说
+        条件A || 添加B;
+        如果条件A成立, 那么就返回条件A
+        如果条件A不成立, 那么不管条件B是否成立, 都会返回条件B
+
+switch
+    case后面可以放常量也可以放变量
+    如果case后面是一个表达式, 会先计算表达式的值, 再判断
+    javaScript中case是判断===, 而不是判断==
+
+函数
+    由于JavaScript中的函数是引用类型, 所以也有属性和方法
+    每个函数内部默认都有一个属性叫做arguments
+    arguments是一个伪数组(不是真的数组, 但是使用方式和数组很像, 本质就是一个对象)
+    函数中默认的arguments属性的作用就是用来保存外界传入的实参的
+    传入的所有实参都会被保存到arguments属性中
+
+    C语言中的函数不可以嵌套定义, 但是JavaScript中的函数可以嵌套定义
+        function demo() {
+            var test = function () {
+                console.log("test");
+            }
+            return test;
+        }
+
+    匿名函数作为立即执行的函数,必须用一个()将所有代码括起来才能调用
+        (function(){
+            console.log("匿名函数");
+        })();
+
+作用域
+    在JavaScript中有一个叫做作用域链的概念
+    默认情况下全局作用域, 我们称之为0级作用域
+    只要定义一个函数就会再开启一个作用域
+    如果该函数是在全局作用域中定义的, 那么我们称之为1级作用域
+    如果该函数是在其他函数中定义的, 那么所在函数+1级作用域
+    在使用变量或者函数的时候, 会在当前作用域链中查找, 如果找不到, 就会去上一级的作用域链中查找
+
+    如果在函数中定义变量时, 没有书写var关键字, 那么这个局部变量就会变为全局变量
+    虽然这样可以将一个局部变量变为全局变量, 但是在企业开发中千万不要这样写
+
+预解析
+    js是解释性的语言, 也就是不需要编译, 边执行边解析
+    浏览器的JS解析引擎在执行JS代码之前会做一件事情, 就是预解析
+    将变量和函数的声明(注意只是声明)提升到当前作用域的最前面, 这个我们就称之为预解析
+    注意变量和函数同名时,函数的优先级高
+    如果在同名的变量和函数声明之前访问这个名称, 拿到的是函数
+    如果在同名的变量和函数声明之后访问这个名称, 拿到的是变量
+
+    在高级别的浏览器中, 预解析不会提升if{}中的函数
+    但是在低级别的浏览器中, 预解析会提升if{}中的函数
+    解决放法就是在外部先声明好变量
+        var test;
+        if(true){
+            test = function () {
+                console.log("test1");
+            }
+        }else{
+            test = function () {
+                console.log("test22222");
+            }
+        }
+        test();
+        这里利用到的原理就是通过函数表达式的方式定义预解析时只会解析前面的变量名而不会解析后面的函数
+
+面向对象
+    创建对象
+        1 通过默认的Object这个类(构造函数)来创建
+            var obj = new Object();
+            obj.name = "lnj";
+            obj.age = 13;
+            obj.say = function () {
+                console.log("hello");
+            };
+            console.log(obj.name);
+            console.log(obj.age);
+            obj.say();
+        2 通过字面量来创建对象(语法糖)
+            var obj = {}; // 相当于 var obj = new Object();
+            之后用法同1
+            在创建的时候就可以动态的添加属性和方法
+                var obj = {
+                    name: "lnj",
+                    age: 18,
+                    say: function () {
+                        console.log("hello");
+                    }
+                };
+        3 通过工厂函数来创建对象
+            function createPerson(name, age) {
+                // 1.通过Object创建一个空对象
+                // var obj = new Object();
+                var obj = {};
+                // 2.动态的给空对象添加属性和方法
+                obj.name = name;
+                obj.age = age;
+                obj.say = function () {
+                    console.log("hello");
+                }
+                // 3.将函数中创建的对象返回给调用者
+                return obj;
+            }
+
+            var obj1 = createPerson("lnj", 13);
+            var obj2 = createPerson("zq", 18);
+            console.log(obj1);
+            console.log(obj2);
+
+            console.log(typeof obj1); // object
+            console.log(obj1.constructor); // ƒ Object() { [native code] }
+        4 先自定义构造函数, 再通过构造函数来创建对象
+            构造函数也是一个函数, 只不过是专门用于创建对象的函数而已
+            构造函数的函数名称首字母必须大写
+            构造函数必须使用new来调用
+            
+            在构造函数中默认会创建一个空的对象, 会将创建的对象赋值给this, 会将创建的对象返回给调用者
+                function Person(name, age) {
+                    // 1.var obj = new Object();
+                    // 2.this = obj;
+                    this.name = name; // obj.name = name;
+                    this.age = age;
+                    this.say = function () {
+                        console.log("hello");
+                    }
+                    // 3.return obj;
+                }
+            
+            过去通过Object对象, 或者通过字面量, 或者通过工厂函数创建的对象, 我们无法判断这个对象是谁创建出来的
+            但是通过构造函数创建的对象, 我们可以判断这个对象是谁创建出来的
+            
+            默认情况下每一个对象都有一个隐藏的属性, 叫做constructor, 这个属性指向了创建当前对象的构造函数
+            
+            在企业开发中如果想判断某个对象时候是某个构造函数创建出来的，可以使用 对象名称 instanceof 构造函数名称, 来判断
+
+            默认情况下, 只要创建一个对象就会在对象中开辟一块存储空间，该存储空间中会存储对象的所有数据，所以存在性能问题
+
+            构造函数优化
+                1. 将方法定义在外面, 将定义在外面函数的地址赋值给属性,每次创建对象, 对象中say保存的都是函数的地址, 就不会重复保存了
+                    弊端: 因为将函数定义在了全局作用域中, 所以如果定义了多个函数, 会导致全局作用域的名称匮乏
+                2. 将所有函数都封装到另外一个对象中, 这样函数名称就不在全局作用域中了, 这就不会导致全局作用域命名匮乏问题了,然后将对象中方法的地址复制给使用者即可
+                    var fns = {
+                        say: function() {
+                            console.log(this.name, this.age);
+                        },
+                        eat: function () {
+                        console.log("eat");
+                        }
+                    };
+                    function Person(name, age) {
+                        this.name = name;
+                        this.age = age;
+                        this.say = fns.say;
+                        this.eat = fns.eat;
+                    }
+                3. 利用原型对象(推荐,前两种不推荐)
+                    在JavaScript中,每一个构造函数都有一个默认的属性, 这个属性叫做prototype
+                    prototype属性指向一个对象, 这个对象我们称之为构造函数的原型对象
+                    所以既然构造函数的prototype就对应一个对象, 所以我们就可以将方法都放到这个对象中
+
+                    所有通过同一个构造函数创建出来的对象, 都可以访问该构造函数的原型对象
+                    并且所有通过同一个构造函数创建出来的对象, 访问的都是同一个原型对象
+
+                    私有成员（一般就是非函数成员）放到构造函数中
+                    共享成员（一般就是函数）放到原型对象中
+                    如果重置了prototype记得修正constructor的指向
+
+                    构造函数-对象-原型对象的三角恋关系
+                        1 每个构造函数都有一个默认的属性, 叫做prototype, 这个属性指向一个对象(原型对象)
+                        2 每个原型对象都有一个默认的属性, 叫做constructor, 这个属性指向原型对象对应的构造函数
+                        3 每个对象都有一个默认的属性, 叫做__proto__, 这个属性指向创建它的构造函数的原型对象
+
+                    属性和方法查找顺序
+                        调用属性时
+                            会先在当前对象中查找有没有该属性, 如果有, 使用当前的
+                            如果当前对象没有该属性, 会到原型对象中查找, 如果有, 就使用原型对象中的该属性
+                            如果原型对象中没有, 会继续根据__proto__链条查找, 如果找到null都没有, 就输出undefined
+                        方法也跟属性类似,只是如果null都没有,会直接报错
+
+                    注意
+                        在直接通过对象访问属性的时，不会修改原型中的属性，会在当前对象中新增一个属性
+                        Person.prototype.type = "超人";
+                        obj1.type = "人";
+                        console.log(obj1.__proto__.type); // 超人
+
+
+
+
+
