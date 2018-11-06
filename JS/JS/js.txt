@@ -133,6 +133,19 @@ switch
             console.log("匿名函数");
         })();
 
+    创建函数的第一种方式
+    function test() {
+        console.log("test");
+    }
+    创建函数的第二种方式
+    var demo = function () {
+        console.log("demo");
+    }
+    创建函数的第三种方式
+    上面两种的本质就是最后一种的简写
+    所以只要定义了一个函数, 就会创建一个函数对象
+    var fn = new Function("console.log(\"fn\");");
+
 作用域
     在JavaScript中有一个叫做作用域链的概念
     默认情况下全局作用域, 我们称之为0级作用域
@@ -287,7 +300,220 @@ switch
                         obj1.type = "人";
                         console.log(obj1.__proto__.type); // 超人
 
+                    自定义原型对象
+                        注意点: 自定义原型对象一定要保持三角恋的关系, 一定要设置constructor: 所属的构造函数
+                        Person.prototype = {
+                            constructor: Person,
+                            say: function () {
+                                console.log(this.name, this.age);
+                            }
+                        };
 
+                    静态的属性和方法就是不需要通过对象就能访问的属性和方法, 就是静态属性和方法
+                    通过构造函数就能够直接访问的属性和访问, 我们就称之为静态属性和方法
+                        Person.type = "人";
+                        Person.eat = function () {
+                            console.log("eat");
+                        };
 
+                        console.log(Person.type);
+                        Person.eat();
+    
+    继承实现方式
+        1. 通过原型链实现继承
+            function Person(name, age){
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype.say = function () {
+                console.log(this.name, this.age);
+            }
 
+            function Student(score) {
+                this.score = score;
+            }
 
+            // 修改Student的原型为Person对象
+            // 由于直接创建了父类对象作为子类的原型对象, 所以在指定原型对象的时候就必须指定父类的参数
+            // 但是在企业开发中每个子类对象的参数都可能不一样, 所以这种方案不行
+            Student.prototype = new Person();
+            Student.prototype.constructor = Student;
+        2. 构造函数实现继承
+            function test(a, b) {
+                console.log(a, b);
+                console.log(this);
+            }
+            var obj = {
+                name: "zq"
+            };
+            bind方法的作用
+                修改函数内部的this的, 但是不会调用这个函数, 会返回一个新的函数给我们
+                var fn = test.bind(obj, 10, 20);
+                fn();
+            call方法的作用
+                修改函数内部的this的, 但是会调用这个函数
+                test.call(obj, 10, 20);
+            apply方法的作用
+                修改函数内部的this的, 但是会调用这个函数
+                test.apply(obj, [10, 20]);
+            以上三个方法都是专门用于修改函数内部的this的
+            call和apply的区别:
+                传递参数的形式不同, 如果是call那么参数依次用逗号隔开即可, 如果是apply那么参数都要放到一个数组中
+
+            function Person(name, age){
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype.say = function () {
+                console.log(this.name, this.age);
+            }
+
+            function Student(score, name, age) {
+                Person.call(this, name, age); // 本质就是借用Person构造函数动态给stu对象添加属性
+                this.score = score;
+            }
+            var stu = new Student(99, "zs", 18);
+
+            Person.call(this, name, age); 这种方式仅仅是借用了父类的构造函数动态的给子类添加属性, 没有其它任何的关系
+            所以在子类中是不能使用父类原型中的方法的(stu.say()), 所以也不推荐
+        3. 组合继承
+            function Person(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype.say = function () {
+                console.log("say");
+            };
+
+            function Student(score, name, age) {
+                Person.call(this, name, age);
+                this.score = score;
+            }
+            // 将子类的原型修改为父类的原型
+            Student.prototype = Person.prototype;
+            // 将原型的归属修改为Student(保持三角恋关系)
+            Student.prototype.constructor = Student;
+            // 给子类原型对象动态添加一个方法
+            Student.prototype.eat = function () {
+                console.log("eat");
+            };
+
+            通过修改子类的prototype等于父类的prototype, 再修改子类原型对象的constructor等于子类构造函数的方式, 会破坏父类的三角恋关系
+            由于当前子类的原型对象和父类的原型对象都是同一个对象, 所以给子类的原型添加属性或者方法, 父类也会受到影响
+            所以不推荐
+        4. 终极组合继承
+            function Person(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype.say = function () {
+                console.log("say");
+            };
+
+            function Student(score, name, age) {
+                // 借用构造函数, 动态给当前对象添加属性和方法
+                Person.call(this, name, age);
+                this.score = score;
+            }
+
+            Student.prototype = new Person();
+            Student.prototype.constructor = Student;
+            Student.prototype.eat = function () {
+                console.log("eat");
+            };
+
+    对象的属性删除
+        delete p.name;
+    判断对象中有没有某个属性
+        "age" in p  
+            如果有就返回true, 如果没有就返回false
+            会先在当前对象中找有没有, 如果没有会去当前对象的原型对象上找有没有, 一直找到null都没有就会返回false
+        p.hasOwnProperty("age")
+            只会在当前对象上查找, 如果当前对象上有就返回true, 如果当前对象上没有就返回false, 不会去当前对象的原型对象上查找
+        判断指定的属性是否是原型上的属性
+            function prototypeProperty(obj, name) {
+                if(!obj.hasOwnProperty(name)){
+                    // type不是当前对象上的属性
+                    if(name in obj){
+                        // 一定是原型上的属性
+                        return true;
+                    }
+                }
+                return false;
+            }
+    对象遍历
+        for(var key in obj){
+            console.log(p[key]);
+        }
+    对象浅拷贝和深拷贝
+        例如将A对象赋值给B对象
+        深拷贝是指, 修改B对象的属性和方法不会影响到A对象的属性和方法, 我们称之为深拷贝
+        浅拷贝是指, 修改B对象的属性和方法会影响到A对象的属性和方法, 我们称之为浅拷贝
+
+        默认情况下对象之间的直接赋值都是浅拷贝
+        默认情况下一个对象的属性如果是基本数据类型, 那么都是深拷贝
+        如果对象的属性包含了引用数据类型, 才真正的区分深拷贝和浅拷贝
+
+        浅拷贝
+            1 对象之间直接赋值
+                var p2 = p1;
+            2 对象属性的逐一赋值(引用类型就会产生浅拷贝)
+                function copy(o1, o2){
+                    for(var key in o1){
+                        o2[key] = o1[key];
+                    }
+                }
+
+        深拷贝
+            function deepCopy(o1, o2){
+                // 取出第一个对象的每一个属性
+                for(var key in o1){
+                    // 取出第一个对象当前属性对应的值
+                    var item = o1[key]; // dog
+                    // 判断当前的值是否是引用类型
+                    // 如果是引用类型, 我们就重新开辟一块存储空间
+                    if(item instanceof Object){
+                        var temp = new Object();
+                        deepCopy(item, temp);
+                        o2[key] = temp;
+                    }else{
+                        // 基本数据类型
+                        o2[key] = o1[key];
+                    }
+                }
+            }
+
+DOM
+    document我们称之为文档对象, 这个对象中保存了当前网页中所有的HTM标签
+    
+    通过JS代码动态的找到HTML标签
+        querySelector格式: querySelector("选择器"); 
+            querySelector会将找到的第一个元素返回给我们
+            var div = document.querySelector("#fahter");
+        querySelectorAll格式: querySelectorAll("选择器");
+            querySelectorAll会将找到的所有元素返回给我们
+            var divs = document.querySelectorAll(".box");
+
+    通过JS动态的修改HTML元素的样式
+        var div = document.querySelector("#father");
+        div.style.backgroundColor = "red";
+
+    动态的创建一个HTML元素
+        document.createElement("标签的名称");
+        var div = document.createElement("div");
+
+    将动态创建的元素添加到另一个元素中
+        var div = document.querySelector("#father");
+        var p = document.createElement("p");
+        div.appendChild(p);
+
+    删除一个指定元素
+        var a = document.querySelector("div>a");
+        console.log(a.parentElement); // 通过访问一个元素对象的parentElement属性, 可以找到当前元素对象的父元素(父节点)
+        a.parentElement.removeChild(a);
+
+    setInterval
+        function test(){
+            console.log("test");
+        }
+        setInterval(test, 1000);
