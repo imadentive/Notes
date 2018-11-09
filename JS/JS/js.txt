@@ -31,6 +31,17 @@ Null和Undefined这两个都代表数据是空的,undefined值实际上是由nul
 ==   判断左右两侧的值是否相等,会自动将字符串转换为Number类型后再判断值是否相等
 ===  判断左右两侧的数据类型是否相等
 
+基本类型
+    Number  12  3.14
+    Boolean  false true
+    null
+    undefined
+    String  "lnj" "a"
+
+通过Number/Boolean/String类型的构造函数创建的对象, 我们就称之为包装类型
+    var num2 = new Number(666);
+    var flag2 = new Boolean(false);
+
 将其它基本数据类型转换为字符串类型
     1. toString
         对于Number类型和Boolean类型来说, 直接利用变量调用toString()方法即可
@@ -517,3 +528,218 @@ DOM
             console.log("test");
         }
         setInterval(test, 1000);
+
+数组的常用放法
+    判断一个对象是否是数组
+        1. arr instanceof Array
+        2. Array.isArray(arr) // isArray有兼容性的问题,支持H5标签的浏览器才支持
+    push 先push的数据会添加到前面,后push的数据会添加到后面
+        arr.push(2)
+    pop 从数据中取出最后一个元素返回给我们,不仅可以从数据中取出数据,还会将取出的数据从数组中删除
+        arr.pop()
+    shift 从数据中取出最前面一个元素返回给我们,不仅可以从数据中取出数据,还会将取出的数据从数组中删除
+        arr.shift()
+    unshift 在数组最前面插入元素
+        arr.unshift(666)
+    清空数组
+        1. arr = []; // 推荐
+        2. arr.length = 0
+        3. splice
+            第一个参数: 从什么地方开始删除
+            第二个参数: 需要删除多少个
+            arr.splice(0, arr.length)
+    数组的拼接
+        数组不支持直接用于+号来拼接,如果使用+号来拼接数组, 会先调用数组的toString方法,然后再将转换后的字符串进行拼接
+        concat 此方法不会更改现有数组，而是返回一个新数组
+            var res = arr1.concat(arr2)
+    Array的toString方法会返回保存内容的字符串
+        arr1.toString()
+    Array的valueOf方法会返回数组本身
+        arr1.valueOf()
+    slice 数组的截取
+        方法返回一个新的数组对象
+        第一个参数: 从什么地方开始截取
+        第二个参数: 截取到什么地方位置, 不包括这个结束的元素
+        arr.slice(1, 3)
+    查找元素
+        1. indexOf
+            返回在数组中可以找到一个给定元素的第一个索引，如果不存在，则返回-1
+            默认是从左至右的查找, 一旦找到就会自动停止继续查找
+            arr.indexOf(6)
+            indexOf(6, 3) 从第3个索引开始查找, 找6
+            lastIndexOf(6) lastIndexOf会从右至左的查找
+        2. find
+            find方法需要传递一个函数, 内部会遍历调用者(数组), 取出每一个元素
+            取出一个元素就调用一次传入的函数, 将取出的元素传递给这个函数
+            只要有一个元素满足函数中的条件就会停止查找
+            返回查找到的元素,如果没有符合条件的成员，则返回undefined
+            注意点: 在IE浏览器中会有问题
+            function test(ele) {
+                if(ele === 6){
+                    return ele;
+                }
+            }
+
+            arr.find(test)
+        3. findIndedx
+            返回在数组中可以找到一个给定元素的第一个索引，如果不存在，则返回-1
+            var res = arr.findIndex(function (ele) {
+                return ele === 6;
+            });
+        indexOf方法无法识别数组的NaN成员，但是findIndex方法可以借助Object.is方法做到
+            [NaN].findIndex(y => Object.is(NaN, y))
+    filter
+        filter函数会创建一个新的数组
+        当执行回调函数的时候, 返回的是true, 就会将当前遍历到的元素放到新的数组中
+        var res = arr.filter(function (ele, idx) {
+            return ele === 6;
+        });
+    对数组进行排序
+        sort(compareFunction(a,b)) 
+        默认不加compareFunction会使用unicode排序
+        1. 如果compareFunction(a, b)小于0, 那么a会被排列到b之前
+        2. 如果compareFunction(a, b)等于0, a和b的相对位置不变
+            备注: ECMAScript标准并不保证这一行为,而且也不是所有浏览器都会遵守(例如Mozilla在2003年之前的版)
+        3. 如果compareFunction(a, b)大于0,b会被排列到a之前
+        compareFunction(a, b)必须总是对相同的输入返回相同的比较结果,否则排序的结果将是不确定的
+        arr.sort(function (a, b) {
+            // 直接return, 用第一个参数减去第二个参数的结果, 就是升序排序
+            // 直接return, 用第二个参数减去第一个参数的结果, 就是降序排序
+            // return a - b;
+            return b - a;
+        });
+        reverse可以对数组进行翻转
+            arr.reverse()
+    遍历数组
+        forEach
+            会依次取出调用者的每一个元素, 每取出一个元素就会执行一次回调函数
+            并且会将当前取出的元素传递给回调函数
+            arr.forEach(function (ele) {
+                console.log(ele);
+            });
+        map
+            和filter函数差不多, 都用于过滤元素, 只有满足添加的元素才会被添加到新的数组中
+            但是和filter函数的区别是, filter返回的数组中只有满足添加的元素
+            而map返回的数组中不满足条件的元素会存储一个undefined
+            var res = arr.map(function (ele) {
+                if(ele == 3){
+                    return ele;
+                }
+            });
+
+字符串的常用放法
+    字符串的拼接
+        通过字面量创建的字符串, 是一个常量, 是不可以修改的
+        由于每次定义字符串都会重新开辟一块存储空间
+        所以以后在企业开发中, 一定要尽量避免频繁的拼接字符串
+        var res = str1 + str2 // 推荐
+        var res = str1.concat(str2)
+    获取字符串中的字符
+        1. var res = str.charAt(1) 返回字符
+        2. var res = str.charCodeAt(0) 返回ASCII码
+        3. var res = str[1]; 返回字符, 有兼容性问题, 支持H5才支持
+    截取子串
+        1. var res = str.slice(1, 5); 从指定索引开始截取到结束索引,不包括结束的索引
+        2. var res = str.substr(1, 1); 从指定索引开始截取多少个字符
+        3. var res = str.substring(1, 2); 从指定索引开始截取到结束索引,不包括结束的索引
+    字符串查找
+        var res = str.indexOf("6");
+        var res = str.lastIndexOf("6");
+    字符串切割
+        var res = str.split("|");
+
+基本类型调用方法的实现原理
+    在调用方法之前, JS解析器会自动将基本数据类型包装成包装类型
+    var str = "www.it666.com"; // 基本类型
+    str.split(".")背后
+        var _str = new String(str);
+        _str.split(".");
+        _str = null; // 调用完后置空
+
+时间对象
+    创建时间对象
+        var date = new Date();
+        注意点: 如果通过逐个传入参数的方式指定月份, 会出现误差
+                误差是1, 因为月份在JS中的Date对象中是从0开始的
+        var date = new Date(2019, 10, 11, 9, 8, 7);
+        var date = new Date("2019-11-11 9:8:7");
+    获取当前时间距离1970年1月1日相差的毫秒
+        var date = Date.now();
+    默认的时间格式
+        date.toString()
+    以下的方法在不同浏览器输出的格式不同
+        console.log(date.toLocaleString());
+        console.log(date.toTimeString());
+        console.log(date.toLocaleTimeString());
+        console.log(date.toDateString());
+        console.log(date.toLocaleDateString());
+    时间的格式化
+        console.log(date.getFullYear());
+        console.log(date.getMonth() + 1); // 从0开始
+        console.log(date.getDate()); // 获取是第几天
+        console.log(date.getHours());
+        console.log(date.getMinutes());
+        console.log(date.getSeconds());
+
+        var res = formartDate(date);
+
+        function formartDate(date) {
+            // 有性能问题
+            /*
+            var str = "";
+            str += date.getFullYear();
+            str += "-";
+            str += (date.getMonth() + 1);
+            str += "-";
+            str += date.getDate();
+            str += " ";
+            str += date.getHours();
+            str += ":";
+            str += date.getMinutes();
+            str += ":";
+            str += date.getSeconds();
+            */
+            var arr = [];
+            arr.push(date.getFullYear());
+            arr.push("-");
+            arr.push(date.getMonth() + 1);
+            arr.push("-");
+            arr.push(date.getDate());
+            arr.push(" ");
+            arr.push(date.getHours());
+            arr.push(":");
+            arr.push(date.getMinutes());
+            arr.push(":");
+            arr.push(date.getSeconds());
+            return arr.join("");
+        }
+
+Math对象
+    Math和前面学习的Array/String/Date不一样, 前面学习的这些都是内置构造函数
+    Math是一个对象
+    var Math = {
+       PI: 3.1415926,
+       ...
+    }
+    Math.PI; 圆周率
+    Math.floor(num)   向下取整
+    Math.ceil(num)     向上取整
+    Math.round(num)    四舍五入
+    Math.abs(num)      绝对器
+    Math.random() 生成随机数,会生成一个0~1的随机值, 不包括1
+    Math.sin()
+    Math.cos()
+    Math.power()
+    Math.sqrt()
+
+    生成1~10的随机数
+        function getRandomIntInclusive(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        var res = getRandomIntInclusive(1, 10);
+
+
+        
