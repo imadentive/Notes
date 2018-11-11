@@ -494,41 +494,6 @@ switch
                 }
             }
 
-DOM
-    document我们称之为文档对象, 这个对象中保存了当前网页中所有的HTM标签
-    
-    通过JS代码动态的找到HTML标签
-        querySelector格式: querySelector("选择器"); 
-            querySelector会将找到的第一个元素返回给我们
-            var div = document.querySelector("#fahter");
-        querySelectorAll格式: querySelectorAll("选择器");
-            querySelectorAll会将找到的所有元素返回给我们
-            var divs = document.querySelectorAll(".box");
-
-    通过JS动态的修改HTML元素的样式
-        var div = document.querySelector("#father");
-        div.style.backgroundColor = "red";
-
-    动态的创建一个HTML元素
-        document.createElement("标签的名称");
-        var div = document.createElement("div");
-
-    将动态创建的元素添加到另一个元素中
-        var div = document.querySelector("#father");
-        var p = document.createElement("p");
-        div.appendChild(p);
-
-    删除一个指定元素
-        var a = document.querySelector("div>a");
-        console.log(a.parentElement); // 通过访问一个元素对象的parentElement属性, 可以找到当前元素对象的父元素(父节点)
-        a.parentElement.removeChild(a);
-
-    setInterval
-        function test(){
-            console.log("test");
-        }
-        setInterval(test, 1000);
-
 数组的常用放法
     判断一个对象是否是数组
         1. arr instanceof Array
@@ -741,5 +706,264 @@ Math对象
 
         var res = getRandomIntInclusive(1, 10);
 
+定时器
+    无论是反复执行的还是只执行一次的定时器, 都是可以手动关闭的
+    1. 反复执行的定时器
+        返回值: 返回当前定时器的ID
+        setInterval
+            function test(){
+                console.log("test");
+            }
+            timerId = setInterval(test, 1000);
+            clearInterval(timerId);
+    2. 只执行一次的定时器
+        返回值: 返回当前定时器的ID
+        timerId = setTimeout(function () {
+            console.log("多少毫秒之后执行一次");
+        }, 1000);
+        clearTimeout(timerId);
 
-        
+DOM
+    document我们称之为文档对象, 这个对象中保存了当前网页中所有的HTM标签
+
+    console.dir(document) 在控制台中显示指定JavaScript对象的属性，并通过类似文件树样式的交互列表显示
+    
+    通过JS代码动态的找到HTML标签 IE8之后才能用
+        querySelector格式: querySelector("选择器"); 
+            querySelector会将找到的第一个元素返回给我们
+            var div = document.querySelector("#fahter");
+        querySelectorAll格式: querySelectorAll("选择器");
+            querySelectorAll会将找到的所有元素返回给我们
+            var divs = document.querySelectorAll(".box");
+
+    通过JS动态的修改HTML元素的样式
+        var div = document.querySelector("#father");
+        div.style.backgroundColor = "red";
+
+    动态的创建一个HTML元素
+        document.createElement("标签的名称");
+        var div = document.createElement("div");
+
+    将动态创建的元素添加到另一个元素中
+        var div = document.querySelector("#father");
+        var p = document.createElement("p");
+        div.appendChild(p);
+
+    删除一个指定元素
+        var a = document.querySelector("div>a");
+        console.log(a.parentElement); // 通过访问一个元素对象的parentElement属性, 可以找到当前元素对象的父元素(父节点)
+        a.parentElement.removeChild(a);
+
+    将第一个参数的元素插入到第二个参数元素的前面
+        oDiv.insertBefore(oA, op1);
+
+    通过ID获取界面上的元素
+        如果id名称重复了, 返回的是第一个找到的元素
+        var oDiv = document.getElementById("box");
+
+    通过类名获取界面上的元素
+        找到所有类名为指定名称的元素, 放到一个集合对象中返回给我们
+        这个集合对象是一个伪数组(对象)
+        注意点: 有兼容性问题 IE9之后才支持
+        var oDivs = document.getElementsByTagName("div");
+
+    通过name属性名称来获取界面上的元素
+        注意点: 在不同浏览器执行结果可能不同
+        var oDivs = document.getElementsByName("ppp");
+
+    文档的加载过程
+        1. 浏览器在加载一个界面的时候, 是按照从上至下的顺序加载的
+        2. 如果将script标签写在head标签中, 那么执行js代码的时候, 网页还没有加载完毕
+            DOM对象也还没有准备完毕, 所以可能获取不到我们需要的元素
+        3. 如果将script标签写在body标签的最末尾,  DOM对象已经准备完毕了, 所以我们可以获取到我们需要的元素
+        4. 如果非要把script标签写在head标签中, 那么需要执行的代码最好写好onload方法中,
+            onload方法的作用是等待网页上所有的资源加载完毕之后才会执行
+            网页上所有的资源包含所有的标签/图片/CSS文件/JS文件等
+        5. window.onload和将script标签写在body最后的区别:
+            window.onload执行时, 不仅DOM对象准备好了, 网页上所有资源也都准备好了
+            body后的script标签执行时, 仅仅代表DOM对象准备好了, 而网页上的其它资源不一定准备好了
+        综上所述: body后的script标签的效率高于window.onload
+
+    节点之间的关系
+        通过子元素获取父元素
+            parentElement: 获取父元素
+            parentNode: 获取父节点,拿到的不一定是一个元素
+                            因为在DOM有节点有(标签节点/属性节点/文本节点)
+            一般情况下在JS中带Element单词的属性或者方法都有兼容性问题
+            var oFDiv = oSDiv.parentElement || oSDiv.parentNode;
+        通过指定元素找到上一个元素
+            var pre = oLi.previousElementSibling || oLi.previousSibling;
+        通过指定元素找到下一个元素
+            var next = oLi.nextElementSibling || oLi.nextSibling;
+        通过指定元素找到所有的子节点/子元素
+            childNodes获取当前元素所有的子节点(标签节点/属性节点/文本节点)
+                var oLis1= oUl.childNodes;
+            children获取当前元素所有的子元素
+                var oLis2= oUl.children;
+        获取指定元素的第一个子元素
+            var first = this.firstElementChild || this.firstChild;
+        获取指定元素的最后一个子元素
+            var first = this.lastElementChild || this.lastChild;
+        Element是在Dom树中查找父元素, HTML没有父元素
+            var oDiv = document.querySelector("html");
+            console.log(oDiv.parentElement);
+        Node是在Dom树中查找父节点, HTML的父节点就是DOM对象
+            var oDiv = document.querySelector("html");
+            console.log(oDiv.parentNode); // document
+    节点属性的操作
+        获取节点的属性
+            1. DOM就已经将这个元素所有的自带的属性都已经封装到这个对象中了, 所以可以直接通过对象操作属性的方式来操作属性
+                var oImg = document.querySelector("img");
+                console.log(oImg.src);
+                console.log(oImg.alt);
+                console.log(oImg.title);
+                console.log(oImg.lnj); // undefined
+            2. getAttribute
+                console.log(oImg.getAttribute("src"));
+                console.log(oImg.getAttribute("alt"));
+                console.log(oImg.getAttribute("title"));
+                console.log(oImg.getAttribute("lnj"));
+            通过第一种方式 元素.属性 只能获取标签自带的属性
+            通过第二种方式 元素.getAttribute(属性) 既可以获取自带的属性也可以获取自定义属性
+
+        删除属性
+            1. 直接删除
+                oImg.src = "";
+            2. removeAttribute
+                oImg.removeAttribute("src");
+
+        设置属性的值
+            1. 直接设置
+                oImg.title = "新设置的值";
+                oImg.src = "images/1.jpg";
+            2. 通过setAttribute方法来设置
+                有就修改, 没有就新增
+                oImg.setAttribute("title", "新设置的值");
+    innerHTML
+        获取或者设置调用者中的内容
+        注意点:
+            如果是获取, 会原封不动的将调用者中的内容返回给我们(包含标签)
+            如果是设置, 会利用设置的值覆盖调用调用者中所有的内容
+                        并且如果设置的值中包含了HTML标签, 也会解析创建之后再添加
+        console.log(oDiv.innerHTML);
+        oDiv.innerHTML = "<span>我是span</span>";
+    innerText
+        获取或者设置调用者中的内容 有兼容性的问题, 不能很好的支持所有的浏览器
+        注意点:
+            如果是获取, 会去掉调用者中的标签, 将其它的内容返回给我们, 并且会去除两端的空格
+            如果是设置, 会利用设置的值覆盖调用调用者中所有的内容
+                        并且如果设置的值中包含了HTML标签, 不会解析和创建, 会原样添加
+        console.log(oDiv.innerText);
+        oDiv.innerText = "<a href='#'>我是a标签</a>";
+    textContent
+        获取或者设置调用者中的内容 有兼容性的问题, 不能很好的支持所有的浏览器
+        注意点:
+            如果是获取, 会去掉调用者中的标签, 将其它的内容返回给我们, 但是不会去除两端的空格
+            如果是设置, 会利用设置的值覆盖调用调用者中所有的内容
+                        并且如果设置的值中包含了HTML标签, 不会解析和创建, 会原样添加
+        console.log(oDiv.textContent);
+        oDiv.textContent = "<a href='#'>我是a标签</a>";
+    innerText与textContent兼容性的处理
+        function setInnerText(obj, ctx) {
+            if("textContent" in obj){
+                obj.textContent = ctx;
+            }else{
+                obj.innerText = ctx;
+            }
+        }
+    前面的三个属性用于获取或者设置双标签中的内容,如果想获取或者设置input中的内容,需要使用value属性
+        oInput.value
+        oInput.getAttribute("value")
+    设置元素的样式
+        1. 通过style属性来设置
+            注意点: 
+                通过style属性设置的样式都是行内样式, 所以会覆盖掉CSS代码设置的样式
+                如果是设置宽度和高度, 需要添加单位, 否则会报错
+            oDiv.style.width = "100px";
+            oDiv.style.height = "100px";
+            CSS中用-连接的属性名称, 都会去掉-, 将后面一个单词的首字母大写
+                oDiv.style.backgroundColor = "red";
+            console.log(oDiv.style.width); 这里返回给我们的是一个字符串
+            console.log(parseInt(oDiv.style.width));
+        2. 通过className属性来设置
+            这里的className属性和其它的属性有点区别
+            默认情况下通过元素对象操作元素的属性时, 都是自带的是什么名称, 操作的时候就是什么名称
+            因为class是js的一个关键字, 所以这里就将HTML标签的class属性的名称改为了className
+                var oImg = document.querySelector("img");
+                oDiv.className = "box";
+        如果是操作个别的样式, 那么推荐使用style属性
+        如果是操作多个的样式, 那么推荐使用className属性
+    DOM事件
+        点击事件
+            元素.onclick = function(){};
+            注意点:
+                如果是给a标签添加点击事件, 由于a标签对点击事件有默认的实现(跳转)
+                所以需要注意的是我们添加的点击事件不会覆盖掉系统默认的点击事件
+                如果不想使用系统的默认事件, 那么只需要在我们添加的函数中return false即可
+                var oA = document.querySelector("a");
+                oA.onclick = function () {
+                    alert("aaaa我被点击了aaaa");
+                    return false; // 禁用系统默认的事件
+                }
+        鼠标移入移出的事件
+            1. 监听鼠标移入元素 
+                1. onmouseover
+                    oDiv.onmouseover = function () {
+                        console.log("onmouseover");
+                    }
+                2. onmouseenter
+                    对于初学者来说, 为了避免未知的BUG, 建议使用onmouseenter
+                    oDiv.onmouseenter = function () {
+                        console.log("onmouseenter");
+                    }
+            2. 监听鼠标移出元素
+                1. onmouseout
+                    oDiv.onmouseout = function () {
+                        console.log("onmouseout");
+                    }
+                2. onmouseleave
+                    对于初学者来说, 为了避免未知的BUG, 建议使用onmouseleave
+                    oDiv.onmouseleave = function () {
+                        console.log("onmouseleave");
+                    }
+            3. 监听鼠标在元素中移动
+                oDiv.onmousemove = function () {
+                    console.log("onmousemove");
+                }
+        焦点事件
+            1. 监听元素获取焦点
+                oInput.onfocus = function () {
+                    console.log("onfocus");
+                }
+            2. 监听元素失去焦点
+                oInput.onblur = function () {
+                    console.log("onblur");
+                }
+            3. 监听元素内容改变
+                1. onchange 
+                    oInput.onchange = function () {
+                        console.log(this.value);
+                    }
+                    注意点: 
+                        onchange事件不能时时获取数据的改变
+                        onchange事件只有失去焦点的时候才会执行
+                2. oninput
+                    oninput事件可以时时获取数据的改变, 但是有兼容性问题
+                    IE9之后才能使用
+                    oInput.oninput = function () {
+                        console.log(this.value);
+                    }
+
+                    低版本的IE特有的事件
+                    oInput.onpropertychange = function () {
+                        console.log(this.value);
+                    }
+
+                    时时监听输入框内容改变的兼容性处理
+                        function inputChange(ele, fn) {
+                            if("oninput" in ele){
+                                ele.oninput = fn;
+                            }else{
+                                ele.onpropertychange = fn;
+                            }
+                        }
