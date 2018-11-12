@@ -706,23 +706,6 @@ Math对象
 
         var res = getRandomIntInclusive(1, 10);
 
-定时器
-    无论是反复执行的还是只执行一次的定时器, 都是可以手动关闭的
-    1. 反复执行的定时器
-        返回值: 返回当前定时器的ID
-        setInterval
-            function test(){
-                console.log("test");
-            }
-            timerId = setInterval(test, 1000);
-            clearInterval(timerId);
-    2. 只执行一次的定时器
-        返回值: 返回当前定时器的ID
-        timerId = setTimeout(function () {
-            console.log("多少毫秒之后执行一次");
-        }, 1000);
-        clearTimeout(timerId);
-
 DOM
     document我们称之为文档对象, 这个对象中保存了当前网页中所有的HTM标签
 
@@ -967,3 +950,42 @@ DOM
                                 ele.onpropertychange = fn;
                             }
                         }
+
+定时器
+    无论是反复执行的还是只执行一次的定时器, 都是可以手动关闭的
+    1. 反复执行的定时器
+        返回值: 返回当前定时器的ID
+        setInterval
+            function test(){
+                console.log("test");
+            }
+            timerId = setInterval(test, 1000);
+            clearInterval(timerId);
+    2. 只执行一次的定时器
+        返回值: 返回当前定时器的ID
+        timerId = setTimeout(function () {
+            console.log("多少毫秒之后执行一次");
+        }, 1000);
+        clearTimeout(timerId);
+
+函数节流
+    函数节流就是降低性能消耗, 将那些会频繁调用的函数修改为间隔多长时间调用一次
+    var oInput = document.querySelector("input");
+    var timerId = null;
+    inputChange(oInput, function () {
+        var self = this;
+        clearTimeout(timerId);
+        // console.log("发送一次请求到服务器", this.value);
+        timerId = setTimeout(function () {
+            console.log("发送一次请求到服务器", self.value);
+        }, 1000);
+    });
+    function inputChange(ele, fn) {
+        if("oninput" in ele){
+            ele.oninput = fn;
+        }else{
+            ele.onpropertychange = fn;
+        }
+    }
+
+定时器动画
