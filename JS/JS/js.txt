@@ -967,25 +967,3 @@ DOM
             console.log("多少毫秒之后执行一次");
         }, 1000);
         clearTimeout(timerId);
-
-函数节流
-    函数节流就是降低性能消耗, 将那些会频繁调用的函数修改为间隔多长时间调用一次
-    var oInput = document.querySelector("input");
-    var timerId = null;
-    inputChange(oInput, function () {
-        var self = this;
-        clearTimeout(timerId);
-        // console.log("发送一次请求到服务器", this.value);
-        timerId = setTimeout(function () {
-            console.log("发送一次请求到服务器", self.value);
-        }, 1000);
-    });
-    function inputChange(ele, fn) {
-        if("oninput" in ele){
-            ele.oninput = fn;
-        }else{
-            ele.onpropertychange = fn;
-        }
-    }
-
-定时器动画
