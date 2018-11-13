@@ -967,3 +967,34 @@ DOM
             console.log("多少毫秒之后执行一次");
         }, 1000);
         clearTimeout(timerId);
+
+添加事件的三种方式
+    1. 通过onxxx的方式来添加
+        注意点: 由于是添加给了属性, 所以后赋值的会覆盖先赋值
+    2. 通过addEventListener方法添加
+        注意点:
+            1. 事件名称不需要添加on
+            2. 后添加的不会覆盖先添加的
+            3. 只支持最新的浏览器IE9
+        oBtn.addEventListener("click", function () {
+            alert("addEventListener");
+        });
+    3. 通过attachEvent方法添加 
+        注意点:
+            1. 事件名称必须加上on
+            2. 后添加的不会覆盖先添加的
+            3. 只支持低版本的浏览器
+        oBtn.attachEvent("onclick", function () {
+            alert("attachEvent");
+        });
+    兼容性的处理
+        addEvent(oBtn, "click", function () {
+            alert("addEvent");
+        });
+        function addEvent(obj, name, fn) {
+            if(obj.attachEvent){
+                obj.attachEvent("on" +_name, fn);
+            }else{
+                obj.addEventListener(name, fn);
+            }
+        }
