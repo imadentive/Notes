@@ -899,6 +899,10 @@ DOM
                     oDiv.onmouseenter = function () {
                         console.log("onmouseenter");
                     }
+
+                onmouseover和onmouseenter的区别
+                    onmouseover移入到子元素也会被触发
+                    onmouseenter移入到子元素不会被触发
             2. 监听鼠标移出元素
                 1. onmouseout
                     oDiv.onmouseout = function () {
@@ -909,6 +913,10 @@ DOM
                     oDiv.onmouseleave = function () {
                         console.log("onmouseleave");
                     }
+
+                onmouseout和onmouseleave
+                    onmouseout移出到子元素也会被触发
+                    onmouseleave移出到子元素不会被触发
             3. 监听鼠标在元素中移动
                 oDiv.onmousemove = function () {
                     console.log("onmousemove");
@@ -998,3 +1006,169 @@ DOM
                 obj.addEventListener(name, fn);
             }
         }
+
+事件对象
+    当注册的事件被触发的时候, 系统就会自动创建一个事件对象, 并且返回给我们
+    事件对象就是一个系统自动创建的对象
+    注意点:
+        在高级版本的浏览器中, 会自动将事件对象传递给回到函数
+        在低级版本的浏览器中, 不会自动将事件对象传递给回调函数
+        在低级版本的浏览器中, 需要通过window.event来获取事件对象
+    var oBtn = document.querySelector("button");
+    oBtn.onclick = function (event) {
+        // console.log(event);
+        event = event || window.event;
+    }
+    禁用默认行为
+        1. return false;  开发推荐
+        2. event = event || window.event;
+           event.preventDefault();
+           高级版本浏览器才支持
+           老版本IE需要使用event.returnValue = false;
+
+    事件的三个阶段
+        1. 捕获阶段   (从外向内)
+        2. 当前目标阶段
+        3. 冒泡的阶段 (从内向外)
+        注意点:
+            三個階段不會同時出現
+            要么捕获和当前
+            要么当前和冒泡
+    
+    设置事件是捕获还是冒泡?
+        需要通过addEventListener方法, 因为这个方法接收三个参数
+        第一个参数: 事件的名称
+        第二个参数: 回调函数
+        第三个参数: false冒泡  / true 捕获
+
+        注意点:
+            onXXXX的属性, 不接收任何参数, 所以默认就是冒泡
+            attachEvent方法, 只能接收两个参数, 所以默认就是冒泡
+            所以如果想指定为捕获, 只能使用addEventListener方法
+
+    事件对象中eventPhase属性的作用是用于获取当前事件的阶段
+        oBox.addEventListener("click", function (event) {
+            event = event || window.event;
+            console.log(event.eventPhase, "box");
+        }, false);
+    
+    如何获取当前触发事件的真实元素
+        可以通过事件对象的target属性获取到真正触发事件的那个元素
+        event = event || window.event;
+        console.log(event.target);
+
+    阻止事件冒泡
+        适用于高级版本的浏览器
+        event.stopPropagation();
+        适用于低级版本的浏览器
+        event.cancelBubble = true;
+
+    通过事件对象来获取当前鼠标的位置
+        event.pageX
+        event.pageY
+
+正则表达式
+    创建正则表达式对象
+        1. var reg = new RegExp('规则字符串', '可选项');
+            如果是通过RegExp构造函数创建正则表达式对象,那么规则字符串中的\需要转义
+        2. var reg = /规则字符串/可选项;
+    默认是区分大小写的
+    i就代表忽略大小写
+        var reg = new RegExp('a', 'i');
+    g全局匹配, 一直匹配到末尾
+        var reg = /\d{4}-\d{1,2}-\d{1,2}/g;
+    test
+        检索字符串中的有没有符合规则的值.返回值是true或false
+        var res = reg.test(str);
+    字符串對象match
+        会将符合规则的字符串提取出来返回
+        var resStr = str.match(reg);
+    字符串對象replace
+        会将匹配的字符串替换为指定的字符串
+        var resStr2 = str.replace(reg, "xxoo");
+
+BOM
+    DOM就是一套操作HTML标签的API(接口/方法/属性)
+    BOM就是一套操作浏览器的API(接口/方法/属性)
+
+    BOM中常见的对象
+        window 
+            代表整个浏览器窗口,注意:window是BOM中的一个对象,并且是一个顶级的对象(全局)
+        Navigator
+            代表当前浏览器的信息,通过Navigator我们就能判断用户当前是什么浏览器
+            var agent = window.navigator.userAgent;
+            if(/chrome/i.test(agent)){
+                alert("当前是谷歌浏览器");
+            }else if(/firefox/i.test(agent)){
+                alert("当前是火狐浏览器");
+            }else if(/msie/i.test(agent)){
+                alert("当前是IE浏览器");
+            }else if("ActiveXObject" in window){
+                alert("当前是高级IE浏览器");
+            }
+        Location
+            代表浏览器地址栏的信息
+            获取当前地址栏的地址
+                console.log(window.location.href);
+            设置当前地址栏的地址
+                window.location = "http://www.it666.com";
+                window.location.href = "http://www.it666.com";
+            重新加载界面
+                window.location.reload();
+            如果传递一个true, 会强制清空缓冲
+                window.location.reload(true);
+        History
+            代表浏览器的历史信息,可以通过History来实现刷新/上一步/下一步
+            注意点:出于隐式考虑,我们并不能拿到用户所有的历史记录,只能拿到当前的历史记录
+            history对象的forward就可以前进
+                window.history.forward();
+                只有当前访问过其它的界面, 才能通过forward方法前进
+            history对象的back就可以後退
+                window.history.back();
+                只有当前是从其它界面跳转过来的,才能通过back方法后退
+            history对象的go方法, 也可以实现前进和后退
+                如果给go方法传递1, 就代表前进1个界面, 传递2就代表进行2个界面
+                如果给go方法传递-1, 就代表后退1个界面, 传递-2就代表后退2个界面
+                如果给go方法传递0, 就代表刷新
+                window.history.go(1);
+        Screen
+            代表用户的屏幕信息
+
+getComputedStyle
+    如果想获取到CSS样式,那么可以通过getComputedStyle方法来获取
+        第一个参数: 需要获取样式的元素
+        第二个参数: null
+        返回一个保存了指定元素所有CSS样式的对象
+        getComputedStyle只能用于IE9及以上,否則就必須使用currentStyle(e.g. oDiv.currentStyle.width))
+        var style = window.getComputedStyle(oDiv, null);
+
+    获取样式兼容性的处理  
+        console.log(getStyle(oDiv, "width")); 
+        function getStyle(obj, attr) {
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            }else{
+                return window.getComputedStyle(obj, null)[attr];
+            }
+        }
+
+offsetWidth和offsetHeight
+    获取元素占用空间的大小
+    占用空间 = width + border + paddding
+
+offsetLeft和offsetTop
+    获取元素到第一个定位元素之间的偏移位,
+    如果没有父元素是定位的, 那么就是获取到body的偏移位
+
+    offsetLeft和marginLeft和left的区别
+        offsetLeft: 获取的是距离第一个定位元素或者body的偏移位
+        marginLeft: 获取的是CSS设置的marginLeft的值
+        left: 获取的是CSS设置的left的值
+
+offsetXXXX和style.XXXX的区别
+    offsetXXXX既可以获取行内, 也可以获取CSS样式
+    style.XXXX只能获取行内, 不能获取CSS样式
+    offsetXXXX获取到的宽度和高度, 是元素占用的宽度和高度
+    style.XXXX获取到的宽度和高度, 是元素width和height属性的宽度和高度,也就是不包含border + paddding
+    offsetXXX返回的是数值类型, 而style.XXXX返回的都是字符串
+    offsetXXX是只读的, style.XXXX是可读可写的
