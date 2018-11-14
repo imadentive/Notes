@@ -1172,3 +1172,24 @@ offsetXXXX和style.XXXX的区别
     style.XXXX获取到的宽度和高度, 是元素width和height属性的宽度和高度,也就是不包含border + paddding
     offsetXXX返回的是数值类型, 而style.XXXX返回的都是字符串
     offsetXXX是只读的, style.XXXX是可读可写的
+
+client属性
+    console.log(oDiv.clientWidth);
+    console.log(oDiv.clientHeight);
+    console.log(oDiv.clientLeft);
+    console.log(oDiv.clientTop);
+
+    offsetWidth = width + border + padding
+    clientWidth = width + padding
+    offsetLeft = 距离第一个定位元素的偏移位 || body
+    clientLeft = borderLeft
+
+scroll属性
+    console.log(oDiv.scrollWidth);
+    console.log(oDiv.scrollHeight);
+    scrollHeight:
+        如果内容没有超过元素的范围, 那么就是元素的padding + height
+        如果内容超出了元素的范围, 那么就是padding + height + 超出的高度
+    console.log(oDiv.scrollTop);
+    scrollTop:
+        获取滚动时被移出元素范围的距离(参考点不包括border)
