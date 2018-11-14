@@ -1216,3 +1216,26 @@ scroll属性
                 }
             }
         }
+
+获取网页滚动的距离
+    // 监听网页的滚动
+    window.onscroll = function () {
+        // 1 老版本的谷歌
+        // console.log(document.body.scrollTop);
+        // 2 老版本的其它浏览器
+        // console.log(document.documentElement.scrollTop);
+        // 2 新版本的浏览器
+        // console.log(window.pageYOffset);
+        console.log(getPageScroll().top);
+        console.log(getPageScroll().left);
+    };
+
+    // 兼容性处理
+    function getPageScroll() {
+        var top = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        var left = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
+        return {
+            top: top,
+            left: left
+        }
+    }
