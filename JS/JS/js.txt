@@ -1193,3 +1193,26 @@ scroll属性
     console.log(oDiv.scrollTop);
     scrollTop:
         获取滚动时被移出元素范围的距离(参考点不包括border)
+
+获取浏览器可视区域的大小
+    // 高级版本浏览器
+    console.log(window.innerWidth);
+    console.log(window.innerHeight);
+    // IE8-
+    console.log(document.documentElement.clientWidth);
+    console.log(document.documentElement.clientHeight);
+
+    简单的兼容性处理
+        function getScreen() {
+            if(window.innerWidth){
+                return {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                }
+            }else{
+                return {
+                    width: document.documentElement.clientWidth,
+                    height: document.documentElement.clientHeight
+                }
+            }
+        }
