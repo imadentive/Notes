@@ -1173,6 +1173,9 @@ offsetXXXX和style.XXXX的区别
     offsetXXX返回的是数值类型, 而style.XXXX返回的都是字符串
     offsetXXX是只读的, style.XXXX是可读可写的
 
+offsetX用于获取事件在事件源(触发事件元素)中的偏移位
+    var x = event.offsetX;
+
 client属性
     console.log(oDiv.clientWidth);
     console.log(oDiv.clientHeight);
@@ -1239,3 +1242,4 @@ scroll属性
             left: left
         }
     }
+
