@@ -171,4 +171,14 @@ removeAttr
     $("span").removeAttr("class name") // 删除多个用空格隔开
 
 prop
-    
+    特点和attr方法一致
+    $("span").eq(0).prop("demo", "it666");
+    $("span").prop("demo")
+
+removeProp
+    特点和removeAttr方法一致
+    $("span").removeProp("demo");
+
+官方推荐在操作属性节点时,具有true和false两个属性的属性节点，
+如checked,selected或者disabled使用prop(),其他的使用attr()
+
