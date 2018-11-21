@@ -182,3 +182,19 @@ removeProp
 官方推荐在操作属性节点时,具有true和false两个属性的属性节点，
 如checked,selected或者disabled使用prop(),其他的使用attr()
 
+jQuery操作类相关的方法
+    addClass(class|fn)
+        作用: 添加一个类
+        如果要添加多个,多个类名之间用空格隔开即可
+        $("div").addClass("class1 class2");
+
+    removeClass([class|fn])
+        作用: 删除一个类
+        如果想删除多个,多个类名之间用空格隔开即可
+        $("div").removeClass("class2 class1");
+
+    toggleClass(class|fn[,sw])
+        作用: 切换类
+        有就删除,没有就添加
+        $("div").toggleClass("class2 class1");
+
