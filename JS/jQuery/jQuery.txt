@@ -198,3 +198,223 @@ jQuery操作类相关的方法
         有就删除,没有就添加
         $("div").toggleClass("class2 class1");
 
+jQuery文本值相关的方法
+    html([val|fn])
+        和原生JS中的innerHTML一模一样
+        $("div").html();
+        $("div").html("<p>我是段落<span>我是span</span></p>");
+    text([val|fn])
+        和原生JS中的innerText一模一样
+        $("div").text();
+        $("div").text("<p>我是段落<span>我是span</span></p>");
+    val([val|fn|arr])
+        给input设置和读取value
+        $("input").val();
+        $("input").val("请输入内容");
+
+jQuery操作CSS样式的方法
+    逐个设置
+        $("div").css("width", "100px");
+        $("div").css("height", "100px");
+    链式设置
+        注意点: 链式操作如果大于3步, 建议分开
+        $("div").css("width", "100px").css("height", "100px")
+    批量设置
+        $("div").css({
+            width: "100px",
+            height: "100px",
+            background: "red"
+        });
+    获取CSS样式值
+        $("div").css("background")
+
+jQuery位置和尺寸操作的方法
+    获取元素的宽度(不包含边框,margin,padding等,如果需要考虑进这些的话可以使用innerWidth,outerWidth)
+        $(".father").width()
+    设置元素的宽度
+        $(".father").width("500px")
+    获取元素距离窗口的偏移位
+        $(".son").offset().left
+    设置元素距离窗口的偏移位
+        $(".son").offset({
+            left: 10
+        });
+    获取元素距离定位元素的偏移位
+        $(".son").position().left
+    注意点: position方法只能获取不能设置,可以通过css方法设置
+        $(".son").css({
+            left: "10px"
+        });
+
+scrollTop
+    获取元素滚动的偏移位
+        $(".scroll").scrollTop()
+    设置元素滚动的偏移位
+        $(".scroll").scrollTop(300);
+    获取网页滚动的偏移位
+        注意点: 为了保证浏览器的兼容, 获取网页滚动的偏移位需要按照如下写法
+        $("body").scrollTop()+$("html").scrollTop()
+    设置网页滚动偏移位
+        注意点: 为了保证浏览器的兼容, 设置网页滚动偏移位的时候必须按照如下写法
+        $("html,body").scrollTop(300);
+    scrollLeft用法与scrollTop类似
+
+jQuery事件绑定
+    eventName(fn)
+        编码效率略高/ 部分事件jQuery没有实现,所以不能添加
+        $("button").click(function () {
+            alert("hello lnj");
+        });
+        $("button").click(function () {
+            alert("hello 123");
+        });
+        $("button").mouseleave(function () {
+            alert("hello mouseleave");
+        });
+        $("button").mouseenter(function () {
+            alert("hello mouseenter");
+        });
+    on(eventName, fn)
+        编码效率略低/ 所有js事件都可以添加
+        $("button").on("click", function () {
+            alert("hello click1");
+        });
+        $("button").on("click", function () {
+            alert("hello click2");
+        });
+        $("button").on("mouseleave", function () {
+            alert("hello mouseleave");
+        });
+        $("button").on("mouseenter", function () {
+            alert("hello mouseenter");
+        });
+    注意点:
+        可以添加多个相同或者不同类型的事件,不会覆盖
+    
+jQuery事件移除
+    function test1() {
+        alert("hello lnj");
+    }
+    function test2() {
+        alert("hello 123");
+    }
+    $("button").click(test1);
+    $("button").click(test2);
+    $("button").mouseleave(function () {
+        alert("hello mouseleave");
+    });
+    off方法如果不传递参数, 会移除所有的事件
+        $("button").off();
+    off方法如果传递一个参数, 会移除所有指定类型的事件
+        ("button").off("click");
+    off方法如果传递两个参数, 会移除所有指定类型的指定事件
+        $("button").off("click", test1);
+
+jQuery事件冒泡和默行为
+    $(".son").click(function (event) {
+        alert("son");
+        // return false; // 阻止事件冒泡
+        event.stopPropagation(); // 阻止事件冒泡
+    });
+
+    $("a").click(function (event) {
+        alert("弹出注册框");
+        // return false; // 阻止默认行为(例如表单提交等)
+        event.preventDefault(); // 阻止默认行为
+    });
+
+jQuery事件自动触发
+    trigger
+        如果利用trigger自动触发事件,会触发事件冒泡
+        $(".father").trigger("click");
+        如果利用trigger自动触发事件,会触发默认行为
+        $("input[type='submit']").trigger("click");
+    triggerHandler
+        如果利用triggerHandler自动触发事件, 不会触发事件冒泡
+        $(".father").triggerHandler("click");
+        如果利用triggerHandler自动触发事件, 不会触发默认行为
+        $("input[type='submit']").triggerHandler("click");
+
+jQuery自定义事件
+    想要自定义事件,必须满足两个条件
+    1. 事件必须是通过on绑定的
+    2. 事件必须通过trigger来触发
+    $(".son").on("myClick", function () {
+        alert("son");
+    });
+    $(".son").triggerHandler("myClick");
+
+jQuery事件命名空间
+    想要事件的命名空间有效,必须满足两个条件
+    1. 事件是通过on来绑定的
+    2. 通过trigger触发事件
+    $(".son").on("click.zs", function () {
+        alert("click1");
+    });
+    $(".son").on("click.ls", function () {
+        alert("click2");
+    });
+    $(".son").trigger("click.zs");
+    $(".son").trigger("click.ls");
+
+    利用trigger触发子元素带命名空间的事件,那么父元素带相同命名空间的事件也会被触发.而父元素没有命名空间的事件不会被触发
+    利用trigger触发子元素不带命名空间的事件,那么子元素所有相同类型的事件和父元素所有相同类型的事件都会被触发
+    $(".father").on("click.ls", function () {
+        alert("father click1");
+    });
+    $(".father").on("click", function () {
+        alert("father click2");
+    });
+    $(".son").on("click.ls", function () {
+        alert("son click1");
+    });
+    $(".son").trigger("click.ls");
+    $(".son").trigger("click");
+
+jQuery事件委托
+    $("button").click(function () {
+        $("ul").append("<li>我是新增的li</li>");
+    })
+
+    在jQuery中,如果通过核心函数找到的元素不止一个, 那么在添加事件的时候,jQuery会遍历所有找到的元素,给所有找到的元素添加事件
+    但是当我们新增一个新的li时就无法绑定了,因为新的li不是在入口函数执行时就存在的
+    $("ul>li").click(function () {
+        console.log($(this).html());
+    });
+
+    让ul帮li监听click事件
+    之所以能够监听, 是因为入口函数执行的时候ul就已经存在了, 所以能够添加事件
+    之所以this是li,是因为我们点击的是li, 而li没有click事件, 所以事件冒泡传递给了ul,ul响应了事件,既然事件是从li传递过来的,所以ul必然指定this是谁
+    $("ul").delegate("li", "click", function () {
+        console.log($(this).html());
+    });
+    
+jQuery移入移出事件
+    mouseover/mouseout事件, 子元素被移入移出也会触发父元素的事件
+    $(".father").mouseover(function () {
+        console.log("father被移入了");
+    });
+    $(".father").mouseout(function () {
+        console.log("father被移出了");
+    });
+
+    mouseenter/mouseleave事件,子元素被移入移出不会触发父元素的事件
+    推荐使用
+    $(".father").mouseenter(function () {
+        console.log("father被移入了");
+    });
+    $(".father").mouseleave(function () {
+        console.log("father被移出了");
+    });
+
+    hover既可监听移入也可监听移出,同时子元素被移入移出不会触发父元素的事件
+    $(".father").hover(function () {
+        console.log("father被移入了");
+    },function () {
+        console.log("father被移出了");
+    });
+    如果只放一个函数,则移入移出都触发该函数
+    $(".father").hover(function () {
+        console.log("father被移入移出了");
+    });
+
