@@ -418,3 +418,148 @@ jQuery移入移出事件
         console.log("father被移入移出了");
     });
 
+jQuery显示和隐藏动画
+    时间是毫秒
+    $("div").show(1000, function () {
+        // 作用: 动画执行完毕之后调用
+        alert("显示动画执行完毕");
+    });
+    $("div").hide(1000, function () {
+        alert("隐藏动画执行完毕");
+    });
+    $("div").toggle(1000, function () {
+        alert("切换动画执行完毕");
+    });
+
+jQuery展开和收起动画
+    $("div").slideDown(1000, function () {
+        alert("展开完毕");
+    });
+    $("div").slideUp(1000, function () {
+        alert("收起完毕");
+    });
+    $("div").slideToggle(1000, function () {
+        alert("收起完毕");
+    });
+
+jQuery淡入淡出动画
+    $("div").fadeIn(1000, function () {
+        alert("淡入完毕");
+    });
+    $("div").fadeOut(1000, function () {
+        alert("淡出完毕");
+    });
+    $("div").fadeToggle(1000, function () {
+        alert("切换完毕");
+    });
+    // 0.2爲透明度
+    $("div").fadeTo(1000, 0.2, function () {
+        alert("淡入完毕");
+    })
+
+jQuery自定义动画
+    第一个参数: 接收一个对象, 可以在对象中修改属性
+    第二个参数: 指定动画时长
+    第三个参数: 指定动画节奏, 默认就是swing(開始慢中間快結尾慢)，可省略
+    第四个参数: 动画执行完毕之后的回调函数
+    $(".two").animate({
+        marginLeft: 500
+    }, 5000, "linear", function () {
+        // alert("自定义动画执行完毕");
+    });
+
+    $("button").eq(1).click(function () {
+        $(".one").animate({
+            width: "+=100" // 可以直接加長度
+        }, 1000, function () {
+            alert("自定义动画执行完毕");
+        });
+    });
+    $("button").eq(2).click(function () {
+        $(".one").animate({
+            // width: "hide" // 隐藏
+            width: "toggle"  // 触发显示与隐藏
+        }, 1000, function () {
+            alert("自定义动画执行完毕");
+        });
+    })
+
+jQuery的stop和delay方法
+    delay方法的作用就是用于告诉系统延迟时长
+        $(".one").animate({
+            width: 500
+            // height: 500
+        }, 1000).delay(2000).animate({
+            height: 500
+        }, 1000);
+    stop 
+        立即停止当前动画, 继续执行后续的动画
+            $("div").stop();
+            $("div").stop(false);
+            $("div").stop(false, false);
+        立即停止当前和后续所有的动画
+            $("div").stop(true);
+            $("div").stop(true, false);
+        立即完成当前的, 继续执行后续动画
+            $("div").stop(false, true);
+        立即完成当前的, 并且停止后续所有的
+            $("div").stop(true, true);
+
+jQuery添加节点相关方法
+    内部插入
+    append(content|fn)
+    appendTo(content)
+    会将元素添加到指定元素内部的最后
+    var $li = $("<li>新增的li</li>");
+    $("ul").append($li);
+    $li.appendTo("ul");
+    
+    prepend(content|fn)
+    prependTo(content)
+    会将元素添加到指定元素内部的最前面
+    $("ul").prepend($li);
+    $li.prependTo("ul");
+
+    外部插入
+    after(content|fn)
+    insertAfter(content)
+    会将元素添加到指定元素外部的后面
+    $("ul").after($li);
+    $li.insertAfter("ul");
+
+    before(content|fn)
+    insertBefore(content)
+    会将元素添加到指定元素外部的前面
+    $("ul").before($li);
+    $li.insertBefore("ul");
+    
+jQuery删除节点相关方法
+    remove([expr]) 删除指定元素
+        参数用来filter指定元素
+        利用remove删除之后再重新添加,原有的事件无法响应
+        $("div").remove();
+        $("li").remove(".item"); 
+    detach([expr]) 删除指定元素
+        利用detach删除之后再重新添加,原有事件可以响应
+        var $div = $("div").detach();
+        $("body").append($div);
+    empty 删除指定元素的内容和子元素, 指定元素自身不会被删除  
+        $("div").empty();
+    
+jQuery替换节点相关方法
+    替换所有匹配的元素为指定的元素
+    replaceWith(content|fn)
+        var $h6 = $("<h6>我是标题6</h6>");
+        $("h1").replaceWith($h6);
+    replaceAll(selector)
+        $h6.replaceAll("h1");
+    
+jQuery复制节点相关方法
+    clone([Even[,deepEven]])
+    如果传入false就是浅复制, 如果传入true就是深复制
+    浅复制只会复制元素, 不会复制元素的事件
+        var $li = $("li:first").clone(false);
+        $("ul").append($li);
+    深复制会复制元素, 而且还会复制元素的事件
+        var $li = $("li:first").clone(true);
+        $("ul").append($li);
