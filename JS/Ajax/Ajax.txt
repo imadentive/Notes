@@ -1,11 +1,24 @@
-Ajax get
+Ajax GET
     创建一个异步对象
-        var xmlhttp=new XMLHttpRequest();
+        var xmlhttp;
+        if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        }
+        else
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
     设置请求方式和请求地址
         method：请求的类型；GET 或 POST
         url：文件在服务器上的位置
         async：true（异步）或 false（同步）
         xmlhttp.open("GET", "04-ajax-get.php", true);
+        注意点:
+            在IE浏览器中, 如果通过Ajax发送GET请求, 那么IE浏览器认为
+            同一个URL只有一个结果,所以IE中如果URL没有变化,是不能获取到实时的数据的
+            解决方法就是添加一些随机参数
+            xmlhttp.open("GET","05-ajax-get.txt?t="+(new Date().getTime()),true);
     发送请求
         xmlhttp.send();
     监听状态的变化
@@ -22,9 +35,291 @@ Ajax get
                 if(xmlhttp.status >= 200 && xmlhttp.status < 300 ||
                     xmlhttp.status === 304){
                     // 5.处理返回的结果
-                    console.log("接收到服务器返回的数据");
+                    console.log(xmlhttp.responseText);
                 }else{
                     console.log("没有接收到服务器返回的数据");
                 }
             }
         }
+
+Ajax POST
+    var xhr;
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xhr=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+        xhr=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    // var xhr = new XMLHttpRequest();
+    xhr.open("POST","08-ajax-post.php",true);
+    // 注意点: 以下代码必须放到open和send之间
+    xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xhr.send("userName=zs&userPwd=321");
+    xhr.onreadystatechange = function (ev2) {
+        if(xhr.readyState === 4){
+            if(xhr.status >= 200 && xhr.status < 300 ||
+            xhr.status === 304){
+                // alert("请求成功");
+                alert(xhr.responseText);
+            }else{
+                alert("请求失败");
+            }
+        }
+    }
+
+Ajax封装get和post方法
+    function obj2str(data) {
+        /*
+        {
+            "userName":"lnj",
+            "userPwd":"123456",
+            "t":"3712i9471329876498132"
+        }
+        */
+        data = data || {}; // 如果没有传参, 为了添加随机因子,必须自己创建一个对象
+        data.t = new Date().getTime();
+        var res = [];
+        for(var key in data){
+            // 在URL中是不可以出现中文的, 如果出现了中文需要转码
+            // 可以调用encodeURIComponent方法
+            // URL中只可以出现字母/数字/下划线/ASCII码
+            res.push(encodeURIComponent(key)+"="+encodeURIComponent(data[key])); // [userName=lnj, userPwd=123456];
+        }
+        return res.join("&"); // userName=lnj&userPwd=123456
+    }
+    function ajax(option) {
+        // 0.将对象转换为字符串
+        var str = obj2str(option.data); // key=value&key=value;
+        // 1.创建一个异步对象
+        var xmlhttp, timer;
+        if (window.XMLHttpRequest)
+        {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        }
+        else
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        // 2.设置请求方式和请求地址
+        /*
+        method：请求的类型；GET 或 POST
+        url：文件在服务器上的位置
+        async：true（异步）或 false（同步）
+        */
+        if(option.type.toLowerCase() === "get"){
+            xmlhttp.open(option.type, option.url+"?"+str, true);
+            // 3.发送请求
+            xmlhttp.send();
+        }else{
+            xmlhttp.open(option.type, option.url,true);
+            // 注意点: 以下代码必须放到open和send之间
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.send(str);
+        }
+
+        // 4.监听状态的变化
+        xmlhttp.onreadystatechange = function (ev2) {
+            /*
+            0: 请求未初始化
+            1: 服务器连接已建立
+            2: 请求已接收
+            3: 请求处理中
+            4: 请求已完成，且响应已就绪
+            */
+            if(xmlhttp.readyState === 4){
+                clearInterval(timer);
+                // 判断是否请求成功
+                if(xmlhttp.status >= 200 && xmlhttp.status < 300 ||
+                    xmlhttp.status === 304){
+                    // 5.处理返回的结果
+                    // console.log("接收到服务器返回的数据");
+                    option.success(xmlhttp);
+                }else{
+                    // console.log("没有接收到服务器返回的数据");
+                    option.error(xmlhttp);
+                }
+            }
+        }
+        // 判断外界是否传入了超时时间
+        if(option.timeout){
+            timer = setInterval(function () {
+                console.log("中断请求");
+                xmlhttp.abort();
+                clearInterval(timer);
+            }, option.timeout);
+        }
+    }
+
+    // ajax get
+    ajax({
+        url:"04-ajax-get.php",
+        data:{
+            "userName":"lnj",
+            "userPwd":"123456"
+        },
+        timeout: 3000,
+        type:"get",
+        success: function (xhr) {
+            alert(xhr.responseText);
+        },
+        error: function (xhr) {
+            alert("请求失败");
+        }
+    });
+
+    // ajax post
+    ajax({
+        url:"04-ajax-post.php",
+        data:{
+            "userName":"lnj",
+            "userPwd":"123456"
+        },
+        timeout: 3000,
+        type:"post",
+        success: function (xhr) {
+            alert(xhr.responseText);
+        },
+        error: function (xhr) {
+            alert("请求失败");
+        }
+    });
+
+jQuery封装Ajax
+    $.ajax({
+        url: "09-ajax-jquery.php",
+        type: "get",
+        data: "userName=lnj&userPwd=654321",
+        success: function(msg){
+            alert(msg );
+        },
+        error: function (xhr) {
+            alert(xhr.status);
+        }
+    });
+
+Ajax XML
+    ajax({
+        type:"get",
+        url:"11-ajax-xml.php",
+        success: function (xhr) {
+            // console.log(xhr.responseXML);
+            // console.log(document);
+            var res = xhr.responseXML;
+            console.log(res.querySelector("name").innerHTML);
+            console.log(res.querySelector("age").innerHTML);
+        },
+        error: function (xhr) {
+            console.log(xhr.status);
+        }
+    })
+
+Ajax JSON
+    ajax({
+        type:"get",
+        url:"12-ajax-json.php",
+        success: function (xhr) {
+            // console.log(xhr.responseText);
+            var str = xhr.responseText;
+            /*
+            在低版本的IE中, 不可以使用原生的JSON.parse方法, 但是可以使用json2.js这个框架来兼容
+            */
+            var obj = JSON.parse(str);
+            // console.log(obj);
+            console.log(obj.name);
+            console.log(obj.age);
+        },
+        error: function (xhr) {
+            console.log(xhr.status);
+        }
+    })
+
+Cookie
+    cookie:   会话跟踪技术 客户端
+    session:  会话跟踪技术 服务端
+
+    date.setDate(date.getDate() + 1);
+    document.cookie = "age=33;expires="+date.toGMTString()+";";
+
+    cookie作用: 将网页中的数据保存到浏览器中
+
+    cookie生命周期:
+        默认情况下生命周期是一次会话(浏览器被关闭)
+        如果通过expires=设置了过期时间, 并且过期时间没有过期, 那么下次打开浏览器还是存在
+        如果通过expires=设置了过期时间, 并且过期时间已经过期了,那么会立即删除保存的数据
+    
+    cookie注意点:
+        cookie默认不会保存任何的数据
+        cookie不能一次性保存多条数据, 要想保存多条数据,只能一条一条的设置
+        cookie有大小和个数的限制
+        个数限制: 20~50
+        大小限制: 4KB左右
+    
+    cookie作用范围:
+        同一个浏览器的同一个路径下访问
+        如果在同一个浏览器中, 默认情况下下一级路径就可以访问
+            例如:
+                保存到了www.it666.com/jQuery/Ajax/路径下,
+                我们想在 www.it666.com/jQuery/Ajax/13-weibo/,
+                和 www.it666.com/jQuery/ 路径下也能访问
+        如果在同一个浏览器中, 想让上一级目录也能访问保存的cookie, 那么需要添加一个path属性才可以;
+            document.cookie = "name=zs;path=/;";
+        如果在同一个浏览器中想让同一个domain下面都可以访问的话,可以通过添加一个domain属性设置
+            我们在www.it666.com下面保存了一个cookie,
+            那么我们在edu.it666.com中是无法访问的
+            如果想在edu.it666.com中也能访问, 那么我们需要再添加一个domain属性才可以;
+            document.cookie = "name=zs;path=/;domain=it666.com;";
+    
+    cookie封装
+        function addCookie(key, value, day, path, domain) {
+            // 1.处理默认保存的路径
+            // if(!path){
+            //     var index = window.location.pathname.lastIndexOf("/")
+            //     var currentPath = window.location.pathname.slice(0, index);
+            //     path = currentPath;
+            // }
+            var index = window.location.pathname.lastIndexOf("/")
+            var currentPath = window.location.pathname.slice(0, index);
+            path = path || currentPath;
+            // 2.处理默认保存的domain
+            domain = domain || document.domain;
+            // 3.处理默认的过期时间
+            if(!day){
+                document.cookie = key+"="+value+";path="+path+";domain="+domain+";";
+            }else{
+                var date = new Date();
+                date.setDate(date.getDate() + day);
+                document.cookie = key+"="+value+";expires="+date.toGMTString()+";path="+path+";domain="+domain+";";
+            }
+        }
+        addCookie("gender", "male");
+        addCookie("score", "998", 1, "/", "127.0.0.1");
+
+        function getCookie(key) {
+            // console.log(document.cookie);
+            var res = document.cookie.split(";");
+            // console.log(res);
+            for(var i = 0; i < res.length; i++){
+                // console.log(res[i]);
+                var temp = res[i].split("=");
+                // console.log(temp);
+                if(temp[0].trim() === key){
+                    return temp[1];
+                }
+            }
+        }
+        console.log(getCookie("name"));
+
+        // 默认情况下只能删除默认路径中保存的cookie, 如果想删除指定路径保存的cookie, 那么必须在删除的时候指定路径才可以
+        function delCookie(key, path) {
+            addCookie(key, getCookie(key), -1, path);
+        }
+        delCookie("name", "/");
+
+Hash
+    设置hash
+    window.location.hash = 3;
+    获取hash
+    console.log(window.location.hash.substring(1));
+    
