@@ -1,0 +1,176 @@
+Zepto就是jQuery的移动端版本, 可以看做是一个轻量级的jQuery(但并不是100%覆盖jQuery)
+jQuery和Zepto的区别
+    1 jQuery更多是在PC端被应用，因此，考虑了很多低级浏览器的的兼容性问题；而Zepto.js则是直接抛弃了低级浏览器的适配问题，显得很轻盈；
+    2 Zepto.js在移动端被运用的更加广泛；
+    3 jQuery的底层是通过DOM来实现效果的， zepto.js是用css3来实现的；
+    4 Zepto.js可以说是轻量级版本的jQuery
+
+<!--引入核心模块；包含许多jQuery中常见方法-->
+<script src="js/zepto.js"></script>
+<!--引入zepto事件模块, 包含了常见的事件方法on/off/click ...-->
+<script src="js/event.js"></script>
+<!--引入zepto高级选择器模块, 包含了jQuery中的高级选择器-->
+<script src="js/selector.js"></script>
+<!--引入zepto动画模块-->
+<script src="js/fx.js"></script>
+<!--引入zepto动画模块的常用方法-->
+<script src="js/fx_methods.js"></script>
+<!--引入zepto的移动端事件模块-->
+<script src="js/touch.js"></script>
+
+zepto框架是一个模块化的框架, 将不同的功能封装到了不同的模块中
+这样做的好处也是为了瘦身, 让我们使用起来更加轻量级
+
+tap事件
+    1. 无论是PC端还是移动端都支持click的事件, 而且不仅仅是支持jQuery和zepto的原生JS的也支持
+    2. 但是在企业开发中, 如果是要在移动端监听点击事件,
+        1 一般情况下不会使用onclick事件来监听
+        2 因为移动端支持的手势比较多(点击/双击/拖拽/捏合/轻扫....), 所以移动端在监听click事件的时候会有100~300ms的延迟(系统需要等待判断是否是双击..)
+        3 但是在移动端的网页中几乎不会用到双击, 而且移动端对响应的速度要求也很高
+    3. 在移动端如果需要监听单击事件, 那么请使用tap事件
+    注意点: tap事件是zepto自己封装的(利用系统的touch相关事件), 不是系统自带的
+
+    $("div").tap(function () {
+        console.log("被点击了");
+    });
+
+    自己实现一下tap
+        实现单击事件思路:
+            1. 只有一根手指
+            2. 按下的时间和离开的时间不能相差太久 20ms
+            3. 按下的位置和离开的位置不能相差太多 5px
+
+        function myTap(dom, fn) {
+            // 安全校验
+            if(!dom || !(dom instanceof HTMLElement)){
+                return;
+            }
+            var startTime, startX, startY;
+            // 1.添加手指按下的事件
+            dom.addEventListener("touchstart", function (event) {
+                // 1.判断是否只有一根手指
+                if(event.targetTouches.length > 1){
+                    // 有多根手指
+                    return;
+                }
+                // 2.记录当前按下的时间
+                startTime = Date.now();
+                // 3.记录当前按下的位置
+                startX = event.targetTouches[0].clientX;
+                startY = event.targetTouches[0].clientY;
+            });
+            // 2.添加手指离开的事件
+            dom.addEventListener("touchend", function (event) {
+                // 1.判断是否只有一根手指
+                if(event.changedTouches.length > 1){
+                    // 有多根手指
+                    return;
+                }
+                // 2.判断离开时和按下时的时间差
+                if(Date.now() - startTime > 150){
+                    // 长按了, 不是单击
+                    console.log("超过时间了");
+                    return;
+                }
+                // 3.判断离开时的位置和按下时的位置差
+                var endX = event.changedTouches[0].clientX;
+                var endY = event.changedTouches[0].clientY;
+                if(Math.abs(endX - startX) > 5 ||
+                    Math.abs(endY - startY) > 5){
+                    // 拖拽or轻扫
+                    return;
+                }
+                // 告诉外界是一个单击事件
+                fn && fn();
+            });
+        }
+
+        myTap(oDiv, function () {
+            console.log("单击事件");
+        });
+
+touch相关事件
+    touchstart : 当手指触摸到指定元素时触发
+    touchmove:   当手指在指定元素上移动时触发
+    touchend: 当手指离开指定元素时触发
+
+    注意点:
+        1. 如果要添加移动端的touch相关的事件, 推荐使用addEventListener来添加
+            不推荐使用on来添加
+        2. 如上的事件, 当前在PC端无效
+    
+    var oDiv = document.querySelector("div");
+    oDiv.addEventListener("touchstart", function () {
+        console.log("手指按下");
+    });
+    oDiv.addEventListener("touchmove", function () {
+        console.log("手指移动");
+    });
+    oDiv.addEventListener("touchend", function () {
+        console.log("手指离开");
+    });
+
+    touch事件对象
+        1. 移动端的touch事件也是一个事件, 所以被触发的时候系统也会传递一个事件对象给我们
+        2. 传递给我们的事件对象中有三个子对象比较重要
+
+        touches:       保存了屏幕上所有手指的列表
+        targetTouches: 保存了元素上所有手指的列表
+        changedTouches: 包含了刚刚与屏幕接触的手指或者刚刚离开屏幕的手指
+
+        在移动端: touches和targetTouches中保存的数据是一样的
+
+        按下一个手指
+            touches 1
+            targetTouches 1
+            changedTouches 1
+        
+        再按下一个手指
+            touches 2
+            targetTouches 2
+            changedTouches 1
+        
+        有一个手指离开
+            touches 1
+            targetTouches 1
+            changedTouches 1
+
+        又有一个手指离开
+            touches 0
+            targetTouches 0
+            changedTouches 1
+
+    touch事件的XY
+        无论是event对象中的touches/targetTouches/changedTouches都是一个伪数组
+        所以我们想要获取手指位置的时候,需要从伪数组中取出需要获取的那个手指对象
+
+        获取手指距离屏幕左上角的位置
+        event.targetTouches[0].screenX
+        event.targetTouches[0].screenY
+
+        获取相对于当前视口的距离
+        event.targetTouches[0].clientX
+        event.targetTouches[0].clientY
+
+        获取相对于当前页面内容的距离
+        event.targetTouches[0].pageX
+        event.targetTouches[0].pageY
+
+    touch事件的点透问题
+        oTap.addEventListener("touchstart", function () {
+            // 如果两个元素是重叠的(一个在另一个上面)
+            // 并且上面一个监听了touchstart事件, 下面一个监听了click事件
+            // 那么如果上面一个元素触发touchstart事件之后消失了, 那么就会出现点透问题
+            this.style.display = "none";
+        });
+
+        // 通过zepto封装的tap事件
+        // 注意点: 看上去没有, 但是有时候也会穿透
+        // 所以zepto还没有有效的解决点透的问题
+        $(oTap).tap(function () {
+            oTap.style.display = "none";
+        });
+
+        oClick.addEventListener("click", function () {
+            console.log("lnj");
+        });
