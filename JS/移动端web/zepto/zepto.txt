@@ -174,3 +174,18 @@ touch相关事件
         oClick.addEventListener("click", function () {
             console.log("lnj");
         });
+
+        通过fastclick框架可以解决该问题
+            1. 导入fastclick.js
+            2. 注册fastclick事件
+                所有元素都会被注册fastclick事件
+                FastClick.attach(document.body);
+            3. 使用fastclick
+                注意点: 这里的click并不是系统的click, 而是fastclick事件
+                oTap.addEventListener("click", function () {
+                    oTap.style.display = "none";
+                });
+
+                oClick.addEventListener("click", function () {
+                    console.log("lnj");
+                });
