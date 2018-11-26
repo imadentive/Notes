@@ -189,3 +189,201 @@ touch相关事件
                 oClick.addEventListener("click", function () {
                     console.log("lnj");
                 });
+
+swipe事件
+    事件是指手指在元素上滑动
+    $("div").swipe(function () {
+        console.log("滑动事件");
+    });
+    $("div").swipeLeft(function () {
+        // console.log("左滑动");
+        $(this).animate({left: "0px"}, 1000);
+    });
+    $("div").swipeRight(function () {
+        // console.log("右滑动");
+        $(this).animate({left: "100px"}, 1000);
+    });
+    $("div").swipeUp(function () {
+        // console.log("上滑动");
+        $(this).animate({top: "0px"}, 1000);
+    });
+    $("div").swipeDown(function () {
+        // console.log("下滑动");
+        $(this).animate({top: "100px"}, 1000);
+    });
+
+hover事件
+    注意点: 移动端无法使用移入移出事件
+
+iscroll
+    iScroll是一个高性能，资源占用少，无依赖，多平台的javascript滚动插件
+    iscroll.js基本使用
+        1 按照框架的需要搭建一个三层的结构
+        2 引入iscroll.js框架
+        3 创建一个IScroll对象, 把需要滚动的容器给它
+
+    <div class="njtest">
+        <div>
+            <p>我是第1行内容</p>
+            <p>我是第2行内容</p>
+            ...
+        </div>
+    </div>
+
+    var myScroll = new IScroll('.njtest', {
+        mouseWheel: true, // 开启鼠标滚动滚动
+        scrollbars: true // 开启滚动条, 但是容器必须是定位的, 否则滚动条的位置不对
+    });
+
+    // 相关常用的回调函数
+    myScroll.on("beforeScrollStart", function () {
+        console.log("手指触摸, 还没有开始滚动");
+    });
+    myScroll.on("scrollStart", function () {
+        console.log("开始滚动");
+    });
+    myScroll.on("scrollEnd", function () {
+        console.log("结束滚动");
+    });
+
+swiper
+    Swiper是纯javascript打造的滑动特效插件，面向手机、平板电脑等移动终端。
+    Swiper能实现触屏焦点图、触屏Tab切换、触屏多图切换等常用效果。
+    Swiper开源、免费、稳定、使用简单、功能强大，是架构移动终端网站的重要选择！
+
+    使用
+        1 引入对应的css和js文件
+        2 按照框架的需求搭建三层结构
+        3 创建一个Swiper对象, 将容器元素传递给它
+
+    <div class="njtest">
+        <ul class="swiper-wrapper">
+            <li class="swiper-slide">slider1</li>
+            <li class="swiper-slide">slider2</li>
+            <li class="swiper-slide">slider3</li>
+        </ul>
+    </div>
+
+    var mySwiper = new Swiper('.njtest', {
+        loop: true,
+        autoplay: true,
+        // 如果需要分页器
+        pagination: {
+            el: '.swiper-pagination',
+        },
+        // 如果需要前进后退按钮
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        // 如果需要滚动条
+        scrollbar: {
+            el: '.swiper-scrollbar',
+        },
+    });
+
+Animate
+    Animate.css是一个css动画样式库，其目标是让CSS动画像喝水一样容易（Just-add-water CSS Animation）
+    Animate.css是一个来自国外的CSS3动画库，它预设了抖动（shake）、闪烁（flash）、弹跳（bounce）、翻转（flip）、旋转（rotateIn\/rotateOut）、淡入淡出（fadeIn\/fadeOut）等多达70多种动画特效，几乎包含了所有常见的动画特效。
+    浏览器兼容，Animate.css底层是通过css3实现的，当然是只兼容支持CSS3 animate属性的浏览器： IE10+、Firefox、Chrome、Opera、Safari。
+
+    使用:
+        1 引入animate.css的文件
+        2 给需要执行动画的元素添加类名
+            animated infinite bounce delay-2s
+            第一个animated是一个基类, 只要元素需要执行动画就必须添加这个类型
+            第二个infinite是动画执行的次数, 默认只执行一次, infinite可以无限执行, 此类名是可选的
+            第三个bounce是动画名称
+            第四个delay-xx, 延迟时间, 此类名是可选的
+    <div class="animated infinite flip delay-1s"></div>
+
+    框架的定制:
+        所有的CSS框架都可以随意定义, 但是一定要注意不要直接修改框架
+        而是在自己的CSS中覆盖
+
+WOW
+    什么是WOW.js?
+        对Animate.css的扩充, 让页面滚动更有趣
+        通过WOW.js，可以在页面逐渐向下滚动的过程中逐渐释放这些动画效果。也就是说：当我们向下滚动页面时，可以省去很多判断条件，让CSS动画逐渐展示出来
+
+    wow.js特点:
+        1 轻量级类库， 不依赖jQuery，超简单的安装和使用，与animate.css配合，只需要短短几行代码就可以实现很多特效。
+        2 容易定制，我们可以改变动画去设置喜欢的风格、延迟、长度、偏移和迭代等等。
+
+    兼容性:
+        WOW.js要和animate.css配合使用，所有其也只兼容支持CSS3 animate属性的浏览器：IE10+、Firefox、Chrome、Opera、Safari。
+
+    注意点:
+        WOW.js实例的动画只能加载一次，如果要重新执行动画必须要进行刷新
+        但是在实际开发中，更多时候动画是只加载一次，否则会造成视觉错乱
+
+    使用:
+        1 引入animate.css
+        2 引入wow.js
+        3 给需要执行动画的元素添加类名
+            wow slideInLeft
+            第一个参数: 是一个基类, 需要需要执行动画必须添加这个类
+            第二个参数: 动画的名称
+        4 在JavaScript中初始化wow.js
+
+    <div class="box">
+        <div class="f-left wow slideInLeft" data-wow-delay="2s"></div> // 延迟两秒执行
+        <div class="r-right wow slideInRight" data-wow-iteration="3"></div> // 执行三次
+    </div>
+
+    new WOW().init();
+
+scrollReveal
+    scrollReveal是一个兼容PC端和移动设备的滚动动画库。不同的是 WOW.js的动画只播放一次，而scrollReveal.js的动画可以播放一次或无限次
+
+    scrollReveal特点:
+        1 同时兼容PC端和移动端
+        2 0依赖（不依赖于jQuery，也不依赖于animate.css）
+        3 定制性高，使用简单方便快捷
+        4 和animte.css, WoW一样, 不支持低版本浏览器(IE10+)
+    
+    使用:
+        1.引入框架
+        2.搭建结构体
+        3.创建ScrollReveal对象
+        4.调用ScrollReveal对象的reveal方法, 将需要执行动画的元素给它
+
+    <ul>
+        <li class="test"></li>
+        <li class="test"></li>
+        <li class="test"></li>
+        <li class="test"></li>
+        ...
+    </ul>
+
+    var sReveal = ScrollReveal();
+    sReveal.reveal('.test', {
+        reset: true, // 重置动画, 开启滚动时往返都有动画, 默认只有向下滚动有动画
+        duration: 3000, // 动画持续的时间
+        delay: 0, // 动画延迟时间
+        rotate: {x: 0, y: 0, z: 45}, // 指定过渡的角度
+        opacity: 0.2, // 初始化透明度
+        scale: 0.8, // 初始化缩放比例
+        distance: "500px", // 初始化默认的偏移位
+        origin: "bottom", // 初始化默认偏移位的方向
+        easing: "ease-in-out", // 指定动画的运动方式(匀速/缓动)
+        beforeReveal: function () {
+            // 动画开始之前的回调
+            // console.log("动画开始");
+        },
+        afterReveal: function () {
+            // 动画结束时放的回调
+            // console.log("动画结束");
+        },
+        beforeReset: function () {
+            // 动画开始被重置
+            // 什么是动画重置?
+            // 执行动画的元素离开屏幕之后就会被重置
+            // 重置就是重新设置为动画开始之前的默认样式
+            console.log("动画开始被重置");
+        },
+        afterReset: function () {
+            // 动画重置结束
+            console.log("动画重置结束");
+        }
+    });
