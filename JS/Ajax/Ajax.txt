@@ -414,3 +414,33 @@ jsonP
                 alert(xhr.status);
             }
         });
+
+JS模板引擎
+    在企业开发中经常都会遇到很多小盒子的长相一样,内容不一样.
+    那么这个时候就可以使用JS模板引擎来简化代码
+
+    使用步骤:
+        1 引入模板引擎
+        2 从服务器获取数据
+        3 编写模板相关的代码
+    注意点: 模板相关的代码必须放到获取数据之前
+
+    <script src="js/template-web.js"></script>
+    <script id="nj" type="text/html">
+        <!--
+        <%=对象中的key%>
+        以上代码的含义: 根据指定的key获取传递过来对象中的数据
+        -->
+        <h1><%=title%></h1>
+        <ul>
+            <% for( var i = 0, len = list.length; i < len; i++){ %>
+                <li><%=list[i]%></li>
+            <% } %>
+        </ul>
+    </script>
+
+    var data = {
+        title: "王者荣耀",
+        list: ['荆轲', '兰陵王', '孙悟空', '鲁班', '孙尚香', '百日守约']
+    };
+    var html = template('nj', data);
