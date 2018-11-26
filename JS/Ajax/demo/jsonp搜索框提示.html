@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+<input type="text">
+<ul></ul>
+<script>
+    /*
+    1.百度搜索请求的地址
+    通过我们的观察, 发现是通过jsonp获取的数据, 并且是使用的jQuery
+    https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=123&cb=jQuery110207922527968088777_1542807506580
+
+    2.百度jsonP返回的数据
+    jQuery110207922527968088777_1542807506580({q:"123",p:false,s:["12306","12306铁路客户服务中心","12306火车票网上订票官网","12333","12345","12366","12315","12366电子税务局","12329","12320"]});
+    */
+$(function () {
+
+
+    var timerId = null;
+    $("input").on("input", function () {
+        var word = this.value;
+        // 函数节流
+        clearTimeout(timerId);
+        timerId = setTimeout(function () {
+            // 拼接需要请求的路径
+            var myURL = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+ word;
+
+            $.ajax({
+                url: myURL,
+                type: "get",
+                dataType: "jsonp", // 告诉jQuery以jsonp形式来请求数据
+                jsonp:"cb",
+                success: function(msg){
+                    newItem(msg.s);
+                },
+                error: function (xhr) {
+                    alert(xhr.status);
+                }
+            });
+        }, 1000)
+    });
+    function newItem(array) {
+        $("ul>li").remove();
+       for(var i = 0, len = array.length; i < len; i++){
+           var $li = $("<li>"+array[i]+"</li>");
+           $("ul").append($li);
+       }
+    }
+});
+</script>
+</body>
+</html>

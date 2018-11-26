@@ -376,19 +376,41 @@ jsonP
     json和jsonp的关系: 老婆和老婆饼 / 雷锋和雷峰塔
 
     jsonP的优化
-        1. 当前使用方式相关的问题
+        当前使用方式相关的问题
             1 服务器返回的变量名称, 或者函数的名称必须和本地定义的一致才能使用
               在企业开发中99.9%的情况都是返回一个函数, 函数中存储了需要的数据
             2 当前的使用方式有加载顺序的限制, 必须先定义再使用, 否则会报错
               默认情况下script标签是同步加载(前面加载完才会加载后面)
 
-        2. 解决客户端和服务器函数名称必须一致的问题
-            1 客户端通过URL参数告诉服务器, 需要执行函数的名称
-            2 服务器动态获取客户端传递的参数, 返回该参数名称的函数调用即可
+        解决客户端和服务器函数名称必须一致的问题
+            客户端通过URL参数告诉服务器, 需要执行函数的名称
+            服务器动态获取客户端传递的参数, 返回该参数名称的函数调用即可
             <script src="http://127.0.0.1:80/Ajax/20-jsonp.php?callback=abc"></script>
 
-        3. 解决script标签先后顺序的问题
-            不要编写script标签, 通过js代码来创建添加script标签
+        解决script标签先后顺序的问题
+            不要编写script标签, 通过js代码来手动创建添加script标签
+            通过手动创建的script标签会异步获取数据
             var sEle = document.createElement("script");
             sEle.src = "http://127.0.0.1:80/Ajax/20-jsonp.php?callback=abc";
             document.body.appendChild(sEle);
+
+    jQuery中的jsonP
+        只要指定jQuery的Ajax方法的dataType等于jsonp, 就可以使用跨域获取数据
+        jQuery的Ajax方法会将服务器存储到返回函数中的数据提取出来返回给我们
+            jQuery在发送请求的时候通过URL的参数已经告诉服务器回调函数的名称了
+            这个名称是jQuery随机生成的一个名称, 通过callback=jQuery233217392718
+            如果不想使用jQuery随机生成的函数名称, 可以自定义
+
+        $.ajax({
+            url: "http://127.0.0.1:80/Ajax/20-jsonp.php",
+            type: "get",
+            dataType: "jsonp", // 告诉jQuery以jsonp形式来请求数据
+            jsonp: "callback", // 指定服务器提取函数名称的key
+            jsonpCallback: "lnj", // 指定回调函数的名称
+            success: function(msg){
+                console.log(msg);
+            },
+            error: function (xhr) {
+                alert(xhr.status);
+            }
+        });
