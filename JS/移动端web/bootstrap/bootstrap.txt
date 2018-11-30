@@ -1,0 +1,11 @@
+Bootstrap3, 如果需要支持IE8, 那么必须额外引入一个JS文件
+    Internet Explorer 8 需要 Respond.js 配合才能实现对媒体查询（media query）的支持
+    Respond.js如果网页在本地直接打开会出现错误, 只能在服务器环境(WAMP, Webstorm)打开
+
+为了保证老版本的IE也能够正常的渲染界面, 那么需要引入以下的标签
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+告诉浏览器运行最新的渲染模式下, 来进行渲染
+
+为了保证国产浏览器也能很好的渲染界面, 那么需要引入以下的标签
+<meta name="renderer" content="webkit">
+告诉浏览器用webkit内核渲染, 不要使用IE内核渲染
