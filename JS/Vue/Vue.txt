@@ -344,5 +344,204 @@ Vue常用指令
         v-on:注意点:
             1. 绑定的方法名称可以写(), 也可以不写()
             2. 绑定方法名称的时候, 可以给方法传递参数
-            3. 如果在methods定义的方法中先访问data中的数据, 必须加上this
+            3. 如果在methods定义的方法中想访问data中的数据, 必须加上this
+
+            <button @click="myFn('lnj')">我是按钮</button>
+
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: '指趣学院'
+                },
+                methods: {
+                    myFn: function (data) {
+                        alert(this.msg + data);
+                    }
+                }
+            });
+
+        按键修饰符
+            1. keyup用于监听键盘按键事件
+            2. 自定义键盘修饰符
+            
+            <!--监听系统提供的按键-->
+            <!--<input type="text" @keyup.enter="myFn">-->
+            <!--监听自定义的按钮-->
+            <!--<input type="text" @keyup.113="myFn">-->
+            <input type="text" @keyup.f2="myFn">
+
+            Vue.config.keyCodes.f1 = 112
+            Vue.config.keyCodes.f2 = 113;
+
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: '指趣学院'
+                },
+                methods: {
+                    myFn: function () {
+                        alert("被执行了");
+                    }
+                }
+            });
+
+    自定义全局指令
+        可以通过Vue.directive("指令名称", {});来自定义指令
+            第一个参数: 指令名称
+                注意点: 这里指定的名称不用加上v-, Vue会自动添加
+            第二个参数: 是一个对象, 对象中有很多Vue自带的方法, 会在特殊的时机自动执行
         
+        bind：只调用一次，指令第一次绑定到元素时调用。在这里可以进行一次性的初始化设置
+        inserted：被绑定元素插入父节点时调用 
+
+        <div id="app">
+            <input type="text" value="lnj" v-focus>
+        </div>
+
+        Vue.directive("focus", {
+            /*
+            bind: 此时仅仅代表DOM元素以及被加载到内存了, 但是还没有渲染到界面上
+            第一个参数: 绑定指令的那个元素, 是一个原生的JS对象
+            */
+            // bind: function (el) {
+            //     // 只有元素已经被渲染到界面上,才能聚焦,所以此时不会触发聚焦效果
+            //     el.focus();
+            // }
+            inserted: function (el) {
+                el.focus();
+            }
+        });
+
+        <!--给自定义指令传递参数, 需要使用单引号括起来-->
+        <p v-color="'blue'">我是段落</p>
+
+        Vue.directive("color", {
+            /*
+            bind: 此时仅仅代表DOM元素以及被加载到内存了, 但是还没有渲染到界面上
+            第一个参数: 绑定指令的那个元素, 是一个原生的JS对象
+            第二个参数: 系统会传递一个对象给我们, 对象中保存了指令的名称/传递的参数等
+            */
+            bind: function (el, binding) {
+                // 元素对应的事件不能在bind生命周期函数中设置
+                // 元素对应的样式可以在bind生命周期函数中设置
+                // 事件只有被添加(渲染)到界面上,才能执行
+                // 样式只要元素上已经设置了对应的样式, 在添加(渲染)到界面上时候就会自动渲染
+                // el.style.color = "red";
+                // console.log(binding.name);
+                // console.log(binding.value);
+                el.style.color = binding.value;
+            }
+        });
+
+    自定义局部指令
+        全局的指令在所有vm控制的区域中都可以使用
+        局部的指令只能在局部所在的vm控制的区域中使用
+
+        自定义了一个全局的指令
+        Vue.directive("color", {
+            bind: function (el, binding) {
+                el.style.color = binding.value;
+            }
+        });
+
+        let vm2 = new Vue({
+            el: '#app2',
+            data: {
+                msg: '指趣学院'
+            },
+            定义一些局部的指令, 这些指令只能在vm2控制的区域中使用
+            directives: {
+                /*
+                // "指令的名称": 对象
+                "size": {
+                    bind: function (el, binding) {
+                        el.style.fontSize = binding.value + "px";
+                    }
+                }
+                */
+                "size": function (el, binding) {
+                    el.style.fontSize = binding.value + "px";
+                }
+            }
+        });
+
+Vue计算属性
+    <!--
+    1. {{javascript表达式}}
+    2. 虽然模板内的表达式非常便利，但是设计它们的初衷是用于简单运算的。在模板中放入太多的逻辑会让模板过重且难以维护
+    3. 应用场景: 对于任何复杂逻辑，你都应当使用计算属性
+    -->
+    <!--注意点: 计算属性是一个属性, 不是一个函数, 所以使用的时候不能添加()-->
+    <p>{{msgFormat}}</p>
+
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            msg1: 666,
+            msg2: "abcdefg"
+        },
+        /*可以在Vue实例对象的computed中定义计算属性*/
+        computed: {
+            // 定义了一个名称叫做msgFormat的计算属性, 这是一个getter方法
+            msgFormat: function () {
+                return this.msg2.split('').reverse().join('');
+            }
+        }
+    });
+
+    Vue计算属性和函数区别
+        1. 通过函数也可以封装需要处理的代码拿到数据渲染数据, 通过计算属性也可以封装需要处理的代码拿到数据渲染数据
+        2. 函数是没有缓存的, 每次获取都会执行一次函数, 再将执行结果返回给调用者
+        3. 计算属性只要参与计算的数据没有发生变化, 那么只有第一次会执行并且将执行的结果缓存起来, 下一次访问的时候直接返回缓存的结果
+        4. 也就是说函数的效率低(每次都要重新计算), 计算属性的效率高(数据没有变化, 只有第一次计算)
+        5. 应用场景: 如果数据不会频繁的发生变化, 那么推荐使用计算属性
+
+Vue自定义全局过滤器
+    过滤器
+        Vue.js允许你自定义过滤器，可被用于一些常见的文本格式化。
+        过滤器可以用在两个地方：双花括号插值和v-bind 表达式
+    自定义全局过滤器的格式:
+        Vue.filter("过滤器的名称",fn);
+        第一个参数: 过滤器的名称
+        第二个参数: 过滤器对应的方法
+        注意点: 方法默认就有一个参数, 这个参数就是过滤器前面的值
+    如何使用过滤器
+        {{msg | 过滤器的名称}}
+        默认情况下就会将|前面的值传递给过滤器的方法
+        默认情况插入值和绑定值都会使用过滤器过滤之后的数据来填充内容
+
+    注意点: 过滤器可以连续使用
+
+    <p>{{msg | msgFormat | msgFormat2}}</p>
+
+    Vue.filter("msgFormat", function (value) {
+        return value.replace(/学院/g, "大学");
+    });
+    Vue.filter("msgFormat2", function (value) {
+        return value.replace(/大学/g, "幼儿园");
+    });
+
+Vue自定义局部过滤器
+    <div id="app2">
+        <p>{{msg | msgFormat2}}</p>
+    </div>
+
+    let vm2 = new Vue({
+        el: '#app2',
+        data: {
+            msg: '指趣学院, 知播渔学院, 南江学院'
+        },
+        filters:{
+            // 2.定义一个局部的过滤器, 只能在当前vm控制的区域中使用
+            msgFormat2 : function (value) {
+                return value.replace(/学/g, "静");
+            }
+        }
+    });
+
+    注意点: 无论是全局的过滤器还是局部的过滤器除了有默认的参数以外, 还可以传递额外的其它参数
+    <p>{{date | dateFormart('yyyy-MM-dd')}}</p>
+    Vue.filter("dateFormart", function (value, formartStr) {
+        ...
+    }
+
