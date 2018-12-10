@@ -160,7 +160,9 @@ Vue常用指令
     v-for
         基于源数据多次渲染元素或模板块
         类似于JS中的forin循环
+        可以遍历: 数组/对象/字符串/整数
 
+        <li v-for="(value, index) in list">index = {{index}}, value = {{value}}</li>
         <li v-for="(value, index) in [2, 4, 6, 8, 10]">index = {{index}}, value = {{value}}</li>
         
         let vm = new Vue({
@@ -170,3 +172,177 @@ Vue常用指令
                 list: [1, 3, 5, 7, 9]
             }
         });
+
+        遍历对象
+        <li v-for="(value, key) in user">key={{key}}, value={{value}}</li>
+        <li v-for="(value, index) in list">id={{value.id}}, name={{value.name}}, gender={{value.gender}}</li>
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '指趣学院',
+                user: {
+                    id: 1,
+                    name: "lnj",
+                    gender: "male"
+                },
+                list: [
+                    {
+                        id: 1,
+                        name: "lnj",
+                        gender: "male"
+                    },
+                    {
+                        id: 2,
+                        name: "zq",
+                        gender: "female"
+                    }
+                ]
+            }
+        });
+
+        遍历字符串/整数
+        <li v-for="(value, index) in msg">{{value}}</li>
+        <li v-for="(value, index) in 'abcdefg'">{{value}}</li>
+        <li v-for="(value, index) in 10">{{value}}</li>
+        
+    v-bind
+        用于将数据绑定到HTML属性上
+        Mustache语法不能作用在HTML的属性上
+        格式: v-bind:属性名称="绑定的数据"
+        简写: :属性名称="绑定的值"
+        特点:
+        Mustache语法可以在数据的前后添加其它数据
+        v-bind:中可以写合法的JS表达式
+
+        <div id="app">
+            <input type="text" v-bind:value="msg">
+            <input type="text" :value="msg">
+            <input type="text" :value="msg2 + 1">
+        </div>
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '指趣学院',
+                msg2: 7
+            }
+        });
+
+        用于设置样式(给class绑定数据)
+            1. :class="['类名']"
+                注意点: 类名必须用单引号括起来
+                <p :class="['color', 'size', 'active']">我是段落2</p>
+            2. 数组中也可以编写合法的JS表达式(三目) -->  flag ? 'active': ''
+                <p :class="['color', 'size', flag ? 'active': '']">我是段落2</p>
+            3. 表达式可以利用对象来替代  --> {'active': flag}  --> 企业开发推荐
+                key: 就是类名 (类名必须用单引号括起来)
+                值: 就是条件
+                <p :class="['color', 'size',  {'active': flag}]">我是段落2</p>
+            4. 直接通过对象来替代数组
+                <p :class="{'color': true, 'size': false, 'active': true}">我是段落2</p>
+            5. 通过数组一次性绑定多个对象
+                <p :class="[styles1, styles2]">我是段落2</p>
+
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: '指趣学院',
+                    flag: true,
+                    styles1: {  // 企业开发推荐
+                        'color': true,
+                        'size': true,
+                    },
+                    styles2: {
+                        'active': false
+                    }
+                }
+            });
+        
+            6. 直接绑定style
+                注意点: 属性名称如果包含-, 那么必须用单引号括起来
+
+                <p :style="{color: 'purple', 'font-size': '80px', background: 'red'}">我是段落2</p>
+                <p :style="style1">我是段落3</p>
+                <p :style="[style1, style2]">我是段落4</p>
+
+                let vm = new Vue({
+                    el: '#app',
+                    data: {
+                        msg: '指趣学院',
+                        style1: {
+                            color: 'purple',
+                            'font-size': '80px',
+                        },
+                        style2: {
+                            background: 'red',
+                        }
+                    },
+
+                });
+
+    v-on
+        用于给指定的元素绑定事件
+        格式: v-on:事件名称="事件被触发回调函数的名称"
+        简写格式: @事件名称="事件被触发回调函数的名称"
+
+        <div id="app">
+            <button v-on:click="alert('it666');">我是按钮</button>
+            <button v-on:click="myFn">我是按钮</button>
+            <button @click="myFn">我是按钮</button>
+        </div>
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '指趣学院'
+            },
+            /*告诉Vue将来控制区域中可以使用哪些方法(函数)*/
+            methods: {
+                myFn: function () {
+                    alert("itzb.com");
+                }
+            }
+        });
+
+        修饰符
+            .once - 只触发一次回调
+            .prevent - 调用event.preventDefault()
+            .stop - 调用event.stopPropagation()
+            .self - 只当事件是从侦听器绑定的元素本身触发时才触发回调
+            .capture - 添加事件侦听器时使用capture模式
+
+            <!--默认情况下事件可以被反复执行-->
+            <button @click="myFn">我是按钮</button>
+
+            <!--只要添加.once, 那么绑定的事件只能被执行一次-->
+            <button @click.once="myFn">我是按钮</button>
+
+            <!--如果想阻止默认行为, 那么直接在事件名称后面加上.prevent-->
+            <a href="http://www.it666.com" @click.prevent="myFn">我是a标签</a>
+
+            <!--.stop用于阻止事件冒泡, 给谁添加, 谁就不会继续冒泡-->
+            <div class="gFather" @click="myFn3">
+                <div class="father" @click.stop="myFn2">
+                    <div class="son" @click="myFn1"></div>
+                </div>
+            </div>
+
+            <!--.self不会阻止事件冒泡, 但是会跳过当前冒泡, 只有当前元素被触发才会执行对应的方法-->
+            <div class="gFather" @click="myFn3">
+                <div class="father" @click.self="myFn2">
+                    <div class="son" @click="myFn1"></div>
+                </div>
+            </div>
+
+            <div class="gFather" @click.capture="myFn3">
+                <div class="father" @click.capture="myFn2">
+                    <div class="son" @click.capture="myFn1"></div>
+                </div>
+            </div>
+
+        v-on:注意点:
+            1. 绑定的方法名称可以写(), 也可以不写()
+            2. 绑定方法名称的时候, 可以给方法传递参数
+            3. 如果在methods定义的方法中先访问data中的数据, 必须加上this
+        
