@@ -1,0 +1,100 @@
+beforeUpdate: function() {
+    // 只要data中的数据发生了变化就会执行
+    // 执行beforeUpdate的时候, data中的数据已经是最新的了, 但是还没有更新界面上的数据
+    // console.log(this.msg);
+    // console.log(document.querySelector("p").innerText);
+    // console.log(document.querySelector("p").innerHTML);
+},
+updated: function () {
+    // 只要data中的数据发生了变化就会执行
+    // 执行updated的时候, data中的数据已经是最新的了, 并且界面上的数据也被更新了, 也是最新的了
+    console.log(this.msg);
+    console.log(document.querySelector("p").innerText);
+    console.log(document.querySelector("p").innerHTML);
+}
+beforeDestroy: function () {
+    // 执行beforeDestroy的时候, 表示Vue实例即将销毁, 但是还未销毁, 实例中的数据等还可以使用
+    // 最后能使用Vue实例的地址
+},
+destroyed: function () {
+    // 执行destroyed的时候, 表示Vue实例已经完全销毁, 实例中的任何内容都不能被使用了
+}
+
+Vue动画
+    使用类名
+        想给单个元素添加VUE的动画效果,
+        1. 必须把需要执行动画的元素放到Vue提供的transition组件(现在理解为标签)中
+        2. 通过Vue提供的类名设置过渡/动画相关的操作.v-enter, .v-leave-to
+            v-enter: 进入之前, 此时还未开始动画
+            v-leave-to: 离开之后, 此时动画已经结束
+            .v-enter, .v-leave-to {
+                opacity: 0;
+                transform: translateX(500px);
+            }
+        3. 通过Vue提供的类名设置过渡/动画相关的时长.v-enter-active, .v-leave-active
+            v-enter-active/v-leave-active: 动画过程
+            .v-enter-active, .v-leave-active {
+                transition: all 5s;
+            }
+        4. 只要放到transition组件中的元素显示或者隐藏状态发生了改变, Vue就会自动添加过渡/动画
+
+        /*
+        这里的one就是我们在transition中通过name指定的名称
+        以前v-xxx, one-xxx
+        */
+        .one-enter, .one-leave-to {
+            opacity: 0;
+            transform: translateX(500px);
+        }
+        .one-enter-active, .one-leave-active {
+            transition: all 5s;
+        }
+        .two-enter, .two-leave-to {
+            opacity: 0;
+            transform: translateY(500px);
+        }
+        .two-enter-active, .two-leave-active {
+            transition: all 5s;
+        }
+
+        <button @click="toggle()">切换</button>
+
+        <transition name="one">
+            <div v-show="flag"></div>
+        </transition>
+
+        <transition name="two">
+            <div v-show="flag"></div>
+        </transition>
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+            flag: true
+            },
+            methods: {
+                toggle(){
+                    this.flag = !this.flag;
+                }
+            }
+        });
+    
+    使用animate库
+        <link rel="stylesheet" href="css/animate.css">
+
+        <button @click="toggle()">切换</button>
+
+        <!--
+        enter-active-class="指定进入的时候绑定的动画类名"
+        eave-active-class="指定离开的时候绑定的动画类名"
+        注意:
+        如果元素默认就是显示的, 那么第一次不会触发动画
+        如果想第一次就触发, 那么可以再添加一个appear属性
+        -->
+        <transition
+            enter-active-class="animated wobble"
+            leave-active-class="animated bounceOutRight"
+            appear
+        >
+            <div v-show="flag"></div>
+        </transition>
