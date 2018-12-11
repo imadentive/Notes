@@ -545,3 +545,57 @@ Vue自定义局部过滤器
         ...
     }
 
+Vue生命周期
+    1. 什么是生命周期?
+        顾名思义, 从生到死的过程. 从Vue实例创建、运行、到销毁.
+    2. 关注点: 生命周期方法
+        Vue从生到死的过程中, 伴随着各种各样的事件，这些事件会自动触发一些方法，这些方法我们统称为生命周期方法
+        PS: 生命周期钩子 = 生命周期函数 = 生命周期事件
+    3. Vue生命周期方法分类
+        1. 创建期间的生命周期方法
+            beforeCreate:
+            created:
+            beforeMount:
+            mounted:
+        2. 运行期间的生命周期方法
+            beforeUpdate:
+            updated:
+        3. 销毁期间的生命周期方法
+            beforeDestroy:
+            destroyed：
+
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '指趣学院'
+        },
+        methods: {
+            say: function () {
+                console.log("say");
+            }
+        },
+        beforeCreate: function () {
+            // 执行beforeCreate的时候, 表示Vue实例刚出生, 还没有任何的内容
+            // data/methods都没有初始化
+            // console.log(this.msg);
+            // this.say();
+            // console.log(this.say);
+        },
+        created: function () {
+            // 执行created的时候, 表示Vue实例已经初始化好了部分内容, data/methods
+            // 现在vue实例中最早访问到data/methods, 只有在这个方法才能访问
+            // console.log(this.msg);
+            // this.say();
+        },
+        beforeMount: function () {
+            // 执行beforeMount的时候, 表示已经根据数据编译好了模板, 但是还没有渲染到界面上
+            // console.log(document.querySelector("p").innerText);
+            // console.log(document.querySelector("p").innerHTML);
+        },
+        mounted: function () {
+            // 执行mounted的时候, 表示模板已经渲染到界面上了
+            // 此时此刻可以对界面进行其他的操作了
+            console.log(document.querySelector("p").innerText);
+            console.log(document.querySelector("p").innerHTML);
+        }
+    });
