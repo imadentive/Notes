@@ -1260,3 +1260,159 @@ Vue组件
                     }
                 }
             });
+        
+        多层组件之间的数据传递
+            注意点:
+                这个知识点作为了解, 默认情况下孙子想使用爷爷的数据, 必须从爷爷一层一层的往下传递 : 爷爷-->爸爸-->儿子-->使用
+                注意: 在企业开发中, 不会这样使用, 因为太繁琐了, 也不利于我们管理
+            <div id="app">
+                <h1>{{msg}}</h1>
+                <one :parentmsg="msg"></one>
+            </div>
+
+            <template id="one">
+                <div>
+                    <H2>{{parentmsg}}</H2>
+                    <two :onemsg="parentmsg"></two>
+                </div>
+            </template>
+            <template id="two">
+                <H3>{{onemsg}}</H3>
+            </template>
+
+            // 孙子组件
+            let two = {
+                template:'#two',
+                props: ['onemsg']
+            };
+
+            // 儿子组件
+            let one = {
+                template: '#one',
+                components: {
+                    two: two
+                },
+                props:['parentmsg']
+            };
+
+            let vm = new Vue({
+                el: '#app',
+                data: {
+                    msg: '指趣学院'
+                },
+                components: {
+                    one: one
+                }
+            });
+Vuex
+    vuex是Vue配套的公共数据管理工具, 它可以把一些共享的数据保存到Vuex中
+    方便整个程序中任何的组件中都能够很方便的使用
+
+    注意点:
+        vuex是为了共享数据而生的, 所有组件都可以访问vuex中保存的数据
+        但是一定要记住只有需要共享的数据, 我们才放到vuex中来保存
+        如果是不需要共享的数据还是放到组件的data中保存
+
+    如何使用Vuex
+        1.导入vuex
+        2.通过new Vuex.Store();创建数据仓库对象
+        3.通过数据仓库的state属性保存需要共享的数据
+        4.将数据仓库对象绑定到vm上
+        5.通过this.$store.state.***来访问共享的数据
+    
+    <div id="app1">
+        <!--<h1>{{ this.$store.state.msg }}</h1>-->
+        <h1>{{ $store.state.msg }}</h1>
+        <one></one>
+    </div>
+    <div id="app2">
+        <p>{{$store.state.msg}}</p>
+    </div>
+
+    <script src="js/vue.js"></script>
+    <!--引入vuex包, 需要在vue.js后面引入-->
+    <script src="js/vuex.js"></script>
+
+    <template id="one">
+        <div>
+            <H2>{{$store.state.msg}}</H2>
+            <two></two>
+        </div>
+    </template>
+    <template id="two">
+        <H3>{{$store.state.msg}}</H3>
+    </template>
+
+    // 创建一个创库
+    let stroe = new Vuex.Store({
+        // Vuex中的state可以理解为组件中的data
+        state: {
+            msg: "指趣学院"
+        }
+    });
+
+    // 孙子组件
+    let two = {
+        template:'#two',
+    };
+
+    // 儿子组件
+    let one = {
+        template: '#one',
+        components: {
+            two: two
+        },
+    };
+
+    let vm1 = new Vue({
+        el: '#app1',
+        components: {
+            one: one
+        },
+        // 将数据仓库绑定到vm上,
+        // 这样所有vm中的组件都可以使用数据仓库中保存的数据了
+        store: stroe
+    });
+    let vm2 = new Vue({
+        el: '#app2',
+        components: {
+            one: one
+        },
+        store: stroe
+    });
+
+    注意点
+        在企业开发中不要直接修改数据仓库中的数据
+        这种做法违背了Vuex的设计思想, 也不利于我们维护代码
+        this.$store.state.num += 1;
+
+        想要修改state中的数据, 需要调用数据仓库中mutations中定义的方法
+        调用格式: this.$store.commit("方法的名称");
+        注意点: commit最多支持两个参数
+                第一个参数是需要执行的mutations中的方法名称
+                第二个参数是传递给mutations钟方法的额外参数
+        this.$store.commit("increment", "lnj");
+
+        上面这种格式是不是和父元素传递方法给子元素, 然后子元素执行父元素传递的方法很像
+            this.$emit("方法名称");
+
+        let store = new Vuex.Store({
+            // 存储需要共享的数据
+            state: {
+                num: 0
+            },
+            // 存储修改共享数据的方法
+            // 所有修改state中数据的操作都要定义到这里面
+            mutations: {
+                // mutations中的所有方法都有一个默认的参数, 就是state
+                increment(state, name){
+                    console.log(name);
+                    state.num += 1;
+                },
+                subtract(state){
+                    state.num -= 1;
+                }
+            }
+        });
+
+    
