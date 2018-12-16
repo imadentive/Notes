@@ -1304,6 +1304,48 @@ Vue组件
                     one: one
                 }
             });
+
+    Vue渲染组件的第二种方式
+        <div id="app">
+            <p>我是前面</p>
+            <!--<tpl></tpl>-->
+            <p>我是后面</p>
+        </div>
+
+        <template id="tpl">
+            <div>
+                <h1>我是标题2222</h1>
+            </div>
+        </template>
+
+        let tpl = {
+            template: '#tpl'
+        };
+
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '指趣学院'
+            },
+            // 第一种方式
+            // 添加子组件
+            // 可以在父组件中通过标签的形式来使用
+            // 会添加到父组件指定的位置
+            // components: {
+            //     tpl: tpl
+            // }
+
+            // 第二种方式
+            // 渲染组件
+            // 不可以在父组件中通过标签的形式来使用
+            // 会利用return返回的值, 替换整个el指定的元素
+            // render: function (createElement) {
+            //     let html = createElement(tpl);
+            //     return html;
+            // }
+            render: c => c(tpl)
+        });
+
 Vuex
     vuex是Vue配套的公共数据管理工具, 它可以把一些共享的数据保存到Vuex中
     方便整个程序中任何的组件中都能够很方便的使用
@@ -1415,4 +1457,454 @@ Vuex
             }
         });
 
+    store中的计算属性
+    let store = new Vuex.Store({
+        ...
+        // 可以理解为就是组件中的计算属性, 也会缓存, 只有数据发生变化才会重新计算
+        getters: {
+            optionNum(state){
+                console.log("执行getters方法");
+                return "当前的值是------:" + state.num;
+            }
+        }
+    });
+
+Vue特殊特性-ref
+    <div id="app">
+        <button @click="myfn">按钮</button>
+        <p ref="myppp">我是段落</p>
+        <photo ref="myphoto"></photo>
+    </div>
+
+    <template id="photo">
+        <img src="images/fbb.jpg" alt="">
+    </template>
+
+    let photo = {
+        template:'#photo',
+        data(){
+            return {
+                info: "组件中的数据"
+            }
+        },
+        methods: {
+            say(){
+                console.log("组件中的方法");
+            }
+        }
+    };
+
+    let vm = new Vue({
+        el: '#app',
+        components: {
+            photo: photo
+        },
+        methods:{
+            myfn(){
+                // 在Vue中不推荐这种做法, Vue的优势尽量减少直接操作DOM
+                // Vue能够帮助我们减少不必要的DOM操作,解放了用户的双手，让程序员可以更多的时间去关注`业务逻辑`
+                // console.log(document.querySelector("p").innerText);
+
+                // 以下是Vue推荐的格式
+                // this.$refs是Vue提供的一个全局对象
+                // 只要给元素的标签或者自定义的组件添加ref='name'之后就会自动放到this.$refs当中
+                // 我们可以通过this.$refs.name的形式拿到需要操作的DOM元素
+                // 注意点:
+                // 如果ref='name'是添加给了原生DOM元素, 那么拿到的就是原生的DOM元素
+                // 如果ref='name'是添加给了自定义的组件, 那么拿到的就是组件对象
+                // console.log(this.$refs.myppp.innerText);
+                console.log(this.$refs.myphoto.info);
+                this.$refs.myphoto.say();
+            }
+        }
+    });
+
+Vue插槽
+    匿名插槽
+        <div id="app">
+            <tmpl>
+                <!--会将在组件中添加的数据放到模板中的slot组件对应的位置-->
+                <img src="images/fbb.jpg" alt="">
+                <p>已经冰冰凉</p>
+            </tmpl>
+        </div>
+
+        <template id="tmpl">
+            <div>
+                <div>我是头部</div>
+                <!--
+                匿名插槽, 表示一个占位符, 不知道现在需要存放的内容
+                将需要存放的内容交给使用者来确定
+                -->
+                <slot></slot>
+                <!--
+                注意点: 如果模板中有多个slot组件, 那么会将使用者传递的数据拷贝多份,
+                有多少个slot组件就会拷贝几份, 然后替换到slot组件对应的位置
+                -->
+                <slot></slot>
+                <div>我是底部</div>
+            </div>
+        </template>
+
+        let tmpl = {
+            template:'#tmpl'
+        };
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '指趣学院'
+            },
+            components: {
+                tmpl: tmpl
+            }
+        });
+
+    具名插槽
+        <div id="app">
+            <tmpl>
+                <div slot="header">我是头部</div>
+                <img slot="content" src="images/fbb.jpg" >
+                <div slot="footer">我是新增的底部</div>
+            </tmpl>
+        </div>
+
+        <template id="tmpl">
+            <div>
+                <slot name="header">头部默认数据</slot>
+                <slot name="content">中间的默认数据</slot>
+                <slot name="footer">底部的默认数据</slot>
+            </div>
+        </template>
+
+Vue路由
+    对于单页面应用程序来说, 主要通过URL的hash来实现不同页面的切换(URL后面#)
+    哈希对应我们访问网页默认不会有任何的副作用(HTTP请求中不会包含hash)
+    在单页面的应用程序中通过hash的改变来实现切换页面, 这种方式我们就称之为路由
+
+    注意点: 前端的路由的概念和后端的路由的概念不太一样
+
+    使用Vue提供的路由
+        1. 导入Vue路由对应的js文件
+        2. 定义路由的组件
+        3. 通过路由组件, 定义路由
+        4. 通过路由配置创建路由对象
+        5. 将路由对象注册到vm当中
+
+    <div id="app">
+        <!--这里编写a标签的目的是为了修改URL的hash值-->
+        <!--Vue中不推荐这么写-->
+        <!--<a href="#/onepage">显示one界面</a>-->
+        <!--<a href="#/twopage">显示two界面</a>-->
+
+        <!-- 使用 router-link 组件来导航. -->
+        <!-- Vue中推荐使用这种方式 -->
+        <!-- 通过传入 `to` 属性指定链接. -->
+        <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+        <router-link to="/onepage">显示one界面</router-link>
+        <router-link to="/twopage">显示two界面</router-link>
+
+        <!-- 路由出口 -->
+        <!-- 路由匹配到的组件将渲染在这里 -->
+        <router-view></router-view>
+    </div>
+
+    <template id="one">
+        <div>我是第一个界面</div>
+    </template>
+    <template id="two">
+        <div>我是第二个界面222222</div>
+    </template>
+
+    <script src="js/vue.js"></script>
+    <script src="js/vue-router.js"></script>
     
+    // 1. 定义 (路由) 组件
+    let one = {
+        template:'#one'
+    };
+    let two = {
+        template:'#two'
+    };
+
+    // 2.通过路由组件, 定义路由
+    const routes = [
+        // path表示需要监听的路由地址
+        // 例如: path: '/onepage', 那么将来URL如果是
+        // http://www.it666.com#/onepage
+        // 就会自动显示one这个组件
+        // component监听到对应路由地址之后需要显示的组件名称
+        { path: '/onepage', component: one },
+        { path: '/twopage', component: two }
+    ];
+
+    // 3.创建路由对象
+    const router = new VueRouter({
+        routes // (缩写) 相当于 routes: routes
+    });
+
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '指趣学院'
+        },
+        router: router
+    });
+
+    可以通过配置路由选项来实现显示默认界面
+    配置重定向的属性
+    path: '/', redirect:'默认显示的路由地址'
+        const routes = [
+            { path: '/', redirect:'/onepage'},
+            { path: '/onepage', component: one },
+            { path: '/twopage', component: two }
+        ];
+
+    router-link默认是按照a标签来渲染, 但是也可以指定用什么标签来渲染
+        <router-link to="/onepage" tag="button">显示one界面</router-link>
+
+    添加选中时的样式
+        1. 通过覆盖router-link-active类来实现选中状态自定义
+            .router-link-active{
+                background: red;
+            }
+        2. Vue中推荐创建自己的选中属性,这个属性会替代router-link-active(html中就不会有router-link-active这个类名了)
+            .my-active{
+                background: blue;
+            }
+
+            const router = new VueRouter({
+                routes: routes, // (缩写) 相当于 routes: routes
+                linkActiveClass: "my-active"
+            });
+
+    添加路由过渡与动画
+        .v-enter, .v-leave-to {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        .v-enter-active, .v-leave-active {
+            transition: all 1s;
+        }
+
+        <transition mode="out-in">
+            <router-view></router-view>
+        </transition>
+
+    路由传参
+        <!--在指定路由地址的时候可以通过?key=value&key=value的形式来传递参数-->
+        <!--添加参数之后不会影响到路由配置文件的判断-->
+        <router-link to="/onepage?id=666&name=lnj">显示one界面</router-link>
+        <router-link to="/twopage/777/lnj">显示two界面</router-link>
+
+        let one = {
+            template:'#one',
+            created(){ // 组件的生命周期的方法
+                // console.log(this.$route);
+                // console.log(this.$route.query);
+                // console.log(this.$route.query.id);
+                // console.log(this.$route.query.name);
+            }
+        };
+
+        let two = {
+            template:'#two',
+            created(){
+                console.log(this.$route.params);
+                console.log(this.$route.params.id);
+                console.log(this.$route.params.name);
+            }
+        };
+
+        const routes = [
+            { path: '/', redirect:'/onepage'},
+            { path: '/onepage', component: one },
+            /*/:id相当于是一个占位符, 表示以后会传递一个id属性过来*/
+            { path: '/twopage/:id/:name', component: two }
+        ];
+    
+    嵌套路由
+        <div id="app">
+            <router-link to="/onepage" tag="button">显示one界面</router-link>
+
+            <transition mode="out-in">
+                <router-view></router-view>
+            </transition>
+        </div>
+
+        <template id="one">
+            <div>
+                <h3>我是第一个界面</h3>
+                <!--第一个界面中的路由导航-->
+                <router-link to="/onepage/sub1page">显示one的第一个子界面</router-link>
+                <router-link to="/onepage/sub2page">显示one的第二个子界面</router-link>
+                <!--第一个界面中的路由出口-->
+                <router-view></router-view>
+            </div>
+        </template>
+
+         <template id="sub1">
+            <div>第一个子界面</div>
+        </template>
+        <template id="sub2">
+            <div>第222222个子界面</div>
+        </template>
+
+        const routes = [
+            { path: '/', redirect:'/onepage'},
+            {
+                path: '/onepage',
+                component: one,
+                children: [
+                    /*注意点: 子路由的path前面不用加/
+                    * 会自动匹配/onepage/sub1page
+                    * */
+                    { path: 'sub1page', component: sub1 },
+                    { path: 'sub2page', component: sub2 },
+                ]
+            }
+        ];
+    
+    命名视图
+        <div id="app">
+            <router-view name="left" class="left-view"></router-view>
+            <router-view name="right" class="right-view"></router-view>
+        </div>
+
+        const routes = [
+            {
+                path: '/',
+                components: {
+                    left: one,
+                    right: two
+                }
+            },
+        ];
+
+    监听路由变化
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '指趣学院'
+            },
+            router: router,
+            watch: {
+                '$route.path': function (newValue, oldValue) {
+                    console.log(newValue, oldValue);
+                }
+            }
+        });
+
+Vue实例中的watch属性
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            num : 0,
+            value: 0,
+            result: 0
+        },
+        // 监听指定数据的变化, 当某个数据发生变化时候需要进行一些操作, 我们就可以使用watch属性
+        watch: {
+            "num": function (newValue, oldValue) {
+                // console.log(this.num);
+                // console.log(newValue, oldValue);
+                this.result = parseInt(this.num) + parseInt(this.value);
+            },
+            "value": function (newValue, oldValue) {
+                this.result = parseInt(this.num) + parseInt(this.value);
+            }
+        }
+    });
+
+Vue-cli
+    vue-cli是vue官方提供的脚手架工具, 
+    默认已经帮我们搭建好了一套利用webpack开发vue的项目结构
+    时时编译入口JS文件, 存储到内容中, 处理图片/CSS/LESS.... 都已经配置好了
+
+    安装Vue-cli
+        npm i -g vue
+        npm i -g vue-cli
+        vue --version  检查是否安装成功
+
+    在需要生成Vue项目结构的文件夹中打开终端执行如下指令
+        vue init webpack 项目名称
+
+    通过Vue-cli生成的项目结构解读
+        build文件夹: 存储了webpack的相关配置文件(已经配置好了, 一般不需要修改)
+        config文件夹:  存储了webpack的相关配置文件(已经配置好了, 可能需要微调)
+        node_modules文件夹: 存储了依赖的相关的包
+        src文件夹: 代码文件夹
+        |----assets文件夹: 存储项目中自己的一些静态文件(图片/css/js)
+        |----components文件夹: 存储项目中的自定义组件
+        |----router文件夹: 存储Vue路由
+        |----App.vue:根组件
+        |----main.js:入口js文件
+        static: 存储第三方的静态资源(图片/css/js)
+        index.html: 首页
+    
+    在Vue文件中
+        1. 默认情况下style中编写的样式都是全局有效的
+            如果想让当前组件的style中编写的样式只对当前组件有效,
+            那么需要在style标签上添加一个scoped属性
+            <style scoped>
+        2. 如果想使用less/sacss/stylus/
+            1. 安装对应的预解析器(npm i less)
+            2. 给style标签添加一个lang属性
+            <style scoped lang="less">
+
+mintui
+    安装
+        npm i mint-ui -S
+    main.js中
+        1. 导入框架
+            这种用法会将整个框架都导入进行, 打包到部署的项目中, 性能不是很好
+            import MintUI from 'mint-ui'
+            import 'mint-ui/lib/style.css'
+
+            Vue.use(MintUI);
+
+            在vue文件中
+                <mt-button type="danger" @click.nativ="myfn">danger</mt-button>
+
+        2. mintui还提供了另外的一种使用方式, 按需导入
+            先安装插件
+                npm install babel-plugin-component -D
+
+            .babelrc中新增
+                "plugins": ["transform-vue-jsx", "transform-runtime", ["component", [
+                    {
+                    "libraryName": "mint-ui",
+                    "style": true
+                    }
+                ]]]
+
+            import { Tabbar, TabItem } from 'mint-ui';
+        
+            Vue.component(Tabbar.name, Tabbar);
+            Vue.component(TabItem.name, TabItem);
+
+            <mt-tabbar v-model="selected">
+                <mt-tab-item id="商城">
+                    <img slot="icon" src="@/assets/nav-icon-index.png">
+                    商城
+                </mt-tab-item>
+                <mt-tab-item id="分类">
+                    <img slot="icon" src="@/assets/nav-icon-cat.png">
+                    分类
+                </mt-tab-item>
+            </mt-tabbar>
+
+            <script>
+                export default {
+                    name: 'App',
+                    data(){
+                        return {
+                        selected: "商城" // 默认选中商城,与id一致
+                        }
+                    },
+                    methods: {
+                        myfn(){
+                        alert("我被点击了");
+                        }
+                    }
+                }
+            </script>

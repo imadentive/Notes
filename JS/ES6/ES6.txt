@@ -207,3 +207,12 @@ ES6中的类
             }
         }
 
+import & export
+    一个JS文件只能对外暴露一个export default, 外界可以通过import接收我们暴露的数据,接收的时候接收的名称随便写
+        export default function (name, age) {
+            console.log(name, age);
+        }
+    一个JS文件中可以同时对外暴露export default和export, 但是不带default的, 导出的时候用的是什么名称, 那么外界导入的时候也必须用什么名称来接收
+        export let score = 59.5;
+        export let height = 1.2;
+        import abc,{score, height} from './test/test'
