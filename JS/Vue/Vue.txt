@@ -1851,6 +1851,100 @@ Vue-cli
             2. 给style标签添加一个lang属性
             <style scoped lang="less">
 
+企业利用Vue开发的步骤:
+    1. 初始化项目: vue init webpack 项目名称
+    2. 简单的修改配置文件:  修改端口, 自动打开...
+    3. 删除默认项目中多余的代码和文件
+    4. 再进一步的搭建项目结构
+    5. 进一步的修改src文件夹
+        src
+        |----api文件夹: 存放一些和后台交互文件
+        |----assets文件夹: 存放一些自己的静态文件(全局图片/CSS/JS)
+        |----components文件夹: 存放非路由组件
+        |----pages文件夹: 存放路由组件
+        |----filter文件夹: 存放自定义过滤器
+        |----router文件夹: 存放路由
+        |----store文件夹: 存放Vuex
+        |----App.vue: 根组件
+        |----main.js: 入口JS文件
+        static: 存放第三方的静态文件
+    6 项目技术选型:
+        1 基础结构:Vue+Vuex+VueRouter
+        2 网络请求:axios
+        3 CSS预处理器: Sass LESS Stylus Postcss
+            PostCss
+                PostCss是使用NodeJS编写的一款css预处理工具, 类似于sass/less/stylus等预处理工具
+                但是它本身没有太多牛X的功能, 但是它又相当于一个插件平台, 围绕这个平台有很多优秀的插件
+
+                Vue-cli默认给我们集成进来的postcss-url: 就是用于处理url路径的.
+                                        autoprefixer: 就是自动添加浏览器适配的前缀
+                                        cssnano: 自动帮我们优化压缩CSS代码
+        4 导入清空默认样式的resetcss文件, 导入basecss文件
+            import '../static/css/reset.css'
+            import './assets/css/base.css'
+        5 导入fastclick处理移动端的点击事件(延迟100~300毫秒的)
+            npm i fastclick -S
+            import FastClick from 'fastclick'
+            FastClick.attach(document.body);
+        6 如何做适配: 媒体查询/em/rem/vw/js来处理  -> vw
+            相关文章:
+                https://github.com/amfe/lib-flexible
+                https://www.w3cplus.com/mobile/lib-flexible-for-html5-layout.html
+                https://www.w3cplus.com/mobile/vw-layout-in-vue.html
+                https://www.cnblogs.com/nzbin/p/5744672.html
+            1 安装px转换vw相关的postcss插件
+                npm i postcss-aspect-ratio-mini postcss-px-to-viewport postcss-write-svg postcss-cssnext cssnano --S
+                npm i cssnano-preset-advanced --save-dev
+
+                1. postcss-px-to-viewport
+                    自动将项目中的px转换为vm, 也就是说用了这插件, 编写CSS样式的时候就可以直接按照750设计图片标注的大小来编写了, 插件会自动了转换为vw,实现不同视口大小的等比缩放
+                2. postcss-aspect-ratio-mini
+                    主要用来处理img/iframe/video等元素的自适应问题, 让元素根据宽高比自动计算出容器大小, 实现等比缩放
+                3. postcss-write-svg
+                    插件主要用来处理移动端1px的解决方案。该插件主要使用的是border-image和background来做1px的相关处理
+                4. postcss-cssnext
+                    https://www.cnblogs.com/nzbin/p/5744672.html
+            2 修改.postcssrc.js配置文件
+                module.exports = {
+                    "plugins": {
+                        // 主要功有是解决@import引入路径问题。
+                        "postcss-import": {},
+                        // 相关配置可以点击这里。该插件主要用来处理文件，比如图片文件、字体文件等引用路径的处理
+                        "postcss-url": {},
+                        // 用来自动处理浏览器前缀的一个插件
+                        // "autoprefixer": {}
+                        "postcss-aspect-ratio-mini": {},
+                        "postcss-write-svg": { utf8: false },
+                        //由于cssnext和cssnano都具有autoprefixer,事实上只需要一个，所以把默认的autoprefixer删除掉
+                        "postcss-cssnext": {},
+                        "postcss-px-to-viewport": {
+                            // 视口宽度，对应的是我们设计稿的宽度，一般是750
+                            viewportWidth: 750,
+                            // 视口高度，根据750设备的宽度来指定，一般指定1334，也可以不配置
+                            viewportHeight: 1334,
+                            // 指定`px`转换为视窗单位值的小数位数
+                            unitPrecision: 2,
+                            // 指定需要转换成的视窗单位，建议使用vw
+                            viewportUnit: 'vw',
+                            // 指定不转换为视窗单位的类，可以自定义，可以无限添加,建议定义一至两个通用的类名
+                            selectorBlackList: [],
+                            // 小于或等于`1px`不转换为视口单位，你也可以设置为你想要的值
+                            minPixelValue: 1,
+                            // 允许在媒体查询中转换`px`
+                            mediaQuery: false,
+                        },
+                        "cssnano": {
+                            "cssnano-preset-advanced": {
+                                zindex: false,
+                                autoprefixer: false
+                            },
+                        }
+                    }
+                }
+            3 编写CSS的时候直接按照750设计图片编写px即可
+        7 导入项目快捷图标
+            注意点, 在Vue中如果需要设置网页快捷图标, 需要将图标放到static目录中
+
 mintui
     安装
         npm i mint-ui -S
