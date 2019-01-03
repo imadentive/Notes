@@ -1,0 +1,288 @@
+数据库操作
+    创建数据库
+        create database [if not exists] 数据库名称 [字符编码];
+
+        示例一:
+        在MySQL中创建一个名称叫做stu1的数据库
+        create database stu1;
+        注意点: 如果已经存在一个叫做stu1的数据库, 那么会报错
+
+        示例二:
+        判断如果没有stu1的库就创建, 有就不创建
+        企业开发中推荐这样写
+        create database if not exists stu1;
+
+        示例三:
+        创建一个数据库, 告诉MySQL将来数据库中存储的内容采用gbk编码
+        create database if not exists stu2 charset=gbk;
+        注意点:
+        如果没有手动设置数据库的编码, 那么默认会采用安装时全局的设置作为默认的编码
+
+    查看数据库全局默认的编码
+        show variables like 'character_set_%';
+
+    查看某个数据库的编码
+        show create database 数据库名称;
+
+    特殊的数据库名称处理
+        如果数据库的名称是SQL语句的关键字或者是特殊符号, 那么数据库的名称需要用反引号括起来
+        create database if not exists create charset=utf8; #报错
+        create database if not exists `create` charset=utf8; #不会报错
+        create database if not exists `#%~*%#` charset=utf8; #不会报错
+
+    删除数据库
+        drop database [if exists] 数据库名称;
+
+        示例一:
+        drop database stu1;
+        注意点: 如果数据库不存在会报错
+
+        示例二:
+        判断只有表存在才删除, 不存在就不删除
+        drop database if exists stu1;
+
+    查看数据库
+        show databases;
+
+    修改数据库
+        alter database 数据库名称 charset=字符编码
+
+        示例:
+        alter database stu2 charset=utf8;
+
+表操作
+    创建表
+        create table [if not exists] 表名(
+            字段名称 数据类型 [null | not null],
+            字段名称 数据类型 [auto_increment],
+            字段名称 数据类型 [primary key],
+            字段名称 数据类型 [default],
+            字段名称 数据类型 [comment]
+        )engine=存储引擎;
+
+        字段名称: 相当于Excel中每一列的名称
+        数据类型: 相当于Excel中每一列的数据类型
+
+        [null | not null] 该字段是否可以为空, 默认都可以为空
+        [auto_increment] 该字段的值自动增长
+        [primary key] 主键, 一张表中只能有一个主键
+        [default] 默认值, 如果没有传递对应的值, 就使用默认值
+        [comment] 备注, 方便程序员之间沟通
+        存储引擎  innodb/myisam/memory
+
+        注意点:
+        由于一个MySQL中可以有很多数据库, 所以在创建表之前必须告诉MySQL要创建到哪一个数据库中
+
+        示例一:
+        use person;
+        create table stu(
+            id int,
+            name varchar(20)
+        );
+        上面语句的含义: 在person数据库中创建一张叫做stu的表, 表中有两个字段, 分别是id和name, id将来可以存储int类型的值, name将来可以存储字符串类型的值
+
+        示例二: 企业开发推荐写法
+        use person;
+        create table if not exists stu(
+            id int,
+            name varchar(20)
+        );
+    
+    查看数据库中的表
+        show tables;
+    
+    查看表的结构
+        desc[ribe] 表名;
+
+    删除表
+        drop table [if exists] 表名1, 表名2, ....;
+
+        示例一:
+        drop table stu;
+        注意点: 表不存在会报错
+
+        示例二:
+        drop table if exists stu;
+
+        示例三:
+        drop table if exists stu1,stu2;
+    
+    修改表
+        添加字段
+            alter table 表名 add 字段名 数据类型 [位置];
+
+            示例一:
+            会将新的字段添加到原有字段的最后
+            alter table stu3 add email varchar(30);
+
+            示例二:
+            会将新的字段添加到原有字段的最前面
+            alter table stu3 add phone int first;
+
+            示例三:
+            会将新的字段添加到指定字段的后面
+            alter table stu3 add addr varchar(100) after name;
+
+        删除字段
+            alter table 表名 drop 字段名;
+
+            示例一:
+            alter table stu3 drop name;
+    
+        修改字段
+            alter table 表名 change 原始字段名 新字段名 数据类型;
+
+            示例一:
+            改字段名称, 并且改字段的类型
+            alter table stu3 change addr age int;
+
+            示例二:
+            改字段的类型, 不改字段的名称
+            alter table stu3 modify phone varchar(20);
+    
+    修改存储引擎
+        数据库的本质就是文件
+        只要新建一个数据库, 就会自动创建一个文件夹
+        只要删除一个数据库, 就会自动删除一个文件夹
+
+        alter table 表名 engine=引擎名称;
+
+        innodb: 默认
+            create table stu(
+                id int,
+                name varchar(20)
+            );
+            create table stu1(
+                id int,
+                name varchar(20)
+            )engine=innodb;
+            指定存储引擎为innodb和不指定引擎创建表生成的文件夹都一样, 所以推断出默认使用的就是innodb存储引擎
+            innodb存储引擎只要创建一张表就会自动创建一个后缀为frm的文件
+            注意:
+                .frm文件不是存储表中的数据的, 数据会存储到ibdata1中, 如果数据比较多系统会自动创建ibdata2, ibdata3, ....
+                .frm文件是MySQL表结构定义文件
+        
+        myisam:
+            create table stu2(
+                id int,
+                name varchar(20)
+            )engine=myisam;
+            指定存储引擎为myisam, 只要创建一张表就会自动创建三个文件
+                .frm文件是MySQL表结构定义文件
+                .MYD文件存储表的数据
+                .MYI文件存储表的索引
+
+        memory:
+            create table stu3(
+                id int,
+                name varchar(20)
+            )engine=memory;
+            指定存储引擎为memory; 只要创建一张表就会自动创建一个文件
+                .frm文件是MySQL表结构定义文件
+            注意点:
+                memory会将数据存储到内存中, 一旦电脑重启数据就不见了
+                特点读写比较快, 但是不会永久存储
+    
+    修改表名
+        alter table 原始名称 rename to 新名称;
+
+    表复制
+        复制数据, 但不复制结构
+            create table 新表名 select 字段 from 旧表名;
+            create table newStu select * from stu5;
+        复制结构, 但不复制数据
+            create table 新表名 like 旧表名;
+            create table newStu2 like stu5;
+
+数据操作
+    插入数据
+        insert into 表名 (字段名1, 字段名2, ...) values (值1, 值2, ....);
+
+        示例一:
+        create table if not exists stu(
+            id int,
+            name varchar(20)
+        );
+        insert into stu (id, name) values (1, 'lnj');
+        # 字段名称不用和表中的顺序一致
+        insert into stu (name, id) values ('zq', 2);
+        # 值顺序和个数必须和字段的顺序个数一致
+        insert into stu (name, id) values ('ww');
+        insert into stu (name, id) values (3, 'ww');
+        # 如果值的顺序和个数和表中字段的顺序和个数一致, 那么字段名称可以省略
+        insert into stu values (3, 'ww');
+        # 一次性插入多条数据, 每条数据的值用逗号隔开
+        insert into stu values (4, 'it'), (5, 'zb');
+
+        create table if not exists stu2(
+            name varchar(20) not null,
+            score int default 59,
+            age int
+        );
+        # 被not null修饰的字段必须传值
+        insert into stu2 (score, age) values (88, 13); #报错
+
+        默认字段都是被null修饰的, 所以可以不传值
+        如果字段被default修饰, 那么不传值就会使用默认值
+        insert into stu2 (name) values ('lnj'); #不报错
+
+        default用于告诉MySQL使用默认值
+        insert into stu2 (name, score, age) values ('zs', default, 13);
+
+        create table if not exists stu3(
+            id  int auto_increment primary key,
+            name varchar(20)
+        );
+        被auto_increment修饰的字段, 会从1开始自动增长
+        给auto_increment修饰的字段传递null或者default, 都是使用默认自增长的值
+        企业开发一般传递null, default用于告诉MySQL使用默认值
+        insert into stu3 (id, name) values (null, 'lnj');
+        insert into stu3 (id, name) values (default, 'zq');
+
+    查询表中的数据
+        select 字段名1,字段名2 from 表名 where 条件;
+
+        # 查询指定字段的所有数据
+        select name from stu5;
+        # 查询多个制定字段的所有数据, 会按照查询时指定的字段顺序返回
+        select name, id from stu5;
+        # 如果需要查询所有字段, 可以用*代替字段名称
+        select id, name, age from stu5;
+        select * from stu5;
+        # 查询所有满足条件的数据
+        select * from stu5 where age>=40;
+    
+    更新数据
+        update 表名 set 字段名=值 [where 条件];
+
+        示例一:
+        # 如果没有指定条件会修改表中所有的数据
+        update stu2 set age=66;
+
+        # 修改所有满足条件的数据
+        update stu2 set age=88 where name='zs';
+
+        # 添加多个条件 AND === &&  OR === ||
+        update stu2 set age=44 where name='zs' AND score=98;
+
+        # 同时修改多个字段的值
+        update stu2 set score=100,name='it' where age=66;
+
+    删除数据
+        delete from 表名 where 条件;
+
+        示例一:
+        # 删除满足条件的所有数据
+        delete from stu2 where age=88;
+        delete from stu2 where age<66;
+
+        # 删除表中所有的数据
+        delete from stu2;
+
+        delete from 表名; 删除表中所有的数据
+        truncate table 表名; 清空表中所有的数据
+        如果通过delete删除表中所有的数据, 自增长的字段不会被清空(插入新的数据自增长字段不会从1开始)
+        本质是遍历表中的每一条数据, 逐条删除
+        如果通过truncate清空表中所有的数据, 自增长的字段会被清空(插入新的数据自增长字段会从1开始)
+        本质是将原有的表删除, 然后再创建一个一模一样的
+
