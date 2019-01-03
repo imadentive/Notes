@@ -121,3 +121,80 @@ DOM 操作:
     15 元素.replaceAll.指定元素 ==> 替换所有指定元素
     16 指定元素.replaceWith.元素 ==> 替换所有指定元素
     17 clone ==> 复制节点(true深复制,false浅复制)
+
+属性操作
+    1 attr(): 设置或者获取元素的属性节点值
+        传递一个参数, 返回第一个元素属性节点的值
+            $("span").attr("class")
+        传递两个参数, 代表设置所有元素属性节点的值
+        并且返回值就是方法调用者
+            $("span").attr("class", "abc")
+        传递一个对象, 代表批量设置所有元素属性节点的值
+            $("span").attr({
+                "class": "123",
+                "name": "888"
+            });
+    2 prop(): 设置或者获取元素的属性值
+        传递一个参数, 返回第一个元素属性节点的值
+            $("span").prop("abc")
+        传递两个参数, 代表设置所有元素属性节点的值
+        并且返回值就是方法调用者
+            $("span").prop("abc", "lnj")
+        传递一个对象, 代表批量设置所有元素属性节点的值
+            $("span").prop({
+                "aaa": "111",
+                "bbb": "222"
+            });
+    3 css(): 设置获取样式
+        传递一个参数, 返回第一个元素指定的样式
+            $('div').css('height')
+        传递两个参数, 代表设置所有元素样式
+        并且返回值就是方法调用者
+            $('div').css('height', '50px')
+        传递一个对象, 代表批量设置所有元素样式
+            $('div').css({
+                height: '50px',
+                backgroundColor: 'pink'
+            });
+    4 val(): 获取设置value的值
+        不传递参数, 返回第一个元素指定的样式
+            $('input').val()
+        传递两个参数, 代表设置所有元素样式
+        并且返回值就是方法调用者
+            $('input').val( '新设置的' )
+    5 hasClass(): 判断元素中是否包含指定类
+        传递参数, 只要调用者其中一个包含指定类就返回true,否则返回false
+            $("div").hasClass("cc")
+        没有传递参数, 返回false
+            $("div").hasClass()
+    6 addClass(): 给元素添加一个或多个指定的类
+        传递参数, 如果元素中没有指定类就添加, 有就不添加
+        会返回this方便链式编程
+            $("div").addClass("abc def")
+        没有传递参数,不做任何操作,返回this
+            $("div").addClass()
+    7 removeClass(): 删除元素中一个或多个指定的类
+        传递参数, 如果元素中有指定类就删除
+        会返回this方便链式编程
+            $("div").removeClass("aabb")
+        没有传递参数, 删除所有类
+            $("div").removeClass()
+    8 toggleClass(): 没有则添加,有则删除
+        传递参数, 如果元素中没有指定类就添加, 有就不添加
+        会返回this方便链式编程
+            $("div").toggleClass("aabb abc")
+        没有传递参数, 删除所有类
+            $("div").toggleClass()
+
+事件操作
+    1 on(type, callback): 注册事件
+    2 off(type, callback): 移出事件
+        不传参, 会移除所有事件
+            $("button").off();
+        传递一个参数, 会移除对应类型所有事件
+            $("button").off("click");
+        传递两个参数, 会移除对应类型对应事件
+            $("button").off("click", test1);
+
+    注册多个相同类型事件, 后注册的不会覆盖先注册的
+    注册多个不同类型事件, 后注册的不会覆盖先注册的
