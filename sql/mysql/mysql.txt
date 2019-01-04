@@ -65,7 +65,47 @@
 
         [null | not null] 该字段是否可以为空, 默认都可以为空
         [auto_increment] 该字段的值自动增长
+            1 自增长字段的值从1开始, 每次递增1
+            2 自增长字段数据不可以重复, 合适生成唯一的id
+            3 自增长字段可以使用null或者default来设置值
+            4 自增长字段必须是主键 (primary key)
         [primary key] 主键, 一张表中只能有一个主键
+            主键用于唯一标识表中的每一条数据, 和现实生活中的身份证很像
+            主键的特征: 不能重复, 不能为空
+            注意点:
+                auto_increment的字段必须是主键, 但是主键不一定是auto_increment的, 只要是唯一的就可以
+                如果主键不是自增长的, 那么不能为空
+                一个表只能有一个主键, 但是主键可以是1个或多个字段组成
+                    联合主键的应用场景:
+                        如果一张表无论哪一个字段都无法保证数据的唯一性,
+                        可以使用多个字段组合再一起保证数据的唯一性
+                    create table if not exists stu5(
+                        id1 int,
+                        id2 int,
+                        name varchar(20),
+                        #不是指定两个主键, 一个primary key就是指定一个主键
+                        #这里只出现了一个primary key, 所以只指定了一个主键
+                        #只不过这个主键比较特殊, 是由两个字段共同组成的
+                        primary key(id1,id2)
+                    );
+            可以在创建表之后再添加主键
+                create table if not exists stu6(
+                    id int,
+                    name varchar(20)
+                );
+                alter table stu6 add primary key(id);
+            企业开发中如何选择主键?
+                1. 最少性: 尽量选择一个字段作为主键
+                2. 稳定性: 尽量选择更新少的字段作为主键
+                3. 尽量选择整数类型的字段作为主键
+                4. 结论: 搞一个id字段类型为int, 设置自动增长, 作为主键
+        [unique] 唯一键
+            避免添加重复数据, 也就是说如果想保证某一个字段的值永远不重复, 那么就可以将这个字段设置为唯一键
+            唯一键不是主键, 主键有一个特点是不能重复, 但是唯一键不等于主键
+            一张表中只能有一个主键, 但是一张表中可以有多个唯一键
+            删除唯一键
+                alter table 表名 drop index 唯一键名;
+                alter table stu11 drop index name; #删除唯一键
         [default] 默认值, 如果没有传递对应的值, 就使用默认值
         [comment] 备注, 方便程序员之间沟通
         存储引擎  innodb/myisam/memory
@@ -286,3 +326,237 @@
         如果通过truncate清空表中所有的数据, 自增长的字段会被清空(插入新的数据自增长字段会从1开始)
         本质是将原有的表删除, 然后再创建一个一模一样的
 
+MySQL中的中文问题
+    默认情况下插入中文会报错
+    但是报错的原因不在于插入的是否是中文
+    而是因为插入数据的时候本质上是从客户端将插入语句发送到了MySQL服务器,
+    MySQL服务器接收到插入语句之后再执行插入语句
+    如果客户端是以GBK发送的, 而服务端是以UTF8接收的, 那么就会报错(不能识别)
+    查看服务器编解码字符集
+        show variables like 'character_set_%';
+        +--------------------------+------------------------------------+
+        | Variable_name            | Value                              |
+        +--------------------------+------------------------------------+
+        | character_set_client     | utf8    以什么字符集接收客户端发送的数据 |
+        | character_set_connection | utf8                               |
+        | character_set_database   | utf8                               |
+        | character_set_filesystem | binary                             |
+        | character_set_results    | utf8   以什么字符集给客户端发送数据     |
+        | character_set_server     | utf8                               |
+        | character_set_system     | utf8                               |
+        | character_sets_dir       | D:\Developer\MySQL\share\charsets\ |
+        +--------------------------+------------------------------------+
+    将客户端和MySQL服务器的编码设置为一样的即可
+    可以通过set names gbk;来修改MySQL的字符集
+    set names gbk;会自动修改MySQL服务器接收和返回的编码方式
+
+表数据类型
+    整型
+        TINYINT	      1 字节	(-128，127)	(0，255)	小整数值
+        SMALLINT	  2 字节	(-32 768，32 767)	(0，65 535)	大整数值
+        MEDIUMINT	  3 字节	(-8 388 608，8 388 607)	(0，16 777 215)	大整数值
+        INT或INTEGER  4 字节	(-2 147 483 648，2 147 483 647)	(0，4 294 967 295)	大整数值
+        BIGINT	      8 字节	(-9 233 372 036 854 775 808，9 223 372 036 854 775 807)	(0，18 446 744 073 709 551 615)	极大整数值
+        注意点:
+            和编程开发中的整型一样, 也区分有符号的整型和无符号的整型 unsigned, 默认就是有符号, 如果是无符号, 那么取值范围*2
+            在企业开发中也和编程开发中, 每一个字段最好使用合适的类型
+                例如存储人的年龄, 就不要使用INT,
+            通过desc看到的数据类型后面的数值并不是占用的存储空间大小, 而是二printf一样,是位宽
+                例如:  tinyint(4) 显示的宽度是4
+                默认宽度不会自动填充, 如果想自动填充, 必须加上zerofill
+                    create table if not exists stu4(
+                        id int auto_increment primary key,
+                        score TINYINT(2) unsigned ZEROFILL
+                    );
+            如果存储的值超出了取值范围, 那么会报错
+    浮点类型
+        FLOAT(m, d)	    4 字节	单精度
+        DOUBLE(m, d)	8 字节	双精度
+        m总位数, d小数位数
+
+        float和double的区别
+            和编程开发中一样, 默认保留的小数位数不同
+            和编程开发中一样, 有效精度也不同
+            和编程开发中一样, 浮点类型是不准确的,太长了可能丢失精度
+            所以在企业开发中千万不要使用浮点数来保存用户的准确(珍贵)信息(RMB)
+    定点类型
+        decimal(M, D)
+        m总位数, d小数位数
+        定点类型的本质: 
+            是将数据分为两个部分来存储, 每个部分都是整数
+            所以可以保证精度
+            但是定点数不要滥用, 因为非常消耗资源
+    字符类型
+        CHAR(size)	    0-255字节	    定长字符串
+        VARCHAR(size)	0-65535 字节	变长字符串
+        注意点: 
+            由于是字符类型, 所以传递值只能用单引号''
+            如果没有指定长度, 那么默认char就是255,varchar65535
+            理论上varchar最多能够存储65535个字符, 但是实际的大小和表的编码方式有关
+            如果表的编码方式是UTF-8, 那么最多能够存储65535/3
+            如果表的编码方式是GBK, 那么最多能够存储65535/2
+
+        MySQL中每一行数据的大小限制
+            注意点: 在MySQL中每一行数据最多只能存储65535个字节
+            create table if not exists stu12(
+                cls char(2),
+                name varchar(32767) #会报错, 所有列的总大小超过了65535
+            )charset=gbk;
+
+            create table if not exists stu12(
+                cls char(2),
+                name varchar(32764) #只要所有列的中大小不超过65535就可以创建
+            )charset=gbk;
+
+        char(2)和varchar(2)的区别:
+            它们最多都只能保存2个字符
+            char(2)不会回收多余的字符, 指定多少个就给我们多少个
+            varchar(2)会回收多余的字符, 用多少给多少
+            由于char(2)不会回收多余的字符, 所以效率高
+            由于varchar(2)会回收多余的字符, 所以效率相对低一些
+    大文本类型
+        TINYTEXT	0-255字节	短文本字符串
+        TEXT	    0-65535字节	长文本数据
+        MEDIUMTEXT	0-16777215字节	中等长度文本数据
+        LONGTEXT	0-4294967295字节	极大文本数据
+
+        注意点:
+            大文本类型在表中并不会实际占用所能保存的字节数, 而是利用10个字节引用了实际保存数据的地址
+    枚举类型
+        和编程开发中一样, 如果某个字段只能是固定的几个取值,并且只能是其中一个取值, 那么就可以使用枚举
+        和编程开发中一样, MySQL中的枚举类型本质也是整型, 但是是从1开始的
+        和编程开发中一样, 既然本质是整型, 所以就可以设置整型数据
+        create table if not exists stu14(
+            cls char(2),
+            gender enum('男', '女', '妖')
+        );
+        insert into stu14 values(null, '未知'); #会报错, 只能设置枚举中列举的值
+        insert into stu14 values(null, 1); #插入整型, 但是也必须在范围内
+        select gender+0 from stu14; # +0表示以整形方式显示
+    集合类型
+        和编程开发中一样, 如果某个字段只能是固定的几个取值,并且可以是其中某几个取值, 那么就可以使用集合类型
+        MySQL中的集合本质也是整型
+
+        create table if not exists stu15(
+            cls char(2),
+            hobby set('篮球', '足球', '棒球', '足浴')
+        );
+        insert into stu15 values(null, '高尔夫'); #会报错, 只能设置集合中列举的值
+        insert into stu15 values(null, '足球'); #插入一个值
+        insert into stu15 values(null, '足球,篮球'); #插入多个值
+        select hobby+0 from stu15; # +0表示以整形方式显示
+
+        底层整形的计算公式是2(n), n从0开始
+        2(0) === 1;
+        2(1) === 2;
+        2(2) === 4;
+    日期类型:
+        DATE	    3字节	YYYY-MM-DD	日期值
+        TIME	    3字节	HH:MM:SS	时间值或持续时间
+        DATETIME	8字节	YYYY-MM-DD HH:MM:SS	混合日期和时间值
+
+        create table if not exists stu16(
+            id int auto_increment primary key,
+            field1 date,
+            field2 time,
+            field3 datetime
+        );
+        insert into stu16 (field1) values ('2020-12-12');
+        insert into stu16 (field1) values ('2020/12/12');
+        insert into stu16 (field1) values ('202/12/12'); #内部会自动补全 0202/12/12
+        insert into stu16 (field2) values ('18:32:15');
+        insert into stu16 (field2) values ('2020/12/12 18:32:15');
+    布尔类型
+        注意: MySQL不支持真正的布尔类型, 由于MySQL是用C/C++编写的, 所以非零即真
+        和C语言一样, ture===1 , false===0
+        create table if not exists stu17(
+            id int auto_increment primary key,
+            field1 boolean,
+            field2 boolean
+        );
+        insert into stu17 values (null, true, false);
+
+单表查询
+    字段表达式
+        select 语句;
+
+        select 6*6; #字段名称为6*6,字段值为36
+        select 6*6 as mul; #为字段名称起别名
+        select 6*6 mul2; #为字段名称起别名
+    
+        以上语句虽然可以执行, 但是看上去不符合MySQL查询语句的规范
+        如果想要执行字段表达式, 又想要符合MySQL查询语句的规范, 那么可以使用伪表
+        什么是伪表(dual)? 占位符,但是实际上什么都不会做
+        select 6*6 mul from dual;
+    
+    where子语句
+        在MySQL中where子语句支持简单的运算符
+        > < >= <= = != and or not
+
+    in | not in
+        示例一:
+        需求: 要求找出表中城市在北京和武汉的人
+        过去的做法:
+        弊端如果需要查找的城市太多, 语句会变得很冗余
+        select * from stu where city='北京' or city='武汉';
+        如果需要查找的城市太多, 可以利用in来简化语句
+        select * from stu where city in ('北京', '武汉');
+
+        示例二:
+        需求: 要求找出表中城市不在北京和武汉的人
+        select * from stu where city!='北京' and city!='武汉';
+        select * from stu where city not in ('北京', '武汉');
+    
+    between...and | not between...and
+        示例一:
+        需求: 要求找出表中年龄在17~23岁之间的人
+        select * from stu where age>=17 and age<=23;
+        select * from stu where age between 17 and 23;
+
+        示例二:
+        需求: 要求找出表中年龄不在17~23岁之间的人
+        select * from stu where age<17 or age>23;
+        select * from stu where age not between 17 and 23;
+    
+    is null | is not null
+        注意点: 在MySQL中判断某一个字段保存的数据是否为null不能用等于符号
+
+        select * from stu where age=18;
+        insert into stu (name) values('it66');
+        select * from stu where age is null;
+        select * from stu where age is not null;
+    
+    模糊查询
+        _通配符: 表示任意一个字符
+        %通配符: 表示任意0~n个字符
+
+        a_c: abc, adc
+        abc,adc,abbc,ac
+        _a_c: 1abc,3adc
+        1abc,abc1,2abbc,3adc
+
+        a%c:abc, adc,abbc, ac
+        abc,adc,abbc,ac
+        %a%c:1abc,2abbc, 3adc
+        1abc,abc1,2abbc,3adc
+
+        格式:
+            select 字段 from 表名 where 字段 like '条件';
+
+            select * from stu where name like 'z_c';
+            select * from stu where name like 'z%';
+    
+    排序 order by
+        格式:
+            select 字段 from 表名 order by 字段 [asc | desc]
+            
+        示例一:
+        select * from stu order by age; #默认是升序排序
+        select * from stu order by age asc; #升序
+        select * from stu order by age desc; #降序
+
+        示例二:
+        insert into stu values(null, 'itzb', 23, 100, '广州');
+        需求: 按照年龄升序排序, 如果年龄相同那么按照成绩降序排序
+
+        select * from stu order by age asc, score desc;
