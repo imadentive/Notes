@@ -477,6 +477,9 @@ MySQL中的中文问题
         insert into stu17 values (null, true, false);
 
 单表查询
+    完整的查询语句
+        select [查询选项] 字段名称 [from 表名] [where 条件] [order by 排序] [group by 分组] [having 条件] [limit 分页];
+
     字段表达式
         select 语句;
 
@@ -560,3 +563,311 @@ MySQL中的中文问题
         需求: 按照年龄升序排序, 如果年龄相同那么按照成绩降序排序
 
         select * from stu order by age asc, score desc;
+    
+    聚合函数
+        count(); 统计
+            select count(*) from stu;
+            select count(*) from stu where score >60;
+        
+        sum(); 求和
+            select sum(id) from stu;
+
+        avg();
+            select avg(id) from stu;
+
+        max();
+            select max(id) from stu;
+
+        min();
+            select min(id) from stu;
+        
+        rand(); 生成随机数
+            select rand();
+            select * from stu order by age;
+            select * from stu order by rand(); #随机排序
+        
+        round(); 四舍五入
+            select round(3.3);
+            select round(3.5);
+        
+        ceil(); 向上取整
+            select ceil(3.1);
+        
+        floor(); 向下取整
+            select floor(3.7);
+        
+        truncate(); 截取小数位
+            select truncate(3.12345, 2);
+        
+        ucase(); 转换为大写
+            select ucase("hello world");
+
+        lcase(); 转换为小写
+            select lcase("HELLO WORLD");
+        
+        left(); 从左边开始截取
+            select left('abcdefg', 2); #从左边开始截取2个字符
+        
+        right(); 从右边开始截取
+            select right('abcdefg', 2);#从右边开始截取2个字符
+        
+        substring()
+            select substring('abcdefg', 2, 3); #从第二个字符开始截取3个字符
+    
+    数据分组 group by
+        select city, avg(score) from stu group by city;
+        如果分组查询, 那么查询的字段必须包含分组字段和聚合函数
+        city就是分组字段/avg()就是聚合函数
+
+        如果查询的字段不是分组字段, 那么只会返回分组中的第一个值
+        select name from stu group by city;
+
+        group_concat()函数可以将每一组中的所有数据连接在一起
+        select group_concat(name) from stu group by city;
+
+        在企业开发中, 一般情况下使用分组都是用来统计
+        select city, count(*) from stu group by city;
+    
+    条件 having
+        默认情况下都是去数据库的表中查询数据, 如果想在查询结果的基础上查询数据, 那么就可以使用having
+        where条件会去表中查询是否符合条件, having条件会去查询结果集中查询是否符合条件
+
+        select * from stu where city='武汉';  #去数据库的表中匹配条件
+        select * from stu having city='武汉'; #去查询的结果集中匹配添加
+
+        可以找到武汉的人, 因为是去数据库的表中匹配
+        select name,age from stu where city='武汉';
+        不可以找到, 因为结果集中只有name和age,没有city,所以找不到
+        select name,age from stu having city='武汉';
+
+        前面部分代码查询返回的结果我们称之为结果集
+        如下语句返回的结果集中包含了name和age
+        select name,age from stu;
+
+        查看表中哪些城市的平均分>=60分
+        select city , avg(score) as avgscore from stu group by city;
+        select city , avg(score) as avgscore from stu group by city where avgscore>=60; #报错, 因为数据库的表中没有avgscore字段
+        select city , avg(score) as avgscore from stu group by city having avgscore>=60;
+
+    分页 limit
+        select 字段 from 表 limit 索引, 个数;
+
+        返回表中的前两条数据
+        select * from stu limit 0, 2;
+        select * from stu limit 2;
+        返回表中的第3条数据和第4条数据
+        select * from stu limit 2, 2;
+
+    查询选项
+        all:      显示所有数据[默认]
+            select all name from stu;
+        distinct: 去除结果集中重复的数据
+            select distinct name from stu;
+
+多表查询
+    默认的多表查询
+        多表查询就是在以前查询的基础上再加一张表, 写在以前表名的后面即可
+        默认情况下多表查询返回的结果是笛卡尔集(即两张表数据的排列组合)
+        select * from stuinfo, stugrade;
+
+    union
+        union: 将多个select语句的结果集纵向结合在一起(不是排列组合)
+        union格式:
+        select 字段 from 表1 union select 字段 from 表2;
+        select id,name from stuinfo union select id,score from stugrade;
+
+        union注意点:
+            union两边的select语句字段的个数必须一致
+                select id,name from stuinfo union select score from stugrade; #报错
+            union两边的select语句字段名称可以不一样
+                select id,name from stuinfo union select id,score from stugrade;
+            union两边的select语句字段类型可以不一样
+            union结果集字段的名称默认是左边select语句指定的字段名称
+            union结果集会自动去重
+    
+    内连接 inner join
+        返回所有多张表中符合条件的数据集
+        select 字段 from 表1 inner join 表2 on 表1.公共字段=表2.公共字段
+
+        select * from stuinfo, stugrade where stuinfo.id=stugrade.stuid;
+        select * from stuinfo inner join stugrade on stuinfo.id=stugrade.stuid;
+    
+    外连接
+        左外连接 left join
+            包含左边表的全部内容(不管右边的表中是否存在匹配的数据)和右边表符合条件的内容
+            select * from stuinfo left join stugrade on stuinfo.id=stugrade.stuid;
+        
+        右外连接 right join
+            包含右边表的全部内容(不管右边的表中是否存在匹配的数据)和左边表符合条件的内容
+            select * from stuinfo right join stugrade on stuinfo.id=stugrade.stuid;
+    
+    交叉连接 cross join
+        如果没有指定连接表达式, 返回笛卡尔集
+        如果有链接表达式等价于内连接
+        select * from stuinfo cross join stugrade;
+        select * from stuinfo cross join stugrade on stuinfo.id=stugrade.stuid;
+
+    全连接(full join MySQL不支持)
+
+    自然连接 (natural)
+        自动判断连接条件, 但是有一个前提条件, 就是连接条件的字段名称一致
+        自然连接是用来简化前面讲解的连接语句的代码的
+        注意点:
+            如果没有同名的字段, 那么返回笛卡尔集
+            会对返回的结果集的字段进行优化, 去除重复的连接条件字段
+            如果是直接用上面的连接方式不会去重
+            e.g.上面的连接方式会有两个stuid字段,因为两个表中都有这个字段,自然连接则会去除一个重复的
+
+        自然内连接
+            select 字段 from 表1 natural join 表2;
+            select * from stuinfo natural join stugrade;
+
+        自然外连接
+            自然左外连接
+                select 字段 from 表1 natural left join 表2;
+                select * from stuinfo natural left join stugrade;
+        
+            自然右外连接
+                select 字段 from 表1 natural right join 表2;
+                select * from stuinfo natural right join stugrade;
+    
+    using() 指定连接字段
+        如果连接条件的字段名称一致, 除了可以使用自然连接来简化代码以外还可以使用using来指定连接字段, 两者达到的效果是相同的
+        所以也跟自然连接一样会对结果集的重复字段进行优化
+
+        select * from stuinfo inner join stugrade on stuinfo.stuid=stugrade.stuid; // 原来写法
+        select * from stuinfo inner join stugrade using(stuid); // using的写法
+
+    子查询
+        圆括号中的select我们称之为子查询, 圆括号外面的select我们称之为父查询
+        select 语句 where 条件 (select 语句);
+
+        查询出成绩是100的人的姓名
+        select name from stuinfo where stuid=(select stuid from stugrade where score=100);
+    
+        以上也称为标准子查询
+        标准子查询的特点: 返回的结果只有一个
+
+        如果返回值不止一个, 需要使用in | not in
+        查询出成绩是90分以上人的姓名
+        select name from stuinfo where stuid in (select stuid from stugrade where score>=90);
+
+        子查询的结果不仅仅能作为条件, 还可以作为一张表来使用, 但是作为一张表来使用必须起别名
+        select name, city, score from (select * from stu where score >=60) as t;
+
+视图
+    视图仅仅是表的结构, 没有表的数据
+    视图的结构和数据是建立在表的基础上的
+    视图中保存了一张表或者多张表的部分或者所有数据
+
+    视图可以用来简化SQL语句
+        例如 表中有id,name,age,gender,score, 我们需要查询id,name,gender
+        select id,name,gender from stu;
+        如果在表的基础上创建了一个包含id,name,gender的视图
+        select * from stu_view;
+
+    视图可以用来隐藏表的结构
+        表中有id,name,age,gender,score, 视图中有id,name,gender
+        那么外界在使用视图的时候就不知道表中还有age和score
+    
+    创建视图语法
+        create view 视图名称 as select 语句;
+
+        create view stu_view as select name,city from stu;
+        select * from stu_view;
+    
+    注意点:
+        视图仅仅是表的结构, 没有表的数据
+        视图是建立在表的基础上的, 如果修改视图中的数据本质上是修改了表中的数据
+
+    由于视图不保存数据, 本质上数据是插入到了表中
+    insert into stu_view values('yyyy', '武汉');
+    由于视图不保存数据, 本质上修改的是表中的数据
+    update stu_view set city='杭州' where name='ww';
+    由于视图不保存数据, 本质上删除的是表中的数据
+    delete from stu_view where name='ww';
+
+    在多表查询的时候, 如果需要显示重复字段, 必须在字段名称前面加上表名
+        select * from stuinfo inner join stugrade on stuinfo.stuid=stugrade.stuid;
+        select stuinfo.stuid, name, score from stuinfo inner join stugrade on stuinfo.stuid=stugrade.stuid;
+
+        create view studes_view as select stuinfo.stuid, name, score from stuinfo inner join stugrade on stuinfo.stuid=stugrade.stuid;
+    
+    更改视图
+        alter view 视图名称 as select 语句;
+        create view stu_view as select name,city from stu;
+        修改视图返回的结果
+        alter view stu_view as select name,age,city from stu;
+    
+    删除视图
+        drop view [if exists] 视图名;
+        drop view if exists stu_view;
+
+    select * from (select * from stu order by score desc) as t group by city;
+    将子查询封装到视图中去
+    create view order_view as select * from stu order by score desc;
+    用视图替代子查询
+    select * from order_view group by city; #结果出现了误差
+    以上出现的误差源于视图的算法
+    视图算法
+        merge: 合并算法, 将视图的语句和外层的语句合并之后再执行
+        temptable: 临时表算法, 将视图生成一个临时表, 再执行外层的语句
+        undefined: 未定义, 由MySQL自己决定使用如上的哪一种算法, 默认就是undefined
+        由于合并算法的效率比临时表算法效率高, 所以MySQL一般会选择合并算法
+        如上案例中导致数据混乱的原因就是因为默认使用了合并算法
+    
+    解决方法就是将子查询封装到视图中去,algorithm=temptable指定视图的算法
+        create algorithm=temptable view order_view as select * from stu order by score desc;
+        select * from order_view group by city;
+
+事务
+    MySQL中的事务主要用于处理操作量大，复杂度高的数据
+    MySQL中只有使用了Innodb数据引擎的数据库或表才支持事务
+    事务处理可以用来维护数据库的完整性，保证成批的 SQL 语句要么全部执行，要么全部不执行
+    事务用来管理insert,update,delete语句
+
+    事务基本使用
+        开启事务: start transaction; / begin;
+            需要保证要么一起成功要么一起失败的语句
+        提交事务: commit;  
+            如果执行的过程中没有发生意外, 那么就可以commit,代表都成功了
+        回滚事务: rollback; 
+            如果执行的过程中发生意外, 那么就可以rollback回到修改前的状态
+    
+        begin;
+        update bank set money=money-500 where card='1002';
+        rollback;
+        update bank set money=money+500 where card='1001';
+        commit;
+
+        注意点: 事务其实就是将原有的数据拷贝了一份, 在拷贝的基础上进行修改
+                如果发生了意外, 回滚的时候直接删掉拷贝的数据即可
+                如果没有发生意外, 那么需要通过commit将拷贝的数据应用到原始表中
+
+        在MySQL中可以通过 delimiter 修改界定符号
+            delemiter //
+            执行上面这句话之后就需要靠//来结束当前语句,默认是分号
+    
+    事务的回滚点
+        savepoint 回滚点的名称
+        rollback to 回滚点的名称
+
+        begin;
+        insert into bank values(null, '1003', 3333);
+        savepoint aa;
+        insert into bank values(null, '1004', 4444);
+        savepoint bb;
+        insert into bank values(null, '1005', 5555);
+        rollback to aa;
+        注意点: 回滚到指定的点之后也不会自动提交, 如果想提交还是必须手动调用commit;
+    
+    事务特性:
+        原子性：
+            一个事务中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样。
+        一致性：
+            在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设规则，这包含资料的精确度、串联性以及后续数据库可以自发性地完成预定的工作。
+        隔离性：
+            数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括读未提交（Read uncommitted）、读提交（read committed）、可重复读（repeatable read）和串行化（Serializable）。
+            多个并发事务会按照单线程来执行, 前面的没有执行完毕, 后面的不能执行
+        持久性：
+            事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。
