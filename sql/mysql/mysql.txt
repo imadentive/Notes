@@ -871,3 +871,270 @@ MySQL中的中文问题
             多个并发事务会按照单线程来执行, 前面的没有执行完毕, 后面的不能执行
         持久性：
             事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。
+
+预处理
+    所谓的预处理技术，最初也是由MySQL提出的一种减轻服务器压力的一种技术
+
+    传统mysql处理流程
+        1 在客户端准备sql语句
+        2 发送sql语句到MySQL服务器
+        3 MySQL服务器对sql语句进行解析(词法,语法), 然后编译, 然后执行该sql语句
+        4 服务器将执行结果返回给客户端
+        弊端:
+            哪怕语句是相同的, 还是每次执行之前都会先解析语句,再执行
+            哪怕语句大部分内容都是相同的, 每次还是要传递重复语句
+
+    预处理的基本策略：
+        1 在客户端准备预处理sql语句
+        2 发送预处理sql语句到MySQL服务器
+        3 MySQL服务器对预处理sql语句进行解析(词法,语法), 但不会执行
+        4 在客户端准备相关数据
+        5 MySQL服务器对数据和预处理sql编译, 然后执行该sql语句
+        6 服务器将执行结果返回给客户端
+        优点:
+            只对sql语句进行了一次解析
+            重复内容大大减少(网络传输更快)
+    
+    1. 准备预处理sql语句
+        格式: prepare 预处理名称 from 'sql语句';
+        prepare stmt from 'select * from stu where id=?;';
+    2. 执行预处理sql语句
+        格式: execute 预处理名称 using 参数;
+        set @id=10;
+        execute stmt using @id;
+
+    如何在MySQL中定义变量
+        全局变量: @变量名称
+        局部变量: 变量名称
+        给全局变量赋值: set @变量名称=值;
+        给局部变量赋值: set 变量名称=值;
+
+存储过程
+    SQL语句需要先编译然后执行，而存储过程（Stored Procedure）是一组为了完成特定功能的SQL语句集，经编译后存储在数据库中，用户通过指定存储过程的名字并给定参数（如果该存储过程带有参数）来调用执行它。
+    本质上就是编程开发中的函数
+
+    存储过程的优点：
+        1 增强SQL语言的功能和灵活性：存储过程可以用控制语句编写，有很强的灵活性，可以完成复杂的判断和较复杂的运算。
+        2 标准组件式编程：存储过程被创建后，可以在程序中被多次调用，而不必重新编写该存储过程的SQL语句。而且数据库专业人员可以随时对存储过程进行修改，对应用程序源代码毫无影响。
+        3 较快的执行速度：如果某一操作包含大量的Transaction-SQL代码或分别被多次执行，那么存储过程要比批处理的执行速度快很多。因为存储过程是预编译的。在首次运行一个存储过程时查询，优化器对其进行分析优化，并且给出最终被存储在系统表中的执行计划。而批处理的Transaction-SQL语句在每次运行时都要进行编译和优化，速度相对要慢一些。
+        4 减少网络流量：针对同一个数据库对象的操作（如查询、修改），如果这一操作所涉及的Transaction-SQL语句被组织进存储过程，那么当在客户计算机上调用该存储过程时，网络中传送的只是该调用语句，从而大大减少网络流量并降低了网络负载。
+        5 作为一种安全机制来充分利用：通过对执行某一存储过程的权限进行限制，能够实现对相应的数据的访问权限的限制，避免了非授权用户对数据的访问，保证了数据的安全。
+    
+    存储过程的基本语法
+        1 存储过程定义的格式
+            create procedure 存储过程名称(参数列表)
+            begin
+                被封装的sql语句
+            end;
+
+            create procedure checkAll()
+            begin
+                select * from stu;
+            end;
+
+        2 存储过程调用的格式
+            call 存储过程名称(参数);
+            call checkAll();
+        
+        3 存储过程的参数
+            1 in 输入参数(默认)
+                create procedure checkId(in param int)
+                begin
+                    select * from stu where id=param;
+                end;
+
+                call checkId(10);
+            2 out 输出参数
+                在MySQL的存储过程中, 是不能通过reutrn返回值
+                create procedure checkName(in param int, out result varchar(20))
+                begin
+                    select name into result from stu where id=param;
+                end;
+
+                call checkName(10, @name);
+            3 inout 输入输出参数
+                create procedure checkCity(inout param varchar(20))
+                begin
+                    select name into param from stu where city=param;
+                end;
+
+                set @temp = '武汉';
+                call checkCity(@temp);
+
+索引
+    索引用于快速找出在某个列中有一特定值的行，不使用索引，MySQL必须从第一条记录开始读完整个表，直到找出相关的行，表越大，查询数据所花费的时间就越多，如果表中查询的列有一个索引，MySQL能够快速到达一个位置去搜索数据文件，而不必查看所有数据，那么将会节省很大一部分时间。
+
+    索引就相当于字典中前几页的目录(拼音/偏旁部首手), 通过目录我们就能快速的找到想要的结果.
+    如果没有索引, 就相当于字典没有目录(拼音/偏旁部首手),那么如果想要查找某条数据就必须从第一条开始一条一条的查找
+
+    MySQL中索引的优缺点和使用原则
+        优点
+            所有的MySql字段都可以用作索引
+            大大加快数据的查询速度
+        缺点
+            索引也需要占空间
+            对表中的数据进行增加、删除、修改时，索引也需要动态的维护，降低了数据的维护速度
+        原则
+            对经常用于查询的字段应该创建索引，
+            数据量小的表最好不要使用索引，索引就可能不会产生优化效果。
+        索引分类
+            普通索引: 　MySQL中基本索引类型，没有什么限制，允许在定义索引的列中插入重复值和空值，纯粹为了查询数据更快一点。
+            唯一索引(唯一键): 索引列中的值必须是唯一的，但是允许为空值，
+            主键索引:是一种特殊的唯一索引，不允许有空值。
+            ... ...
+    
+    创建普通索引的三种方式
+        1. 
+        create table test1(
+            id int,
+            name varchar(20),
+            index idx_name(name) #创建索引
+        );
+
+        2. 
+        create table test2(
+            id int,
+            name varchar(20),
+        );
+        create index idx_name on test2(name); #创建索引
+
+        3. 
+        create table test3(
+            id int,
+            name varchar(20),
+        );
+        alter table test3 add index idx_name(name);
+    
+    创建唯一键索引的三种方式
+        1. 
+        create table test4(
+            id int,
+            name varchar(20),
+            unique index idx_name(name) #创建索引
+        );
+
+        2. 
+        create table test5(
+            id int,
+            name varchar(20),
+        );
+        create unique index idx_name on test5(name); #创建索引
+
+        3. 
+        create table test6(
+            id int,
+            name varchar(20),
+        );
+        alter table test6 add unique index idx_name(name);
+    
+    删除索引
+        drop index idx_name on test6
+
+数据完整性
+    实体完整性(行的完整性)
+        行数据是否完整, 如果多条数据相同, 无法区分, 我们称之为实体不完整
+
+        - 添加主键约束
+        id name score
+        1  lnj  100
+        2  lnj  100
+
+        - 添加唯一键约束
+        name score
+        lnj  100
+        zq  100
+
+        - 自动增长列
+        id name score
+        1  lnj  100
+        2  lnj  100
+
+    域完整性(列完整性)
+        某一列数据是否完整, 如果出现null, 不匹配的数据 都表示不完整
+
+        - 数据类型约束
+        id name score
+        1   lnj  100
+        2   zq   null
+        2   zq   0
+
+        - 非空约束
+        id name score
+        1   lnj  100
+        2   zq   0
+        2   zq   0
+
+        - 默认值约束
+        id name score
+        1   lnj  100
+        2   zq   59.5
+        2   zq   0
+
+    引用完整性
+        默认情况下多张表之间是没有任何关系的, 所以给A表可以随意插入数据, 给B表也可以随意插入数据
+        例如有一张学生表和一张成绩表, 要求成绩表中保存的必须是学生表中每个学生的成绩
+
+        可以通过外键约束添加表与表之间的关系,告诉MySQL在插入数据的时候, 检查是否存在依赖的数据, 存在才可以插入
+
+外键
+    如果一张表中有一个字段引用了另一张表中的主键, 那么这个字段我们就称之为外键
+    例如: 成绩表中的stuid引用了学生表中的id, 那么stuid我们就称之为外键
+    注意点:  成绩表中的stuid引用了学生表中的id, 那么成绩表我们称之为"从表", 学生表称之为主表
+    
+    create table stugrade2(
+        id int auto_increment primary key,
+        stuid int,
+        score float,
+        #告诉MySQL将stuid作为外键, 值是引用stuinfo中的id
+        foreign key(stuid) references stuinfo(id)
+    );
+    insert into stugrade2 values(null, 3, 100); #报错, 因为sutinfo中没有id为3的人
+    insert into stuinfo values(null, 'lnj');
+    insert into stugrade2 values(null, 3, 100); #报错, 因为sutinfo中没有id为3的人
+    insert into stugrade2 values(null, 1, 100);
+    delete from stuinfo where id=1; #报错, 因为有其它表引用这这条数据
+
+    外键的特点:
+        主表中没有对应的数据, 从表不能插入, 因为插入之后数据也不完整
+        从表引用这主表的数据, 主表不能删除该数据, 因为上次之后数据也不完整
+    
+    添加外键的第二种方式:
+        create table stugrade3(
+            id int auto_increment primary key,
+            stuid int,
+            score float
+        );
+        #通过修改表的方式添加外键
+        alter table stugrade3 add foreign key(stuid) references stuinfo(id);   
+    
+    查看外键
+        show create table stugrade3\G; (\G只是用来排版输出格式)
+
+    删除外键
+        alter table stugrade3 drop foreign key stugrade3_ibfk_1;
+    
+    外键相关的操作
+        严格模式(默认)
+            主要不存在对应的数据, 从表不允许插入
+            从表引用着主表的数据, 主表不能删除
+            从表引用着主表的数据, 主表不能修改
+        置空操作
+            如果主表中的数据被删除了, 从表中对应的字段变为null, 我们就称之为置空操作
+            例如: 主表中id为1的人被删除了, 那么从表中的stuid变为null
+        级联操作
+            如果主表发生了变化, 从表也跟着变化, 我们就称之为级联操作
+            例如: 主表中'lnj'的id从1变为3, 那么从表中的stuid也从1变为3
+        
+        格式:
+            foreign key(字段) references 主表名(主表主键)[主表删除的动作][主表更新的动作]
+
+        create table stugrade(
+            id int auto_increment primary key,
+            stuid int,
+            score float,
+            #注意点: 一般在企业开发中都是删除就清空, 更新就随着更新
+            foreign key(stuid) references stuinfo(id) on delete set null on update cascade
+        );
+        insert into stugrade values(null, 1, 100);
+        update stuinfo set id=666 where id=1;
+        delete from stuinfo where id=666;
