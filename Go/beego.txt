@@ -1,0 +1,34 @@
+Beego是一个能够快速开发Go应用程序的HTTP框架, 
+它可以用来迅速的开发API, 网络APP(网站)和后端服务
+Beego是一个MVC的框架
+
+安装Beego框架
+    go get github.com/astaxie/beego
+安装Beego工具
+    go get -u github.com/beego/bee
+利用bee工具创建一个Beego的项目
+    bee new 项目名称
+运行创建好的项目
+    cd 项目名称
+    bee run
+
+bee工具创建的项目结构
+    conf  : 保存了项目的一些配置信息
+    controllers : 保存MVC中的控制器
+    models : 保存MVC中的模型
+    views 保存MVC中的视图
+    routers : 保存了项目的路由
+    static : 保存了项目中的静态资源 images .css .js
+    tests : 保存测试用例
+    main.go : 项目的入口文件
+
+Beego项目的执行流程
+    1 客户端发起请求
+        http://127.0.0.1:8080/
+    2 执行项目的路由相关代码, 找到处理对应请求的控制器
+        beego.Router("/", &controllers.MainController{})
+    3 执行控制器对应的方法
+        默认会根据请求类型找到对应的请求方法Get/Post方法
+    4 在对应的方法中处理业务逻辑, 返回对应的界面
+        c.TplName = "index.tpl" // 返回对应的界面
+    5 客户端显示对应的界面
