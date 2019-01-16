@@ -264,3 +264,31 @@ Redis数据类型
             删除
                 zrem key value
                 zrem city bj
+
+Redis-主从服务器
+    为了降低每个redis服务器的负载，我们可以设置多个服务器一起执行任务，做主从模式
+    一个redis服务器负责写数据(master)，其他的服务器(slave)负责读数据，主服务器的数据也会自动的同步给其他的从服务器
+
+    Redis主从服务器配置
+        修改master
+            bind 192.168.137.1 #改为服务器的IP地址
+                注意点: 服务器的IP地址一定要设置为静态的IP地址
+            daemonize yes
+        修改slave
+            slave1
+                bind 192.168.137.1  
+                port 6380
+                daemonize yes
+                slaveof 192.168.137.1 6379
+
+            slave2
+                bind 192.168.137.1
+                port 6381
+                daemonize yes
+                slaveof 192.168.137.1 6379
+    
+    检查主从关系
+        redis-cli -h 192.168.137.1 -p 6379
+        info Replication
+    
+    扩展阅读: https://www.cnblogs.com/kevingrace/p/5685332.html

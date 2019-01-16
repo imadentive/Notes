@@ -157,3 +157,43 @@ Redis
 	var name string
 	var age int
 	redis.Scan(&res, &name, &age)
+
+	// 存储结构体至redis
+	// 将结构体转换为二进制之后再存储到Redis中
+	type Person struct {
+		Id int
+		Name string
+		Age int
+	}
+
+	var per1 Person
+	per.Id = 1
+	per.Name = "lnj"
+	per.Age = 34
+
+	var per2 Person
+	per.Id = 2
+	per.Name = "lzq"
+	per.Age = 18
+
+	pers := []Person{per1, per2}
+
+	// 1. 创建一个容器,用于存储转换之后的二进制数据
+	var buffer bytes.buffer
+	// 2. 创建一个编码对象，指定将转换的数据存储到buffer中
+	enc := gob.NewEncoder(&buffer)
+	// 3. 将pers的数据转换到buffer中
+	enc.Encode(&pers)
+	// 4. 将转换之后的二进制数据存储到Redis中
+	conn.Do("set", "pers", buffer,Bytes())
+	
+	// 1. 去Redis中查询数据
+	rep, err := conn.Do("get", "pers")
+	// 2. 将查询的数据转换为2进制
+	res, _ := redis.Bytes(rep, err)
+	// 3. 创建解码对象
+	dec := god.NewDecoder(bytes.NewReader(res))
+	// 4. 将二进制的数据解码到指定变量中
+	var pers []Person
+	dec.Decode(&pers)
+	fmt.Println(pers)
