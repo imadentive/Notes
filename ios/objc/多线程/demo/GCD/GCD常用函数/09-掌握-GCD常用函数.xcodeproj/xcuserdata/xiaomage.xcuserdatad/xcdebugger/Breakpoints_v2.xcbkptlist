@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "09-&#x638c;&#x63e1;-GCD&#x5e38;&#x7528;&#x51fd;&#x6570;/XMGPerson.m"
+            timestampString = "477480896.318222"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "-books"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[XMGPerson books]"
+                  moduleName = "09-&#x638c;&#x63e1;-GCD&#x5e38;&#x7528;&#x51fd;&#x6570;"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xiaomage/Desktop/%E8%AF%BE%E5%A0%82%E5%85%B1%E4%BA%AB/11%E5%A4%A7%E7%A5%9E%E7%8F%AD%E4%B8%8A%E8%AF%BE%E8%B5%84%E6%96%99/05-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BD%91%E7%BB%9C/0218/%E4%BB%A3%E7%A0%81/09-%E6%8E%8C%E6%8F%A1-GCD%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/09-%E6%8E%8C%E6%8F%A1-GCD%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/XMGPerson.m"
+                  timestampString = "477480896.759299"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "41">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__18-[XMGPerson books]_block_invoke"
+                  moduleName = "09-&#x638c;&#x63e1;-GCD&#x5e38;&#x7528;&#x51fd;&#x6570;"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/xiaomage/Desktop/%E8%AF%BE%E5%A0%82%E5%85%B1%E4%BA%AB/11%E5%A4%A7%E7%A5%9E%E7%8F%AD%E4%B8%8A%E8%AF%BE%E8%B5%84%E6%96%99/05-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BD%91%E7%BB%9C/0218/%E4%BB%A3%E7%A0%81/09-%E6%8E%8C%E6%8F%A1-GCD%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/09-%E6%8E%8C%E6%8F%A1-GCD%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/XMGPerson.m"
+                  timestampString = "477480896.759454"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "51">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
