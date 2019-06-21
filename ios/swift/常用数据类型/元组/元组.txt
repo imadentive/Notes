@@ -22,3 +22,6 @@
   let (errorCode, errorIno) = (404, "Not Found")
   print(errorCode)
   print(errorIno)
+
+交换值
+  (v1, v2) = (v2, v1)

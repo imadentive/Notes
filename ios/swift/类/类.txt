@@ -55,6 +55,12 @@ class 类名 : SuperClass {
   }
   Student.corseCount = 3
 
+类方法
+  swift中类方法是以class开头的方法.类似于OC中+开头的方法
+  class func createButton(imageName : String, bgImageName : String) -> UIButton {
+    ...
+  }
+
 监听属性的改变
   Swift中可以通过属性观察者来监听和响应属性值的变化
   通常是监听存储属性和类属性的改变.(对于计算属性，我们不需要定义属性观察者，因为我们可以在计算属性的setter中直接观察并响应这种值的变化)
@@ -152,6 +158,13 @@ class 类名 : SuperClass {
             setValuesForKeysWithDictionary(dict)
         }
     }
+
+  便利构造函数
+    遍历构造函数通常用在对系统的类进行构造函数的扩充时使用
+    特点
+      1.便利构造函数通常都是写在extension里面
+      2.便利构造函数init前面需要加载convenience
+      3.在便利构造函数中需要明确的调用self.init()
 
 类扩展
   类似于OC中的分类,也是只能扩充方法,不能扩充属性

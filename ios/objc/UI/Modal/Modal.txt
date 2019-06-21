@@ -28,3 +28,7 @@ modal出来的哪个控制器.哪个控制器就可以给它disMiss掉
     }];
   5.如果要能dismiss掉,那么需要有一个强指针指向当前modal的控制器
     self.twoVC = twoVC;
+  
+当Modal时,默认被遮盖的view会被系统移除
+如果不希望移除,需要设置modalPresentationStyle为custom
+  popoverVc.modalPresentationStyle = UIModalPresentationStyle.custom

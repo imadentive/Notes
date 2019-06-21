@@ -295,6 +295,7 @@ UITabBarController
     vc.hidesBottomBarWhenPushed
 
     如果是自定义的tabbar,那么需要在viewWillApper里面移除tabBar的子控件
+    如果在viewDidLoad中设置,那么当执行到viewWillAppear时又会被默认覆盖掉
       - (void)viewWillAppear:(BOOL)animated{
         [super viewWillAppear:animated];
         
