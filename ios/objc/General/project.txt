@@ -183,3 +183,13 @@ Cocoapods
   修改项目的名称
     Bundle Display Name
   确定项目的目录结构
+
+MVVM
+  在 MVVM 中，view 和 view controller 正式联系在一起，我们把它们视为一个组件
+  view 和 view controller 都不能直接引用 model，而是引用视图模型
+  view model 是一个放置用户输入验证逻辑，视图显示逻辑，发起网络请求和其他代码
+
+  注意
+    view 引用 view model，但反过来不行
+    view model 引用了 model，但反过来不行
+    如果我们破坏了这些规则，便无法正确地使用 MVVM

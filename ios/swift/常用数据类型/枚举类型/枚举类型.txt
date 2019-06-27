@@ -1,3 +1,0 @@
-枚举类型的用法:类型.枚举的值或者直接.枚举
-  UIButtonType.Custom
-  .Custom

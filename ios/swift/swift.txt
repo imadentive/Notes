@@ -44,11 +44,4 @@ swift中重写控件的init(frame方法)或者init()方法,必须重写init?(cod
 
 private标识的方法或属性在当前文件中可以访问,但是其他文件不能访问
 
-
-
-
-
-
-
-
-
+在 Swift 项目中，cocoapod 仅支持以 Framework 方式添加框架，因此需要在 Podfile 中添加 use_frameworks!
