@@ -19,3 +19,16 @@ delete(字典变量, key) // 字典删除
 字典保存的数据是无序的
 字典之间的赋值和切片一样是地址传递
 所以字典作为函数的参数,修改形参会影响到实参
+
+Map 与⼯⼚模式
+    Map 的 value 可以是⼀个⽅法
+    与 Go 的 Duck type 接⼝⽅式⼀起，可以⽅便的实现单⼀⽅法对象的⼯⼚模式
+
+    m := map[int]fun(op int) int{}
+    m[1] := func(op int) { return op }
+    m[2] := func(op int) { return op * op }
+    m[3] := func(op int) { return op * op * op }
+
+实现 Set
+    Go 的内置集合中没有 Set 实现， 可以 map[type]bool
+    

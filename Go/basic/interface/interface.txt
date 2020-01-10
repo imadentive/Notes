@@ -52,3 +52,31 @@ type 新类型名=原类型名
 第二种方式代表给原类型名起了一个别名叫做'新类型名'
 也就是说第一种方式定义的新类型和原类型在编译器看来是两个不同的类型
 但是第二种方式对编译器来说是同一种类型
+
+指针方法可以通过指针调用
+值方法可以通过值调用
+接收者是值的方法可以通过指针调用，因为指针会首先被解引用
+接收者是指针的方法不可以通过值调用，因为存储在接口中的值没有地址
+
+常用的系统接口
+    type Stringer interface {
+        String() string
+    }
+
+    type Interface interface {
+        Len() int
+        Less(i, j int) bool
+        Swap(i, j int)
+    }
+
+    type Reader interface {
+        Read(p []byte) (n int, err error)
+    }
+    
+    type Writer interface {
+        Write(p []byte) (n int, err error)
+    }
+
+    type error interface {
+        Error() string
+    }

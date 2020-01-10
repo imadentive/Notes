@@ -7,7 +7,11 @@
         2. panic("err msg") // 手动终止
     可以配合defer和recover来捕获异常,但是必须在panic抛出异常之前定义
     defer无论在函数正常或是异常都会执行
+    defer的内容在当前函数结束之后执行（如果有return，就是在return之前执行）
+    多个defer函数是一个栈的形式，先进后出
+
     recover可以捕获panic异常
+    recover只能在defer调用中使用，获取panic的值
         defer func() {
             if err: = recover(); err != nil {
                 fmt.Println(err)

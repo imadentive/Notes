@@ -45,3 +45,23 @@ swift中重写控件的init(frame方法)或者init()方法,必须重写init?(cod
 private标识的方法或属性在当前文件中可以访问,但是其他文件不能访问
 
 在 Swift 项目中，cocoapod 仅支持以 Framework 方式添加框架，因此需要在 Podfile 中添加 use_frameworks!
+
+常用Swift第三方库
+  网络请求： https://github.com/Alamofire/Alamofire
+  图片下载： https://github.com/onevcat/Kingfisher
+    Kingfisher默认不支持WebP格式的图片，需要额外安装KingfisherWebP
+
+    pod 'KingfisherWebP'
+
+    iconView.kf.setImage(with: URL(string: user.thumb),
+                        options: [.processor(WebPProcessor.default), 
+                                  .cacheSerializer(WebPSerializer.default)])
+  JSON访问： https://github.com/SwiftyJSON/SwiftyJSON
+  JSON-Model转换：https://github.com/kakaopensource/KakaJSON
+
+库的导入问题
+  默认情况下，用到哪个库就要导入哪个库，无疑增加了很多重复的工作量
+  如何办到全局导入库？ 
+    新建一个用于Swift调用OC的桥接文件： targetName-Bridging-Header.h
+    导入系统库：#import <XX/XX.h>
+    导入第三方库（Framework形式）：#import <XX/XX-Swift.h>

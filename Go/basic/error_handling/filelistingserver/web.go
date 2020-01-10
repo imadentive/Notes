@@ -65,9 +65,51 @@ type userError interface {
 	Message() string
 }
 
+// type User struct {
+// 	Name string `json:"name"`
+// 	Age  int    `json:"age"`
+// }
+
 func main() {
 	http.HandleFunc("/",
 		errWrapper(filelisting.HandleFileList))
+
+	// http.HandleFunc("/json", func(writer http.ResponseWriter, request *http.Request) {
+	// 	user := User{
+	// 		Name: "Desmond",
+	// 		Age:  30,
+	// 	}
+
+	// 	userJSON, err := json.Marshal(user)
+	// 	if err != nil {
+	// 		http.Error(writer, err.Error(), http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	writer.Header().Set("Content-Type", "application/json")
+	// 	writer.write(userJSON)
+	// })
+
+	// http.HandleFunc("/image", func(writer http.ResponseWriter, request *http.Request) {
+	// 	image := path.Join("images", "golang.png")
+	// 	http.ServeFile(writer, request, image)
+	// })
+
+	// http.HandleFunc("/html", func(writer http.ResponseWriter, request *http.Request) {
+	// 	user := User{
+	// 		Name: "Desmond",
+	// 		Age:  30,
+	// 	}
+	// 	htmlFile := path.Join("templates", "index.html")
+	// 	tmpl, err := template.ParseFiles(htmlFile)
+	// 	if err != nil {
+	// 		http.Error(writer, err.Error(), http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// 	if err := tmpl.Execute(writer, user); err != nil {
+	// 		http.Error(writer, err.Error(), http.StatusInternalServerError)
+	// 		return
+	// 	}
+	// })
 
 	err := http.ListenAndServe(":8888", nil)
 	if err != nil {

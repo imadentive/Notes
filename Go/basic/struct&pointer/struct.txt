@@ -51,6 +51,8 @@
             name string
             Date
         }
+        
+        匿名类型的可见方法也同样被内嵌，这在效果上等同于继承
 
     结构体嵌套定义的几种方式
         1. 
@@ -156,3 +158,24 @@
 
         stu := Student{Person{"zs", 18}, 99.5}
         此时就不可以通过stu.name来获取Person结构体中的name
+    
+    定义结构体方法
+        // 给结构体定义的函数叫方法，前面需要带上结构体指针的声明
+        func (book *Book) String() string {
+            return fmt.Sprintf("id=%d,title=%s,author=%s,subject=%s",
+                book.id, book.title,
+                book.author, book.subject)
+        }
+
+    使用new函数给一个新的结构体变量分配内存，它返回指向已分配内存的指针
+        book := new(Book)
+    
+    如果想要强制使用工厂函数可以通过将结构体编程小写(私有),然后添加一个New开头的工厂函数,这样就可以做到强制使用工厂函数来初始化
+
+    带标签的结构体
+        type Book struct { // 标签(tag)
+            id      int    "书籍编号"
+            title   string "书籍标题"
+            author  string "书籍作者"
+            subject string "书籍主题"
+        }

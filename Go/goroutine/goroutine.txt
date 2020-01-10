@@ -83,7 +83,7 @@ go func() {
 
 select类似于switch,主要用于处理异步IO操作,用于消费多个管道中的数据或超时处理(配合定时器)
 如果有多个case都可以运行，select会随机选出一个执行，其他不会执行
-如果没有可运行的case语句，且有default语句，那么就会执行default的动作
+如果没有可运行的case语句，且有default语句，那么就会执行default的动作,default case 可以确保发送不被阻塞
 如果没有可运行的case语句，且没有default语句，select将阻塞，直到某个case通信可以运行
 
 定时器

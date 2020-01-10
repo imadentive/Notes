@@ -181,3 +181,55 @@ guard
   如果前面的可选类型,没有值,后面所有的代码都不会执行
   如果前面的可选类型,有值,系统会自动将vc进行解包,并且使用vc
   vc?.view
+
+可选项的本质
+  可选项的本质是enum类型
+  public enum Optional<Wrapped> : ExpressibleByNilLiteral { 
+    case none 
+    case some(Wrapped) 
+    public init(_ some: Wrapped) 
+  }
+
+  var age: Int? = 10 
+  var age0: Optional<Int> = Optional<Int>.some(10) 
+  var age1: Optional = .some(10) 
+  var age2 = Optional.some(10) 
+  var age3 = Optional(10) 
+
+  age = nil 
+  age3 = .none
+
+  var age: Int? = nil
+  var age0 = Optional<Int>.none 
+  var age1: Optional<Int> = .none
+
+  var age: Int? = .none 
+  age = 10 
+  age = .some(20) 
+  age = nil
+
+  switch age { 
+    case let v?:
+      print("some", v) 
+    case nil:
+      print("none") 
+  }
+
+  switch age { 
+    case let .some(v):
+      print("some", v) 
+    case .none:
+      print("none") 
+  }
+
+  var age_: Int? = 10 
+  var age: Int?? = age_ 
+  age = nil
+
+  var age0 = Optional.some(Optional.some(10)) 
+  age0 = .none 
+  var age1: Optional<Optional> = .some(.some(10)) 
+  age1 = .none
+
+  var age: Int?? = 10 
+  var age0: Optional<Optional> = 10

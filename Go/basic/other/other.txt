@@ -9,6 +9,10 @@ go build // 编译检查当前目录下的go文件,如果不是命令文件(main
 env GOOS=linux GOARCH=amd64 go build // 跨平台编译
 go fmt // 格式化当前目录下的go文件
 
+获取系统架构和Int Size
+cpuArch := runtime.GOARCH
+intSize := strconv.IntSize
+
 清空控制台
 cmd := exec.Command("cmd", "/c", "cls")
 cmd.Stdout = os.Stdout
@@ -22,6 +26,13 @@ cmd.Run()
     now.Second()
     str := now.Format("2006/01/02 15:04:05") // 按照指定格式输出,注意这里这些数字都是固定的,格式是可以变的
 
+    prev := time.Date(2019, 08, 08, 17, 20, 34, 12340, time.UTC)
+    prev.Before(now)
+    prev.After(now)
+    prev.Equal(now)
+
+    now.Sub(prev) // 计算时间差
+
     时间常量多用于Sleep
         time.Sleep(time.Second)
 
@@ -30,6 +41,20 @@ cmd.Run()
         rand.Seed(time.Now().Unix())
         res := rand.Intn(3) // 生成[0, 3)的随机int值,小于0会panic
 
+json
+    br := BaseResponse{
+        Code: 1,
+        Data: ResponseData{
+            Name: "Desmond",
+            Age:  30,
+        },
+    }
+    jsonBytes, _ := json.Marshal(&br)
+    fmt.Println(string(jsonBytes))
+
+    var b2 BaseResponse
+    _ := json.unMarshal(jsonBytes, &br2)
+    fmt.Println(br2.Data.Name)
 
 Go与C交叉访问
     Go访问C

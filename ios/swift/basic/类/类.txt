@@ -1,3 +1,25 @@
+结构体与类的本质区别
+  结构体是值类型（枚举也是值类型）,类是引用类型（指针类型）
+  注意如果对类使用MemoryLayout获得的stride是8,因为他获取的是对象的内存大小,而不是对象存储的指针指向的堆空间大小
+
+对象的堆空间申请过程
+  在Swift中，创建类的实例对象，要向堆空间申请内存，大概流程如下
+    Class.__allocating_init()
+    libswiftCore.dylib：_swift_allocObject_
+    libswiftCore.dylib：swift_slowAlloc
+    libsystem_malloc.dylib：malloc
+  在Mac、iOS中的malloc函数分配的内存大小总是16的倍数
+  通过class_getInstanceSize可以得知：类的对象至少需要占用多少内存
+
+  class Point { 
+    var x = 11 
+    var test = true 
+    var y = 22 
+  } 
+  var p = Point() 
+  class_getInstanceSize(type(of: p)) // 40  3个属性(8+8+1)加指向类型信息(8)加引用计数(8),加上内存对齐(8的倍数)
+  class_getInstanceSize(Point.self) // 40
+
 class 类名 : SuperClass {
     // 定义属性和方法
 }
@@ -95,9 +117,29 @@ class 类名 : SuperClass {
 构造函数
   默认情况下载创建一个类时,必然会调用一个构造函数
   即便是没有编写任何构造函数，编译器也会提供一个默认的构造函数。
+  但编译器并没有为类自动生成可以传入成员值的初始化器
   如果是继承自NSObject,可以对父类的构造函数进行重写
   如果是方法的重写,则需要在重写的方法前加override
   默认重写构造函数不需要写super.init(),swift会在构造函数最后自动加上
+
+  如果类的所有成员都在定义的时候指定了初始值，编译器会为类生成无参的初始化器
+  成员的初始化是在这个初始化器中完成的
+  下面2段代码是完全等效的
+    class Point { 
+      var x: Int = 10 
+      var y: Int = 20 
+    } 
+    let p1 = Point()
+
+    class Point {
+      var x: Int 
+      var y: Int 
+      init() {
+        x = 10
+        y = 20 
+      }
+    } 
+    let p1 = Point()
 
   // 类的属性必须有值
   // 如果不是在定义时初始化值,可以在构造函数中赋值

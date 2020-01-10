@@ -6,7 +6,7 @@ import (
 )
 
 func grade(score int) string {
-	// go中的switch会自带break，如果不想要的话需要加fallthrough
+	// go中的switch会自带break，如果不想要的话需要加fallthrough，fallthrough不会判断下一条 case 的表达式结果是否为 true
 	g := ""
 	switch {
 	case score < 0 || score > 100:
