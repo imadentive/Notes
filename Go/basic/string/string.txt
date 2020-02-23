@@ -73,3 +73,12 @@ strconv.Atoi() // 将字符串类型转为int整形
     string.TrimSpace(str) // 清理掉字符串前后的空格
     string.TrimPrefix(str, "123") // 清理字符串前缀
     string.TrimSuffix(str, "123") // 清理字符串后缀
+
+⾼效的字符串连接
+    推荐使用strings.Builder
+    
+    var builder strings.Builder
+    for i := 0; i < numbers; i++ {
+      builder.WriteString(strconv.Itoa(i))
+    }
+    _ = builder.String()

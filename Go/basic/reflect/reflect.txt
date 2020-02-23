@@ -3,6 +3,11 @@
 所以可以把变量 i 当成一个接口，那么这个变量在Go 反射中的表示就是<Value,Type>，其中 Value 为变量的值3，Type 变量的为类型 int
 在 Go 反射中，标准库为我们提供两种类型来分别表示他们 reflect.Value 和 reflect.Type，并且提供了两个函数来获取任意对象的 Value 和 Type
 
+reﬂect.TypeOf 返回类型 (reﬂect.Type)
+reﬂect.ValueOf 返回值 (reﬂect.Value)
+可以从 reﬂect.Value 获得类型
+通过 kind 的来判断类型
+
 type User struct {
 	Name string `json:"name" bson:"b_name"`
 	Age int `json:"age" bson:"b_age"`
@@ -21,6 +26,16 @@ func (u User) Print() {
   t := reflect.TypeOf(u)
   fmt.Printf("TypeOf(u)=%v\n", t)
 
+	t := reflect.TypeOf(v)
+	switch t.Kind() {
+	case reflect.Float32, reflect.Float64:
+		fmt.Println("Float")
+	case reflect.Int, reflect.Int32, reflect.Int64:
+		fmt.Println("Integer")
+	default:
+		fmt.Println("Unknown", t)
+	}
+
 获取value
   v := reflect.ValueOf(u)
   // v背后的struct类型也包含了一个type属性可以通过Type()获取type
@@ -36,6 +51,12 @@ reflect.Value转成原始数据
 
 获取底层的数据类型
   fmt.Println(t0.Kind()) // struct
+
+按名字访问结构的成员
+	reflect.ValueOf(*e).FieldByName("Name")
+
+按名字访问结构的⽅法
+	reflect.ValueOf(e).MethodByName("UpdateAge").Call([]reflect.Value{reflect.ValueOf(1)})
 
 循环获取结构体的属性和方法
   u := User{"张三", 20}
@@ -89,3 +110,57 @@ reflect.Value转成原始数据
 		f := t.Field(i)
 		fmt.Println(f.Tag, f.Tag.Get("json"), f.Tag.Get("bson"))
 	}
+
+比较map和切片
+	a := map[int]string{1: "one", 2: "two", 3: "three"}
+	b := map[int]string{1: "one", 2: "two", 3: "three"}
+	//t.Log(a == b)
+	t.Log(reflect.DeepEqual(a, b))
+
+	s1 := []int{1, 2, 3}
+	s2 := []int{1, 2, 3}
+	s3 := []int{2, 3, 1}
+	t.Log("s1 == s2?", reflect.DeepEqual(s1, s2))
+	t.Log("s1 == s3?", reflect.DeepEqual(s1, s3))
+
+“不安全”编程
+	“不安全”⾏为的危险性
+		i := 10 
+		f := *(*float64)(unsafe.Pointer(&i)) // 结果不为10
+	合理的冒险
+		合理类型转化
+		原子类型操作
+			var shareBufPtr unsafe.Pointer
+			writeDataFn := func() {
+				data := []int{}
+				for i := 0; i < 100; i++ {
+					data = append(data, i)
+				}
+				atomic.StorePointer(&shareBufPtr, unsafe.Pointer(&data))
+			}
+			readDataFn := func() {
+				data := atomic.LoadPointer(&shareBufPtr)
+				fmt.Println(data, *(*[]int)(data))
+			}
+
+			var wg sync.WaitGroup
+			writeDataFn()
+			for i := 0; i < 10; i++ {
+				wg.Add(1)
+				go func() {
+					for i := 0; i < 10; i++ {
+						writeDataFn()
+						time.Sleep(time.Microsecond * 100)
+					}
+					wg.Done()
+				}()
+				wg.Add(1)
+				go func() {
+					for i := 0; i < 10; i++ {
+						readDataFn()
+						time.Sleep(time.Microsecond * 100)
+					}
+					wg.Done()
+				}()
+			}
+			wg.Wait()

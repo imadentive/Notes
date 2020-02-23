@@ -1,3 +1,7 @@
+CSP vs. Actor
+    和Actor的直接通讯不同，CSP模式则是通过Channel进⾏通讯的，更松耦合⼀ 些
+    Go中channel是有容量限制并且独⽴于处理Groutine，⽽如Erlang，Actor模式 中的mailbox容量是⽆限的，接收进程也总是被动地处理消息
+
 runtime.Gosched() // 让出当前的执行权限,之后还会恢复执行
 runtime.Goexit() // 退出当前协程
 num := runtime.NumCPU() // 返回CPU个数
@@ -9,6 +13,19 @@ var lock = sync.Mutext{} // 创建一个互斥锁
 lock.Lock() // 添加锁(关门)
 ...
 lock.Unlock() // 释放锁(开门)
+
+WaitGroup
+    var wg sync.WaitGroup 
+    for i := 0; i < 5000; i++ { 
+        wg.Add(1) 
+        go func() { 
+            defer func() { 
+                wg.Done() 
+            }() 
+            …
+        }()
+    } 
+    wg.Wait()
 
 channel和切片/字典非常相似,都可以用来存储数据,都需要make之后才能使用
 var myCh chan int
@@ -85,6 +102,22 @@ select类似于switch,主要用于处理异步IO操作,用于消费多个管道�
 如果有多个case都可以运行，select会随机选出一个执行，其他不会执行
 如果没有可运行的case语句，且有default语句，那么就会执行default的动作,default case 可以确保发送不被阻塞
 如果没有可运行的case语句，且没有default语句，select将阻塞，直到某个case通信可以运行
+    select { 
+    case ret := <-retCh1:
+        t.Logf("result %s", ret) 
+    case ret :=<-retCh2:
+        t.Logf("result %s", ret) 
+    default:
+        t.Error(“No one returned”) 
+    }
+
+超时控制
+    select { 
+    case ret := <-retCh:
+        t.Logf("result %s", ret) 
+    case <-time.After(time.Second * 1):
+        t.Error("time out") 
+    }
 
 定时器
 type Timer struct {
@@ -105,3 +138,73 @@ for {
     fmt.Println(<-ticker.C)
 }
 
+channel 的关闭
+    向关闭的 channel 发送数据，会导致 panic
+    v, ok <-ch; ok 为 bool 值，true 表示正常接受，false 表示通道关闭
+    所有的 channel 接收者都会在 channel 关闭时，⽴刻从阻塞等待中返回且上述 ok 值为 false。这个⼴播机制常被利⽤，进⾏向多个订阅者同时发送信号。 如：退出信号
+
+任务的取消
+    获取取消通知
+        func isCancelled(cancelChan chan struct{}) bool { 
+            select { 
+            case <-cancelChan:
+                return true 
+            default:
+                return false 
+            }
+        }
+    发送取消消息(1次只能取消一个任务)
+        func cancel_1(cancelChan chan struct{}) { 
+            cancelChan <- struct{}{} 
+        }
+    通过关闭 Channel 取消(同时取消所有任务)
+        func cancel_2(cancelChan chan struct{}) { 
+            close(cancelChan) 
+        }
+
+Context与关联任务的取消
+    根 Context：通过 context.Background () 创建
+    ⼦ Context：context.WithCancel(parentContext) 创建
+        ctx, cancel := context.WithCancel(context.Background())
+    当前 Context 被取消时，基于他的⼦ context 都会被取消
+    接收取消通知 <-ctx.Done()
+
+典型并发任务
+  仅执⾏⼀次
+    单例模式(懒汉式，线程安全)
+      var once sync.Once
+      var obj *SingletonObj
+
+      func GetSingletonObj() *SingletonObj {
+        once.Do(func() {
+          fmt.Println("Create Singleton obj.")
+          obj = &SingletonObj{}
+        })
+        return obj
+      }
+  sync.Pool 对象缓存
+    sync.Pool 对象获取
+      尝试从私有对象获取
+      私有对象不存在，尝试从当前 Processor 的共享池获取
+      如果当前 Processor 共享池也是空的，那么就尝试去其他 Processor 的共享池获取
+      如果所有⼦池都是空的，最后就⽤⽤户指定的 New 函数 产⽣⼀个新的对象返回    
+    sync.Pool 对象的放回
+      如果私有对象不存在则保存为私有对象
+      如果私有对象存在，放⼊当前 Processor ⼦池的共享池中
+    使⽤ sync.Pool
+      pool := &sync.Pool{
+        New: func() interface{} { 
+          return 0 
+        },
+      }
+
+      arry := pool.Get().(int) 
+      …
+      pool.Put(10)
+    sync.Pool 对象的⽣命周期
+      GC 会清除 sync.pool 缓存的对象
+      对象的缓存有效期为下⼀次GC 之前
+
+    适合于通过复⽤，降低复杂对象的创建和 GC 代价
+    协程安全，会有锁的开销
+    ⽣命周期受 GC 影响，不适合于做连接池等，需⾃⼰管理⽣命周期的资源的池化

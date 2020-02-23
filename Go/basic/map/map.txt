@@ -32,3 +32,20 @@ Map 与⼯⼚模式
 实现 Set
     Go 的内置集合中没有 Set 实现， 可以 map[type]bool
     
+sync.Map
+    适合读多写少，且 Key 相对稳定的环 境
+    采⽤了空间换时间的⽅案，并且采⽤指针的⽅式间接实现值的映射，所以存储空间会较 built-in map⼤
+    源码分析
+        https://my.oschina.net/qiangmzsx/blog/1827059
+
+Concurrent Map
+    https://github.com/easierway/concurrent_map
+    适⽤于读写都很频繁的情况
+
+别让性能被“锁”住
+    减少锁的影响范围
+    减少发⽣锁冲突的概率
+        sync.Map
+        ConcurrentMap 
+    避免锁的使⽤
+        LAMX Disruptor：https://martinfowler.com/articles/lmax.html

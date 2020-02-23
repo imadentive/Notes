@@ -56,6 +56,74 @@ json
     _ := json.unMarshal(jsonBytes, &br2)
     fmt.Println(br2.Data.Name)
 
+    更快的JSON解析
+      EasyJSON 采⽤代码⽣成⽽⾮反射
+      使⽤
+        easyjson -all <结构定义>.go
+
+HTTP Server
+  路由规则
+    URL 分为两种，末尾是 /：表示⼀个⼦树，后⾯可以跟其他⼦路径； 末尾不是/，表示⼀个叶⼦，固定的路径
+      以/ 结尾的 URL 可以匹配它的任何⼦路径，⽐如 /images 会匹配 /images/ cute-cat.jpg
+    它采⽤最⻓匹配原则，如果有多个匹配，⼀定采⽤匹配路径最⻓的那个进⾏处理
+    如果没有找到任何匹配项，会返回 404 错误
+  
+  更好的 Router
+    https://github.com/julienschmidt/httprouter
+    func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+      fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
+    }
+    func main() {
+      router := httprouter.New()
+      router.GET("/", Index)
+      router.GET("/hello/:name", Hello)
+      log.Fatal(http.ListenAndServe(":8080", router))
+    }
+
+GC 友好的代码
+  避免内存分配和复制
+    复杂对象尽量传递引⽤
+      数组的传递
+      结构体传递
+  避免内存分配和复制
+    初始化⾄合适的⼤⼩
+      ⾃动扩容是有代价的
+    复⽤内存
+  打开 GC ⽇志
+    只要在程序执⾏之前加上环境变量GODEBUG=gctrace=1
+      e.g.
+        GODEBUG=gctrace=1 go test -bench=.
+        GODEBUG=gctrace=1 go run main.go
+  go tool trace
+    普通程序输出 trace 信息
+      package main 
+      import (
+        "os"
+        "runtime/trace"
+      )
+      func main() {
+        f, err := os.Create("trace.out") 
+        if err != nil { 
+          panic(err) 
+        }
+        defer f.Close()
+        err = trace.Start(f)
+        if err != nil {
+          panic(err)
+        } 
+        defer trace.Stop() 
+        // Your program here
+      }
+    测试程序输出 trace 信息
+      go test -trace trace.out
+    可视化 trace 信息
+      go tool trace trace.out    
+
+Chaos Engineering
+  相关开源项⽬
+    https://github.com/Netﬂix/chaosmonkey
+    https://github.com/easierway/service_decorators/blob/master/README.md
+
 Go与C交叉访问
     Go访问C
         1. C代码需要用单行注释或者多行注释注释起来
