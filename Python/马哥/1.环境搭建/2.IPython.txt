@@ -19,6 +19,8 @@ shell命令
 魔术方法
   使用%百分号开头的，IPython内置的特殊方法
 
+  %作用于当前行,%%作用于当前cell(即当前代码块)
+
   %magic 格式
     % 开头是line magic
     %% 开头是 cell magic，notebook的cell
