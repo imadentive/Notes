@@ -43,4 +43,4 @@ app.on('error',function (err) {
 app.listen(3000);
 
 
-// 把多个promise 组合成一个promise 这个promise完成后 去拿 最终的结果显示给用户
+// 把多个promise 组合成一个promise 这个promise完成后 去拿最终的结果显示给用户

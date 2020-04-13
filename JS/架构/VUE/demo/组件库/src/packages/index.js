@@ -24,6 +24,10 @@ import Carousel from './carousel/carousel.vue'
 import CarouselItem from './carousel/carousel-item'
 
 import infiniteScroll from './infiniteScroll';
+
+import Pagination from './pagination/pagination'
+
+import Table from './table/table'
 const install = (Vue) =>{
     Vue.component(Button.name,Button)
     Vue.component(Icon.name,Icon)
@@ -49,6 +53,10 @@ const install = (Vue) =>{
 
     Vue.component(Carousel.name,Carousel);
     Vue.component(CarouselItem.name,CarouselItem)
+
+    Vue.component(Pagination.name,Pagination)
+
+    Vue.component(Table.name,Table);
 
 }
 
