@@ -34,6 +34,11 @@
       [[x, y] for x in 'abcde' for y in range(3)] 
       [{x: y} for x in 'abcde' for y in range(3)]
 
+    [(i,j) for i in range(7) if i>4 for j in range(20,25) if j>23] 
+    [(i,j) for i in range(7) for j in range(20,25) if i>4 if j>23] 
+    [(i,j) for i in range(7) for j in range(20,25) if i>4 and j>23]
+    第一种效率最高
+
 生成器表达式
   语法
     (返回值 for 元素 in 可迭代对象 if 条件)
@@ -77,6 +82,7 @@
       列表解析式构造并返回了一个新的列表
 
 集合解析式
+  立即计算
   语法
     {返回值 for 元素 in 可迭代对象 if 条件}
     列表解析式的中括号换成大括号{}就行了
@@ -86,6 +92,7 @@
     {[x] for x in range(10)} # 报错，因为list不可hash
 
 字典解析式
+  立即计算
   语法
     {返回值 for 元素 in 可迭代对象 if 条件}
     列表解析式的中括号换成大括号{}就行了

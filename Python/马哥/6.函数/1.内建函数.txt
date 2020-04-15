@@ -67,14 +67,14 @@ sorted(iterable[, key][, reverse]) 排序
 
 枚举 enumerate(seq, start=0)
   迭代一个序列，返回索引数字和元素构成的二元组
-  start表示索引开始的数字，默认是0
+  start表示索引开始的数字(即默认索引第一个从0变成指定的数字)，默认是0
   for x in enumerate([2,4,6,8]):
     print(x)
   for x in enumerate("abcde"): 
     print(x,end=" ")
 
 迭代器和取元素 iter(iterable)、next(iterator[, default])
-  iter将一个可迭代对象封装成一个迭代器
+  iter将一个可迭代对象封装成一个迭代器,如果本身就是迭代器则什么都不做
   next对一个迭代器取下一个元素。如果全部元素都取过了，再次next会抛StopIteration异常
   it = iter(range(5))
   next(it)
